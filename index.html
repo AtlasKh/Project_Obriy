@@ -266,6 +266,52 @@ button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
 #introSkip{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));background:transparent;color:var(--muted);font-family:var(--display);font-weight:700;font-size:14px;padding:6px 8px}
 .tiplist{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.45}
 .tiplist b{color:var(--amber);font-weight:600}
+.res.chit i{background:#7a5cff}
+#hud.base #hpMeter{display:none}
+#hud:not(.base) .money{display:none}
+#hpBar{background:#ff6f7a}
+.goalpill{pointer-events:auto;cursor:pointer}
+#app:not(.inbase) .goalpill{pointer-events:none}
+#grabBtn.chaika{background:conic-gradient(var(--amber) calc(var(--p,1)*360deg),#2e2335 0)}
+#grabBtn.chaika span{background:#3a2410;color:#ffe9b0}
+#grabBtn.kozh{background:conic-gradient(#c79bff calc(var(--p,1)*360deg),#2e2335 0)}
+#grabBtn.kozh span{background:#2a1d3a;color:#e8d6ff;font-size:11px}
+.stabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+.stabs button{flex:none;font-size:13px;font-weight:700;padding:7px 11px;border-radius:16px;background:var(--panel-2);color:var(--cream);border:2px solid var(--line);position:relative}
+.stabs button.on{background:var(--amber);color:#1b1206;border-color:var(--amber)}
+.stabs button.dot::after{content:"";position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#ff6f7a;border:2px solid var(--space)}
+.secinfo{border-radius:4px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;border:2px solid var(--line);background:#1a1426}
+.secinfo b{font-family:var(--display);font-size:16px}
+.secinfo span{font-size:12.5px;color:var(--muted);line-height:1.45}
+.secinfo .tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:9px;background:#3a1a2a;color:#ffb0c8;margin-right:4px}
+.secinfo .tag.ok{background:#173a2e;color:#9ff0c8}
+.loadout{display:flex;gap:8px;flex-wrap:wrap}
+.loadout button{display:flex;align-items:center;gap:6px;font-family:var(--body);font-size:13px;font-weight:600;padding:6px 9px;border-radius:4px;background:var(--panel-2);color:var(--cream);border:2px solid var(--line)}
+.loadout button.on{border-color:var(--amber);background:#3a2a14}
+.loadout canvas{width:9px;height:18px}
+.slot{font-size:12px;color:var(--muted)}
+.sk{display:grid;grid-template-columns:1fr auto;gap:3px 10px;align-items:center;padding-block:8px;border-top:1px dashed var(--line)}
+.sk:first-of-type{border-top:0;padding-top:0}
+.sk .nm{font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sk .st{font-size:12.5px;color:var(--muted);grid-column:1}
+.sk button{grid-column:2;grid-row:1 / span 2;min-width:44px}
+.sk.ult .nm{color:var(--amber)}
+.lvbig{font-family:var(--display);font-size:34px;font-weight:800;line-height:1}
+.sp{font-family:var(--display);font-weight:800;color:var(--lyb)}
+.rep{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px}
+.rep div{background:#0b0810;border:2px solid var(--line);padding:6px 8px;display:flex;flex-direction:column;gap:2px}
+.rep span{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.rep b{font-family:var(--display);font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+.levelup{background:linear-gradient(90deg,#1d3a3a,#2a1d3a);border:2px solid var(--lyb);border-radius:4px;padding:10px 12px;font-family:var(--display);font-weight:800;font-size:16px;color:#bff7f2}
+.nextstep{background:#1d2a3a;border:2px solid #3f6f9a;border-radius:4px;padding:10px 12px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.nextstep span{font-size:13.5px;line-height:1.4;flex:1;min-width:180px}
+.orbitrow{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding-block:9px;border-top:1px dashed var(--line)}
+.orbitrow:first-of-type{border-top:0;padding-top:0}
+.orbitrow b{font-family:var(--display);font-size:15px}
+.orbitrow .st{font-size:12px;color:var(--muted);grid-column:1;line-height:1.4}
+.orbitrow button,.orbitrow .now{grid-column:2;grid-row:1 / span 2}
+.orbitrow .now{font-size:12px;font-weight:700;color:var(--lyb)}
+#orbitCv{width:100%;max-width:300px;height:auto;aspect-ratio:220/150;align-self:center;image-rendering:pixelated}
 @media (prefers-reduced-motion:reduce){#dockBtn,.track.low,.lbl b.bump{animation:none}}
 </style>
 
@@ -278,6 +324,7 @@ button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
   <div id="hud" class="base">
     <div class="bars">
       <div class="meter" id="fuelMeter"><span class="lbl">Пальне <b id="fuelTxt">100</b></span><div class="track" id="fuelTrack"><i id="fuelBar"></i></div></div>
+      <div class="meter" id="hpMeter"><span class="lbl">Броня <b id="hpTxt">100</b></span><div class="track" id="hpTrack"><i id="hpBar"></i></div></div>
       <div class="meter"><span class="lbl">Трюм <b id="cargoTxt">0/20</b></span><div class="track" id="cargoTrack"><i id="cargoBar"></i></div></div>
       <div class="money" id="moneyHud">₴0</div>
       <button id="musicBtn" class="hbtn" aria-label="Музика"></button>
@@ -334,7 +381,49 @@ const BOT_BUY=[null,{cost:{iron:30,ice:20,cr:300},req:2},{cost:{iron:50,irid:8,c
 const BOT_DESC=['','збирає кристали у власний трюм','стріляє по дрібних каменях','стріляє сильніше, бере й середні','потужний лазер і великий трюм'];
 const CAT='Бублик';
 const TCD=[6,4.5,3,2];
-const HYPER_CD=3.5;
+const HYPER_CD=3.5,VIRAJ_CD=8,MANIP_CD=6,WARP_CD=1;
+const VIRAJ_R=[55,70,90],VIRAJ_D=[30,45,65];
+const KGRIP=['хапає дрібних ворогів і камені','хапає й середніх','хапає великих, б\'є до 3 разів','дрібні вороги тікають від одного вигляду'];
+const SECTOR_MS=3600e3;
+const SECTORS=[
+ {k:'north',name:'Північний сектор',short:'Північ',col:'#bfefff',desc:'Тихий сектор для фарму: багато льоду й жодних ворогів. Внизу видно шестикутний шторм на полюсі Сатурна.',mix:{ice:1.7,iron:.9,irid:.5},giants:10,en:{},debris:0,sat:[.5,.78]},
+ {k:'east',name:'Східний сектор',short:'Схід',col:'#ff9a4a',desc:'Рудні поля: багато заліза й брил-гігантів. Магнітні бурі глушать автоприціл і магніт. Тут промишляють Кібер-Сороки.',mix:{ice:.6,iron:1.9,irid:.8},giants:16,en:{soroka:6,scout:4},debris:0,storm:true,sat:[.86,.42]},
+ {k:'south',name:'Південний сектор',short:'Південь',col:'#e2a0ff',desc:'Цвинтар старих супутників і багато іридію. Уламки летять усюди, а Рій уже надсилає розвідників.',mix:{ice:.6,iron:1,irid:2.2},giants:8,en:{scout:12,soroka:4},debris:60,sat:[.4,.08]},
+ {k:'west',name:'Західний сектор',short:'Захід',col:'#7ff5ea',desc:'Тінь Сатурна: темно, видно лише довкола корабля. Тут найбільше капсул сигналу і найбільше Рою.',mix:{ice:1,iron:1,irid:1.4},giants:10,en:{scout:16,drone:5},debris:10,dark:true,capsules:3,sat:[.12,.35]}
+];
+const sectorIdx=()=>((Math.floor(Date.now()/SECTOR_MS)+(S.orbitShift||0))%4+4)%4;
+const sectorLeft=()=>SECTOR_MS-Date.now()%SECTOR_MS;
+const MAX_LV=20,XP_NEED=l=>100+60*(l-1);
+const SKILLS=[
+ {k:'agil',br:'base',name:'Маневреність',max:3,d:'+8% швидкості й поворотів за ранг'},
+ {k:'tank',br:'base',name:'Запасний бак',max:2,d:'+15% пального за ранг'},
+ {k:'mag',br:'base',name:'Магнітні рукавиці',max:2,d:'+20% радіусу магніту за ранг'},
+ {k:'hull',br:'base',name:'Посилений корпус',max:3,d:'+15 броні за ранг'},
+ {k:'slot',br:'base',name:'Друга полиця пайків',max:1,d:'береш у рейс 2 тюбики',lv:4},
+ {k:'drill',br:'miner',name:'Глибоке буріння',max:2,d:'+20% урону по каменях за ранг'},
+ {k:'hold',br:'miner',name:'Жадібний трюм',max:2,d:'+12% місткості трюму за ранг'},
+ {k:'vein',br:'miner',name:'Рудна жила',max:2,d:'+5% шансу подвійної руди за ранг'},
+ {k:'tecton',br:'miner',name:'Тектонік',max:1,d:'брили-гіганти ріжуться вдвічі швидше'},
+ {k:'gold',br:'miner',name:'Золота лихоманка',max:1,d:'після серії ×10 усі кристали дають ×2 протягом 10 с',ult:true},
+ {k:'plates',br:'hunter',name:'Бронеплити',max:2,d:'+15% максимальної броні за ранг'},
+ {k:'hot',br:'hunter',name:'Гарячий ствол',max:2,d:'+12% урону по ворогах за ранг'},
+ {k:'shield',br:'hunter',name:'Щит',max:1,d:'броня відновлюється 3 од./с, якщо 3 с без ударів'},
+ {k:'trophy',br:'hunter',name:'Трофеї',max:1,d:'+50% хітину з ворогів'},
+ {k:'counter',br:'hunter',name:'Контрудар',max:1,d:'удар по тобі вибухає хвилею довкола корабля, раз на 4 с',ult:true}
+];
+const BRANCH={base:'Основа',miner:'Добувач',hunter:'Мисливець'};
+const TUBES={
+ borsch:{name:'Космоборщ',desc:'+15% до максимальної броні',col:'#c8423a',cap:'#f3efe6'},
+ uzvar:{name:'Узвар «Зоряний»',desc:'+25% пального',col:'#c08a2c',cap:'#7a4a1c'},
+ med:{name:'Мед «Карпатський»',desc:'+15% шансу подвійної руди',col:'#ffd23f',cap:'#a8701f'},
+ hirch:{name:'Гірчиця «Пекуча»',desc:'+25% урону по ворогах',col:'#d8c03a',cap:'#c8423a'},
+ kava:{name:'Кава «Львівська»',desc:'−30% перезарядки суперсили',col:'#6b4428',cap:'#ffd9a0'}
+};
+const EN={
+ scout:{name:'Розвідник Рою',r:4,hp:16,spd:78,dmg:7,xp:6,chit:1,size:0},
+ drone:{name:'Трутень Рою',r:8,hp:80,spd:40,dmg:18,xp:18,chit:3,size:2},
+ soroka:{name:'Кібер-Сорока',r:5,hp:26,spd:100,dmg:0,xp:10,chit:0,size:1}
+};
 const GRIP=['дрібні камені','дрібні й середні','навіть великі брили'];
 const STAT={
   cargo:[20,32,48,70], dps:[14,22,34,50], range:[55,65,80,95],
@@ -352,7 +441,9 @@ const SHIPS={
   kalmar:{name:'Кальмар',desc:'Два щупальця з носа хапають камінь попереду, підтягують корабель, і бронеплита розбиває брилу. Руда летить одразу в трюм.',
     cost:{iron:40,irid:6,cr:400},req:2},
   perun:{name:'Перун',desc:'Затисни кнопку здібності на пів секунди: гіперлуч миттєво розносить камінь і ланцюговою блискавкою перескакує на сусідні. Брили-гіганти розрізає наскрізь.',
-    cost:{iron:60,irid:15,cr:900},req:3}
+    cost:{iron:60,irid:15,cr:900},req:3},
+  kozh:{name:'Кожум\'яка',desc:'Брутальний важкий корабель. «Вогонь» кидає варп-бомби раз на секунду: вони стягують ворогів і каміння в одну точку й товчуть їх одне об одне. Суперсила: два маніпулятори хапають двох найближчих ворогів і з розмаху б\'ють їх лобами перед носом.',
+    cost:{iron:120,irid:30,chit:20,cr:2000},req:4}
 };
 const SKINS={
   classic:{name:'Заводська',chaika:{},kalmar:{},perun:{}},
@@ -381,6 +472,12 @@ const UPG=[
   costs:[{iron:20,cr:150},{iron:35,irid:6,cr:400},{iron:60,irid:14,cr:900}],req:[2,3,4]},
  {k:'tgrip',room:'garage',ship:'kalmar',name:'Щупальця: хватка',base:1,stat:l=>`хапають ${GRIP[l-1]}`,
   costs:[{iron:25,irid:4,cr:250},{iron:50,irid:12,cr:700}],req:[2,3]},
+ {k:'armor',room:'garage',name:'Бронеплити корпусу',base:0,stat:l=>l?`+${l*25} броні`:'додаткова броня з хітину Рою',
+  costs:[{iron:30,chit:3,cr:200},{iron:50,chit:8,cr:500},{iron:80,irid:10,chit:15,cr:900}],req:[1,2,3]},
+ {k:'viraj',room:'garage',ship:'chaika',name:'Віраж: потужність',base:1,stat:l=>`радіус ${VIRAJ_R[l-1]}, удар ${VIRAJ_D[l-1]}`,
+  costs:[{iron:25,ice:15,cr:200},{iron:45,irid:8,cr:550}],req:[1,2]},
+ {k:'kgrip',room:'garage',ship:'kozh',name:'Маніпулятори: хватка',base:1,stat:l=>KGRIP[l-1],
+  costs:[{iron:50,chit:10,cr:600},{iron:80,irid:15,chit:20,cr:1200},{irid:30,chit:40,cr:2500}],req:[4,4,5]},
  {k:'magnet',room:'bridge',name:'Бабусин магніт',base:1,stat:l=>`корабель притягує руду з ${STAT.magnet[l-1]} м`,
   costs:[{iron:15,cr:120},{iron:30,irid:5,cr:400},{iron:50,irid:12,cr:900}],req:[1,2,3]},
  {k:'antenna',room:'bridge',name:'Антена «Говорить Сатурн»',base:0,stat:l=>l?`+${l*15}% до виплат Землі`:'Земля платитиме більше за вантаж',
@@ -398,7 +495,8 @@ const SHOP=[
  {id:'neon',cat:'base',name:'Неон «Обрій»',desc:'Рожевий неон з горизонтом над входом у гараж.',price:300,kind:'once'},
  {id:'monstera',cat:'base',name:'Монстера Мирослава',desc:'Велика зелена подруга для містка.',price:180,old:240,kind:'once'},
 ];
-const SHOP_CATS={cat:'Для котика',ship:'Корабель',base:'Станція'};
+Object.entries(TUBES).forEach(([k,t],i)=>SHOP.splice(i,0,{id:'tube_'+k,cat:'tube',name:t.name+' ×3',desc:t.desc+' на один рейс.',price:[110,95,135,120,125][i],kind:'tube',tube:k,n:3}));
+const SHOP_CATS={tube:'Пайки',cat:'Для котика',ship:'Корабель',base:'Станція'};
 const ROUTE=['Склад на Землі','Сортування на Місяці','Транзит через Марс','Пояс астероїдів','Юпітер, дозаправка','Орбіта Сатурна','Поштомат на «Обрії»'];
 const ETA=()=>S.testMode?25000:180000;
 const FRAGS=[
@@ -421,10 +519,11 @@ const FRAG_LYB=[
  'Тепло реакторів! Земля вже будує флот із нашої руди. Кожна відправка важлива.',
  'Я флагман?! Тобто я корабель? Мені треба присісти. Ой, я ж не можу сісти.'
 ];
+const ARK_FIX=1;
 const ARK=[
  {k:'reactor',name:'Реактор «Серце»',desc:'Гаряче серце флагмана. Без нього «Обрій» лише висить на орбіті.',cost:{ice:60,iron:40,irid:10,cr:500},frag:0},
  {k:'nav',name:'Навігація «Полярна»',desc:'Розрахунок курсу за координатами з капсул.',cost:{iron:50,irid:15,cr:600},frag:4},
- {k:'armor',name:'Броня корпусу',desc:'Плити, що витримають зустріч із Роєм.',cost:{iron:120,ice:40,cr:800},frag:0},
+ {k:'armor',name:'Броня корпусу',desc:'Плити, що витримають зустріч із Роєм. Потрібен хітин: щоб перемогти Рій, треба знати, з чого він зроблений.',cost:{iron:120,ice:40,chit:10,cr:800},frag:0},
  {k:'drive',name:'Маршовий двигун',desc:'Щоб піти за обрій, а не просто дрейфувати.',cost:{ice:100,irid:25,cr:1000},frag:8}
 ];
 const FLEET=[
@@ -450,7 +549,8 @@ const TASK_POOL=[
  {k:'grab',t:n=>`Розбий ${n} каменів щупальцями`,n:[4,8],r:110,need:()=>S.owned.kalmar},
  {k:'capsule',t:()=>'Знайди капсулу з сигналом',n:[1,1],r:120,need:()=>S.frags.length<FRAGS.length},
  {k:'zone3',t:()=>'Залети в зовнішнє кільце',n:[1,1],r:60},
- {k:'split',t:n=>`Відколи ${n} шматки від брил-гігантів`,n:[3,6],r:100}
+ {k:'split',t:n=>`Відколи ${n} шматки від брил-гігантів`,n:[3,6],r:100},
+ {k:'kills',t:n=>`Знищ ${n} ворогів`,n:[6,14],r:110,need:()=>sectorIdx()!==0}
 ];
 const W=4000,H=2400,ST={x:260,y:1200};
 const ZONES=[{x:0,name:'Внутрішнє кільце'},{x:1600,name:'Середнє кільце'},{x:2800,name:'Зовнішнє кільце · уламки',danger:true}];
@@ -474,6 +574,15 @@ const LINES={
  irid:'Іридій лазером першого рівня не береться. Прокачай лазер на верстаті.',
  bag:'Пакет з пакетами! Класика. Стереобанк нарахував кешбек ₴50 за турботу про космос.',
  capsule:'Капсула з сигналом! Розшифровую…',
+ lvup:'Новий рівень корабля! Очко навичок чекає в космольоті в гаражі.',
+ alarm:'Тривога! Рій поруч. Тримай дистанцію й стріляй першим.',
+ storm:'Магнітна буря! Автоприціл і магніт на кілька секунд осліпли.',
+ dark:'Ми в тіні Сатурна. Видно лише довкола корабля, тримайся ближче до світла.',
+ wreck:'Корабель розбито! Евакуатор Укрзоряниці забрав половину вантажу за буксир.',
+ kozh:'Кожум\'яка в гаражі. «Вогонь» кидає варп-бомби, а маніпулятори чекають на першу жертву.',
+ steal:'Кібер-Сорока поцупила кристали! Наздожени, і вона віддасть удвічі більше.',
+ maneuver:'Орбітальний маневр готовий! Тепер можна перейти в будь-який сектор, а дерево навичок розгалужується.',
+
  perun:'«Перун» у гаражі! Затисни кнопку «Гіперлуч» на пів секунди, і блискавка зробить решту.',
  hot:'Гул перегрівся! Дай йому кілька секунд охолонути.',
  huge:'Брила-гігант. Лут з неї не вибити, але можна відрізати шматки. Ріж наскрізь!',
@@ -487,7 +596,7 @@ const LINES={
  drones:'Брати все зібрали, поки тебе не було. Я їм поставила лайк.',
  upg:['Апгрейд встановлено! Виглядає дорого.','Готово. Я б сказала, що ти тепер на 20% крутіший, але це занижена оцінка.','Ммм, нові деталі. Пахне прогресом.'],
  donate:'Турбоприскорювач «Карпати» встановлено. У справжній грі тут буде оплата через Telegram Stars.',
- back:['З поверненням! Термінал вантажу біля корабля.',`Ти вдома! ${CAT} уже біжить зустрічати.`,'Як політ? Розкладай вантаж, а я поставлю чайник. Віртуальний.'],
+ back:['З поверненням! Ось як пройшов рейс.',`Ти вдома! ${CAT} уже біжить зустрічати.`,'Як політ? Розклади вантаж, а я поставлю чайник. Віртуальний.'],
  borsch:'Борщ зі сметаною. Ситий пілот летить довше: +15% пального на наступний виліт.',
  borschDone:'Друга тарілка після наступного рейсу, окей?',
  kalmar:'Кальмар у гаражі! Наводиш ніс на камінь і тиснеш «Щупальця» праворуч унизу, або пробіл.',
@@ -508,15 +617,16 @@ const LINES={
 
 /* ================= SAVE ================= */
 const KEY='khutir_saturn_v1';
-const fresh=()=>({credits:120,store:{ice:0,iron:0,irid:0},lv:{engine:1,tank:1,cargo:1,laser:1,magnet:1,antenna:0,drones:0,tcd:1,tgrip:1,mg:1,sonic:1,aim:0,chain:1},botLv:[1,0,0],introSeen:false,tips:{},tipsOff:false,weapon:'laser',weapons:{laser:true,mg:false,sonic:false},testMode:false,playSec:0,savedAt:0,
+const fresh=()=>({credits:120,store:{ice:0,iron:0,irid:0},lv:{engine:1,tank:1,cargo:1,laser:1,magnet:1,antenna:0,drones:0,tcd:1,tgrip:1,mg:1,sonic:1,aim:0,chain:1,armor:0,viraj:1,kgrip:1},shipLv:1,xp:0,skills:{},chitin:0,tubes:{borsch:2,kava:1,med:1},loadout:['borsch',null],maneuver:false,orbitShift:0,shipTab:'fly',botLv:[1,0,0],introSeen:false,tips:{},tipsOff:false,weapon:'laser',weapons:{laser:true,mg:false,sonic:false},testMode:false,playSec:0,savedAt:0,
   quota:{level:1,need:{ice:20,iron:6,irid:0},got:{ice:0,iron:0,irid:0},left:4},strict:false,
   tx:[{t:'Підйомні від Укрзоряниці',a:120}],found:{bag:0,jar:0},trips:0,droneLast:Date.now(),seen:false,seenBase:false,seenGrab:false,borsch:false,ate:false,
-  mute:false,musicOff:false,ship:'chaika',owned:{chaika:true,kalmar:false,perun:false},skin:'classic',skins:{classic:true},have:{},
+  mute:false,musicOff:false,ship:'chaika',owned:{chaika:true,kalmar:false,perun:false,kozh:false},skin:'classic',skins:{classic:true},have:{},
   cat:{food:3,fedTrip:-9},orders:[],parcels:[],ttn:20451000,frags:[],ark:{},fleet:0,fleetLv:0,cards:[],tasks:[],threat:420,act1:false,stats:{rocks:0},cargo:{ice:0,iron:0,irid:0}});
 let S;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
 if(!S||!S.lv)S=fresh();
 {const f=fresh();S=Object.assign(f,S);S.lv=Object.assign(fresh().lv,S.lv);S.owned=Object.assign(fresh().owned,S.owned||{});S.weapons=Object.assign(fresh().weapons,S.weapons||{});
+ S.skills=S.skills||{};S.tubes=S.tubes||{};if(!Array.isArray(S.loadout))S.loadout=['borsch',null];
  if(!Array.isArray(S.botLv)){const d=(S.lv&&S.lv.drones)||0;S.botLv=[Math.max(1,d>=1?2:1),d>=2?1:0,d>=3?1:0]}if(S.trips>0&&S.introSeen===false&&S.lybIntro)S.introSeen=true;S.tips=S.tips||{};S.skins=Object.assign({classic:true},S.skins||{});
  S.cat=Object.assign(fresh().cat,S.cat||{});S.ark=S.ark||{};S.frags=S.frags||[];S.cards=S.cards||[];S.tasks=S.tasks||[];S.cargo=Object.assign({ice:0,iron:0,irid:0},S.cargo||{})}
 const save=(force)=>{try{S.cargo={...ship.cargo};S.savedAt=Date.now();localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}cloudSave(force)};
@@ -578,7 +688,16 @@ const SFX={
   charge(){tone('sawtooth',180,1400,.5,.035);tone('sine',360,2000,.5,.04)},
   fizzle(){noise(.15,.1,'bandpass',2500,600,2)},
   hyper(){noise(.35,.3,'highpass',1800,0,1);tone('square',1800,180,.3,.07);tone('sine',140,40,.35,.45);[0,.07,.14].forEach(d=>noise(.05,.18,'bandpass',3500,0,3,d))},
-  carve(){noise(.06,.1,'bandpass',900+Math.random()*900,300,2)}
+  carve(){noise(.06,.1,'bandpass',900+Math.random()*900,300,2)},
+  ehit(){noise(.04,.1,'bandpass',2600,1200,4);tone('square',420,260,.04,.025)},
+  edie(sz){noise(.18+sz*.06,.25,'lowpass',2400,180,1);tone('sawtooth',300,60,.2,.05);tone('sine',900,1800,.12,.04,.04)},
+  steal(){tone('square',1400,2200,.08,.04);tone('square',2200,1400,.08,.04,.08)},
+  alarm(){[0,.22,.44].forEach(d=>{tone('square',660,520,.18,.05,d)})},
+  lvup(){[0,4,7,12,16].forEach((s,k)=>tone('square',523*Math.pow(2,s/12),0,.12,.05,k*.07));tone('sine',1046,0,.5,.06,.35)},
+  viraj(){noise(.35,.25,'bandpass',600,3200,1.5);tone('sawtooth',200,900,.3,.04)},
+  warp(){tone('sine',700,180,.18,.08);noise(.1,.08,'bandpass',1200,400,3)},
+  implode(){tone('sine',120,40,.35,.25);noise(.3,.12,'lowpass',600,80,1)},
+  crush(n){noise(.22,.32,'lowpass',3200,150,.8);tone('square',180,50,.2,.08);for(let k=0;k<Math.min(5,n);k++)noise(.05,.15,'bandpass',1500+Math.random()*2000,0,4,.03*k)}
 };
 
 /* ================= AUDIO: 8-BIT MUSIC (original tunes) ================= */
@@ -689,16 +808,26 @@ const SHIP_ROWS={
   '..aabbbbbaa..','.aeabbbbbaea.','aeeabdddbaeea','aeeabbbbbaeea','aa.aagggaa.aa','....ag.ga....','.....a.a.....'],
  kalmar:['....aaaaaaa....','...apppppppa...','...appqqqppa...','....ahaaaha....','....abbbbba....','...abbcccbba...','...abbcccbba...','...abbbbbbba...',
   '..abbdbbbdbba..','..abbbbbbbbba..','.aabbbbbbbbbaa.','.atabbbbbbbata.','atta.aggga.atta','at...ag.ga...ta','a....a...a....a'],
+ kozh:['....aa.....aa....','...abba...abba...','...abba...abba...','....aba...aba....','....aca...aca....','..aaacaaaaacaaa..','.abbbbbbbbbbbbba.',
+  '.abdddbbvbbdddba.','.abbbbbvvvbbbbba.','.abdddbbvbbdddba.','.abbbbbbbbbbbbba.','..abbbeeeeebbba..','..aabbbbbbbbbaa..','...aagg...ggaa...','....ag.....ga....'],
  perun:['..e...a...e..','..a..aba..a..','..a..aba..a..','..aa.aca.aa..','...aaacaaa...','....abcba....','...abbbyba...','...abbyyba...',
   '...abyybba...','...abybbba...','..aabbbbbaa..','.aaabbbbbaaa.','aa..aggga..aa','.....g.g.....']
 };
 const SHIP_PAL={
  chaika:{a:'#24182b',b:'#efe4cc',c:'#6fe0d8',d:'#e8a33a',e:'#c8423a',g:'#6b6478'},
+ kozh:{a:'#120e14',b:'#5a4a42',c:'#8a7a6a',d:'#b4642a',v:'#c79bff',e:'#3a3036',g:'#4a4058'},
  kalmar:{a:'#1c1428',p:'#d8a54a',q:'#ffe08a',h:'#ff6fa8',b:'#6a4c9c',c:'#9ff3ff',d:'#e2a0ff',t:'#c25fa0',g:'#4a4058'},
  perun:{a:'#141a33',b:'#2f4a8a',c:'#9ff3ff',e:'#fff6a0',y:'#ffd23f',g:'#4a5a7a'}
 };
 const shipCache={};
 function shipTexFor(k,skin){const key=k+'|'+skin;if(!shipCache[key])shipCache[key]=rowsTex(SHIP_ROWS[k],Object.assign({},SHIP_PAL[k],SKINS[skin][k]));return shipCache[key]}
+T.en={
+ scout:rowsTex(['..aaa..','.abbba.','abbcbba','abcecba','abbcbba','.abbba.','a.a.a.a'],{a:'#0a0810',b:'#2a2238',c:'#3f9a96',e:'#9ff3ff'}),
+ drone:rowsTex(['....aaaaa....','..aabbbbbaa..','.abbvbbbvbba.','.abbbbbbbbba.','abvbbcccbbvba','abbbcceccbbba','abvbbcccbbvba','.abbbbbbbbba.','.abbvbbbvbba.','..aabbbbbaa..','....aaaaa....','..a..a.a..a..','.a...a.a...a.'],{a:'#0a0810',b:'#2e2440',v:'#7a5cff',c:'#3f9a96',e:'#9ff3ff'})
+};
+{const sr=['.....aaa....','....abeba...','.aaabbbbba..','awwwwbbbbbaa','.awwwbbbbbbt','..aaabbbaa..','....a..a....','...aa..aa...'],sp={a:'#0a0a10',b:'#1c1c26',w:'#e8ecf2',e:'#ff4d3a',t:'#3f6fc4'};
+ T.en.soroka=rowsTex(sr,sp);T.en.sorokaL=rowsTex(sr,sp,true)}
+function tubeTex(k){const t=TUBES[k];return rowsTex(['.ccc.','.ccc.','abbba','abbba','abwba','abbba','abbba','abbba','.aaa.'],{a:'#2a2030',b:t.col,c:t.cap,w:'#fff'})}
 T.flame=rowsTex(['.fgf.','.fgf.','..f..','..f..'],{f:'#ff7a2a',g:'#ffe08a'});
 T.flameS=rowsTex(['fgf','.f.','.f.'],{f:'#ff7a2a',g:'#ffe08a'});
 T.drone=rowsTex(['..aaa..','.bcccb.','bbdbdbb','.bbbbb.','..e.e..'],{a:'#f2b64a',b:'#c9c3b4',c:'#4fb3ad',d:'#24182b',e:'#ff7a2a'});
@@ -763,6 +892,7 @@ function rockTex(type,R,seed){
 T.rock={};
 RES.forEach(r=>{T.rock[r]=SIZES.map((R,si)=>[0,1,2].map(v=>rockTex(r,R,(si*31+v*7+r.length*101)*977)))});
 function silhouette(src){const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const x=c.getContext('2d');x.drawImage(src,0,0);x.globalCompositeOperation='source-in';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);return c}
+T.enW={};Object.keys(T.en).forEach(k=>{T.enW[k]=silhouette(T.en[k])});
 T.rockW={};RES.forEach(r=>{T.rockW[r]=T.rock[r].map(s=>s.map(silhouette))});
 
 function stationTex(){
@@ -937,10 +1067,10 @@ const devices=[
  {id:'crates',y:20,draw(c){drawCrates(c)}},
  {id:'scratch',y:78,get solid(){return S.have.post?[318,72,8,6]:null},draw(c){if(!S.have.post)return;
     R_(c,316,74,12,4,'#c8b896');R_(c,320,58,4,16,'#d8c8a0');for(let j=60;j<72;j+=2)R_(c,320,j,4,1,'#b8a47a');R_(c,319,52,6,6,'#c8423a');R_(c,321,49,2,3,'#c8423a');R_(c,318,56,1,3,'#f2b64a');R_(c,325,56,1,3,'#f2b64a')}},
- {id:'stove',label:'Плита з борщем',ix:31,iy:50,solid:[20,26,22,14],y:40,
-  draw(c,t){R_(c,20,24,22,16,'#e8e2d6');R_(c,20,24,22,2,'#2a2030');R_(c,22,28,18,1,'#c9c3b4');R_(c,23,32,4,4,'#3a2e40');R_(c,34,32,4,4,'#3a2e40');
-    R_(c,24,15,13,9,'#c8423a');R_(c,23,15,15,2,'#8f2a24');R_(c,27,17,2,2,'#f3efe6');R_(c,32,20,2,2,'#f3efe6');R_(c,28,21,1,1,'#f3efe6');R_(c,29,13,3,2,'#3a2e40');
-    if(!S.ate){for(let k=0;k<3;k++){const ph=(t*1.2+k/3)%1;c.globalAlpha=1-ph;R_(c,27+k*3+Math.sin(t*3+k)*1.5,12-ph*10,1,2,'#f3e6c8')}c.globalAlpha=1}}},
+ {id:'pantry',label:'Пайковик',ix:31,iy:50,solid:[20,26,22,14],y:40,
+  draw(c,t){R_(c,20,22,22,18,'#e8e2d6');R_(c,20,22,22,1,'#fff7e6');R_(c,22,25,12,7,'#14361f');R_(c,23,27,5,1,'#7ee0a6');R_(c,23,29,8,1,'#4fb3ad');
+    R_(c,36,25,4,2,Math.sin(t*3)>0?'#7ee0a6':'#2f6f4a');R_(c,22,34,18,4,'#c9c3b4');
+    const ks=Object.keys(TUBES);ks.forEach((k,i)=>{if(!(S.tubes[k]>0))return;R_(c,22+i*4,14,3,8,TUBES[k].col);R_(c,22+i*4,13,3,1,TUBES[k].cap)})}},
  {id:'fridge',solid:[46,20,14,22],y:42,draw(c){R_(c,46,12,14,30,'#efe2c4');R_(c,46,12,14,1,'#fff7e6');R_(c,46,24,14,1,'#c9b896');R_(c,57,16,1,5,'#8f7f68');R_(c,57,27,1,8,'#8f7f68');R_(c,48,15,4,3,'#c8423a');R_(c,52,29,3,3,'#f2b64a')}},
  {id:'shelf',label:'Полиця знахідок',ix:79,iy:38,y:0,
   draw(c){R_(c,64,13,30,2,'#8a5a36');const n=Math.min(3,S.frags.length);for(let i=0;i<n;i++)c.drawImage(T.capsule,65+i*6,3);if(S.found.bag)c.drawImage(T.bag,84,4);
@@ -977,14 +1107,26 @@ const kat={x:40,y:70,state:'idle',t:1.5,path:[],dir:1,walk:0,hearts:0,meowT:6};
 const ballO={x:200,y:104,vx:0,vy:0};
 let mode='base',panelKind=null,asteroids=[],pickups=[],items=[],debris=[],parts=[],shards=[],rings=[],floats=[],fleet=[],cam={x:man.x,y:man.y};
 let target=null,flags={},zoneIdx=0,hitCd=0,timeT=0,stars=[],dust=[],bots=[],curRoom=null,nearDev=null,freeze=0,shakeT=0,shakeA=1;
-let combo=0,comboT=0,grab=null,grabCd=0,shopTab='cat',postTick=0;
+let combo=0,comboT=0,grab=null,grabCd=0,shopTab='tube',postTick=0;
+let enemies=[],bombs=[],implos=[],curSec=SECTORS[0],runTubes=new Set(),viraj={cd:0,t:0},manip={cd:0,ph:null},warpCd=0,goldT=0,stormT=0,stormOn=false,alarmT=40,lastHitT=-9,counterCd=0,guide=null;
+let run={xp:0,lv:0,rocks:0,kills:0,chit:0,taskSum:0,food:0,wreck:false,sector:0};
+const sk=k=>(S.skills&&S.skills[k])||0;
+const cdMul=()=>runTubes.has('kava')?.7:1;
+const maxHp=()=>Math.round((100+15*sk('hull')+25*L('armor'))*(1+.15*sk('plates'))*(runTubes.has('borsch')?1.15:1));
+const enemyMul=()=>(1+.12*sk('hot'))*(runTubes.has('hirch')?1.25:1);
+const enemyScale=()=>1+.1*(S.shipLv-1);
+const spSpent=()=>Object.values(S.skills).reduce((a,b)=>a+b,0);
+const spFree=()=>Math.max(0,S.shipLv-1-spSpent());
+const branchOpen=()=>S.maneuver||S.testMode;
+const brSpent=br=>SKILLS.filter(x=>x.br===br&&!x.ult).reduce((a,x)=>a+sk(x.k),0);
+const slots=()=>1+sk('slot');
 const rnd=Math.random;
 for(let k=0;k<220;k++)stars.push({x:rnd(),y:rnd(),l:rnd()<.3?1:0,c:rnd()<.15?'#ffd9a0':'#d8d4ff'});
 function gauss(){let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
 for(let k=0;k<1600;k++)dust.push({x:480+rnd()*(W-480),y:1200+gauss()*420,c:rnd()<.5?'#3a2f45':'#4a3d4f'});
-const cargoCap=()=>STAT.cargo[L('cargo')-1];
+const cargoCap=()=>Math.round(STAT.cargo[L('cargo')-1]*(1+.12*sk('hold')));
 const cargoSum=()=>ship.cargo.ice+ship.cargo.iron+ship.cargo.irid;
-const fuelCap=()=>STAT.fuel[L('tank')-1];
+const fuelCap=()=>Math.round(STAT.fuel[L('tank')-1]*(1+.15*sk('tank')));
 const payMul=()=>1+.15*L('antenna');
 
 function syncBots(){const ob=ownedBots();bots=bots.filter(b=>ob.some(o=>o.name===b.name));ob.forEach(o=>{if(!bots.some(b=>b.name===o.name))bots.push({x:220+rnd()*90,y:170+rnd()*30,tx:0,ty:0,wait:rnd()*2,flip:false,name:o.name})});}
@@ -999,22 +1141,26 @@ function makeCracks(R){
 }
 function genField(){
   asteroids=[];pickups=[];items=[];debris=[];shards=[];rings=[];floats=[];
+  curSec=SECTORS[sectorIdx()];const mix=curSec.mix;
+  const pickType=base=>{const w={ice:base[0]*mix.ice,iron:base[1]*mix.iron,irid:base[2]*mix.irid},t=w.ice+w.iron+w.irid;let r=rnd()*t;return r<w.ice?'ice':r<w.ice+w.iron?'iron':'irid'};
   for(let k=0;k<360;k++){
     const x=520+rnd()*(W-620),y=Math.max(560,Math.min(H-560,1200+gauss()*320));
-    const p=rnd();let type;
-    if(x<1600)type=p<.7?'ice':'iron';else if(x<2800)type=p<.3?'ice':p<.88?'iron':'irid';else type=p<.15?'ice':p<.55?'iron':'irid';
+    const type=pickType(x<1600?[.7,.3,0]:x<2800?[.3,.58,.12]:[.15,.4,.45]);
     const sp=rnd(),si=sp<.45?0:sp<.83?1:2,R=SIZES[si],hard=type==='irid'?2.4:type==='iron'?1.4:1,hp=[10,24,46][si]*hard;
     asteroids.push({x,y,type,si,R,v:(rnd()*3)|0,hp,max:hp,rot:rnd()*6.3,vr:(rnd()-.5)*.5,vx:(rnd()-.5)*4,vy:(rnd()-.5)*4,hitT:0,tickT:0,stage:0,cracks:makeCracks(R),kx:0,ky:0});
   }
   huges=[];bullets=[];waves=[];hyper.bolts=[];
-  for(let k=0;k<10;k++){const x=750+k*310+rnd()*160,y=1200+gauss()*260,p=rnd();
-    const type=x<1600?(p<.6?'ice':'iron'):x<2800?(p<.25?'ice':p<.8?'iron':'irid'):(p<.4?'iron':'irid');
+  const ng=curSec.giants;for(let k=0;k<ng;k++){const x=750+k*(3100/ng)+rnd()*120,y=1200+gauss()*260;
+    const type=pickType(x<1600?[.6,.4,0]:x<2800?[.25,.55,.2]:[0,.4,.6]);
     const h=makeHuge(x,y,type,32+rnd()*18);huges.push(h);asteroids=asteroids.filter(a=>Math.hypot(a.x-h.cx,a.y-h.cy)>h.n*CS*.6+a.R+6)}
   items.push({kind:'bag',x:1300+rnd()*2300,y:1200+gauss()*250,a:0});
   // message capsules: the next two undiscovered fragments, deeper fragments sit farther out
-  const left=FRAGS.map((_,i)=>i).filter(i=>!S.frags.includes(i)).slice(0,2);
+  const left=FRAGS.map((_,i)=>i).filter(i=>!S.frags.includes(i)).slice(0,curSec.capsules||2);
   left.forEach(i=>{const x=i<3?900+rnd()*700:i<6?1700+rnd()*1000:2900+rnd()*900;items.push({kind:'capsule',frag:i,x,y:1200+gauss()*230,a:rnd()*6})});
-  for(let k=0;k<26;k++){const a=rnd()*6.3,s=40+rnd()*50;debris.push({x:2800+rnd()*1200,y:750+rnd()*900,vx:Math.cos(a)*s,vy:Math.sin(a)*s,rot:rnd()*6,vr:(rnd()-.5)*6})}
+  for(let k=0;k<26;k++){const a=rnd()*6.3,s=40+rnd()*50;debris.push({x:2800+rnd()*1200,y:750+rnd()*900,vx:Math.cos(a)*s,vy:Math.sin(a)*s,rot:rnd()*6,vr:(rnd()-.5)*6,x0:2800,w:1200})}
+  for(let k=0;k<curSec.debris;k++){const a=rnd()*6.3,s=30+rnd()*50;debris.push({x:700+rnd()*3200,y:750+rnd()*900,vx:Math.cos(a)*s,vy:Math.sin(a)*s,rot:rnd()*6,vr:(rnd()-.5)*6,x0:700,w:3200})}
+  enemies=[];bombs=[];implos=[];
+  Object.entries(curSec.en).forEach(([t,n])=>{for(let k=0;k<n;k++)spawnEnemy(t,750+rnd()*3150,1200+gauss()*300)});
 }
 
 /* ================= INPUT ================= */
@@ -1052,7 +1198,7 @@ let firing=false;const aim={on:false,active:false,ang:0,cx:0,cy:0};
  const gb=$('#grabBtn');
  gb.addEventListener('pointerdown',e=>{e.preventDefault();audioInit();abilityDown();try{gb.setPointerCapture(e.pointerId)}catch(_){}});
  gb.addEventListener('pointerup',abilityUp);gb.addEventListener('pointercancel',abilityUp);}
-function abilityDown(){if(mode!=='fly')return;if(S.ship==='kalmar')tryGrab();else if(S.ship==='perun'&&hyper.cd<=0&&!hyper.charging){hyper.charging=true;hyper.charge=0;SFX.charge()}}
+function abilityDown(){if(mode!=='fly')return;if(S.ship==='kalmar')tryGrab();else if(S.ship==='perun'&&hyper.cd<=0&&!hyper.charging){hyper.charging=true;hyper.charge=0;SFX.charge()}else if(S.ship==='chaika')doViraj();else if(S.ship==='kozh')doManip()}
 function abilityUp(){if(hyper.charging){hyper.charging=false;hyper.charge=0;SFX.fizzle()}}
 
 /* ================= TOAST & SOUND BUTTONS ================= */
@@ -1129,7 +1275,7 @@ function petCat(){
 }
 
 /* ================= STATION UPDATE ================= */
-function interact(d){if(d.id==='cat')petCat();else openPanel(d.id)}
+function interact(d){if(d.id==='cat')petCat();else if(d.id==='workbench'){S.shipTab='gear';openPanel('ship')}else openPanel(d.id)}
 function updateBase(dt){
   const iv=panelKind||!$('#intro').hidden?{x:0,y:0,m:0}:inputVec(),sp=58;
   man.moving=iv.m>0;
@@ -1140,7 +1286,7 @@ function updateBase(dt){
     man.dir=Math.abs(iv.x)>Math.abs(iv.y)?(iv.x>0?'right':'left'):(iv.y>0?'down':'up');
     man.walk+=dt*9;man.stepT-=dt;if(man.stepT<=0){man.stepT=.28;SFX.step()}
   }else{man.walk=0;man.stepT=0}
-  updateCat(dt);updateBall(dt);
+  updateCat(dt);updateBall(dt);if(guide){guide.t-=dt;if(guide.t<=0||(nearDev&&nearDev.id===guide.id))guide=null}
   const r=roomAt[Math.floor(man.y/TS)]?.[Math.floor(man.x/TS)];
   if(r&&r!==curRoom){curRoom=r;$('#zone').textContent=r.name;if(!S.tipsOff&&!S.tips[r.id]&&TIPS[r.id]&&!panelKind&&$('#intro').hidden){S.tips[r.id]=1;curTip=r.id;openPanel('tip');save()}}
   let best=null;
@@ -1173,10 +1319,10 @@ const taskText=t=>taskDef(t.k).t(t.n);
 let tasksDirty=true;
 function taskProg(k,v){for(const t of S.tasks)if(t.k===k&&t.p<t.n){t.p=Math.min(t.n,t.p+v);tasksDirty=true;if(t.p>=t.n){SFX.ready();hap('success');floatText(ship.x,ship.y-22,'✓ '+taskText(t),'#7ee0a6',true)}}}
 function taskMax(k,v){for(const t of S.tasks)if(t.k===k&&t.p<t.n&&v>t.p){t.p=Math.min(t.n,v);tasksDirty=true;if(t.p>=t.n){SFX.ready();floatText(ship.x,ship.y-22,'✓ '+taskText(t),'#7ee0a6',true)}}}
-function claimTasks(){
-  let sum=0,food=0;S.tasks=S.tasks.filter(t=>{if(t.p>=t.n){sum+=t.r;if(rnd()<.35)food++;return false}return true});
-  if(sum){S.credits+=sum;S.cat.food+=food;tx('Завдання Либіді',sum);setTimeout(()=>{say(`${LINES.task} +₴${sum}${food?`, і ${food} порц. корму для ${CAT}а`:''}.`,4);SFX.coin()},1200)}
-  fillTasks();tasksDirty=true;
+function claimTasks(quiet){
+  let sum=0,food=0,n=0;S.tasks=S.tasks.filter(t=>{if(t.p>=t.n){sum+=t.r;n++;gainXP(20);if(rnd()<.35)food++;return false}return true});
+  if(sum){S.credits+=sum;S.cat.food+=food;tx('Завдання Либіді',sum);if(!quiet)setTimeout(()=>{say(`${LINES.task} +₴${sum}${food?`, і ${food} порц. корму для ${CAT}а`:''}.`,4);SFX.coin()},1200)}
+  fillTasks();tasksDirty=true;return{sum,food,n};
 }
 function addFleet(n){
   S.fleet+=n;let hit=false;
@@ -1185,7 +1331,7 @@ function addFleet(n){
 }
 const arkCount=()=>ARK.filter(m=>S.ark[m.k]).length;
 function checkAct1(){if(!S.act1&&arkCount()===ARK.length&&S.frags.length===FRAGS.length){S.act1=true;SFX.bonus();setTimeout(()=>SFX.notify(),300);say(LINES.act1,8);save()}}
-function updateGoalPill(){$('#goalPill').textContent=`Ковчег ${arkCount()}/${ARK.length} · Сигнал ${S.frags.length}/${FRAGS.length} · Флот ${S.fleetLv}/${FLEET.length}`}
+function updateGoalPill(){const sec=SECTORS[sectorIdx()],t=`Рів. ${S.shipLv}${spFree()?' ★':''} · ${sec.short} ${Math.ceil(sectorLeft()/60000)} хв · Ковчег ${arkCount()}/${ARK.length} · Сигнал ${S.frags.length}/${FRAGS.length}`;if($('#goalPill').textContent!==t)$('#goalPill').textContent=t}
 function renderTasksHud(){
   const el=$('#tasksHud');if(mode!=='fly'||!S.tasks.length){el.hidden=true;return}
   el.hidden=false;el.innerHTML=S.tasks.map(t=>`<div class="${t.p>=t.n?'done':''}">${t.p>=t.n?'✓':'•'} ${taskText(t)} <b>${t.p}/${t.n}</b></div>`).join('');tasksDirty=false;
@@ -1229,6 +1375,29 @@ function tgInit(){
   cloudLoad();
 }
 
+function attn(id){
+  if(id==='ship')return spFree()>0;
+  if(id==='unload')return cargoSum()>0;
+  if(id==='locker')return S.parcels.length>0;
+  if(id==='bunker'){const dp=dronePending();return!!(dp&&dp.total>0)}
+  if(id==='bowl')return!catHappy()&&S.cat.food>0;
+  if(id==='modules')return(S.shipLv>=5&&!S.maneuver)||ARK.some(m=>!S.ark[m.k]&&!(m.frag&&S.frags.length<m.frag)&&!S.testMode&&afford(m.cost));
+  if(id==='pantry')return!Object.values(S.tubes).some(n=>n>0);
+  return false;
+}
+function nextStep(){
+  const sp=spFree();
+  if(sp)return{t:`У тебе ${sp} ${sp>1?'вільних очок':'вільне очко'} навичок. Розподіли в космольоті, вкладка «Навички».`,dev:'ship',tab:'skills'};
+  if(cargoSum())return{t:'У трюмі лежить руда. Розклади її на терміналі вантажу.',dev:'unload'};
+  if(S.parcels.length)return{t:'У поштоматі чекає посилка.',dev:'locker'};
+  {const dp=dronePending();if(dp&&dp.total)return{t:'Боти накопали руду, забери її з бункера.',dev:'bunker'}}
+  if(!catHappy()&&S.cat.food>0)return{t:`${CAT} голодний. Нагодуй його, і він принесе удачу.`,dev:'bowl'};
+  if(S.shipLv>=5&&!S.maneuver)return{t:'Корабель досяг 5-го рівня! Збудуй «Орбітальний маневр» у модулях станції: відкриються гілки навичок і перехід між секторами.',dev:'modules'};
+  if(!Object.values(S.tubes).some(n=>n>0))return{t:'Пайки скінчилися. Замов тюбики на «Подовжувачі».',dev:'shop'};
+  const sec=SECTORS[sectorIdx()];return{t:`Лети в кільце! Зараз ${sec.name.toLowerCase()}: ${sec.k==='north'?'спокійний фарм':'будуть вороги'}.`,dev:'ship',tab:'fly'};
+}
+$('#goalPill').addEventListener('click',()=>{if(mode!=='base')return;const n=nextStep();say(n.t,6);guide={id:n.dev,t:12};SFX.ui()});
+
 /* ================= DELIVERIES ================= */
 function placeOrder(item){
   S.ttn+=1+((rnd()*90)|0);
@@ -1245,7 +1414,7 @@ function openParcels(){
   const names=[];
   for(const p of S.parcels){if(p.item==='card'){if(!S.cards.includes(p.card))S.cards.push(p.card);names.push('листівка «'+FLEET[p.card].name+'»');continue}
     const it=SHOP.find(s=>s.id===p.item);if(!it)continue;names.push(it.name);
-    if(it.kind==='food')S.cat.food+=it.n;else if(it.kind==='skin')S.skins[it.id]=true;else S.have[it.id]=true}
+    if(it.kind==='food')S.cat.food+=it.n;else if(it.kind==='tube')S.tubes[it.tube]=(S.tubes[it.tube]||0)+it.n;else if(it.kind==='skin')S.skins[it.id]=true;else S.have[it.id]=true}
   S.parcels=[];SFX.bonus();say(LINES.parcel+' '+names.join(', ')+'.',4.5);
   if(S.parcels.length===0&&names.some(n=>n.startsWith('листівка'))){lybTab='earth';setTimeout(()=>{closePanel();openPanel('lyb')},900)}
 }
@@ -1254,6 +1423,7 @@ function openParcels(){
 const TICK=.15;
 function laserTick(a,power,src,style){
   if(src&&!style)style='bot';
+  if(style!=='bot')power*=1+.2*sk('drill');
   a.hp-=power;a.hitT=.09;
   const dx=(src?src.x:ship.x)-a.x,dy=(src?src.y:ship.y)-a.y,d=Math.max(1,Math.hypot(dx,dy));
   a.kx=-dx/d*(style==='sonic'?2.2:1.2);a.ky=-dy/d*(style==='sonic'?2.2:1.2);
@@ -1265,6 +1435,106 @@ function laserTick(a,power,src,style){
   else if(style!=='mg'||rnd()<.4)SFX.tick(a.type,a.stage,style==='bot'?.45:style==='mg'?.5:1);
   if(a.hp<=0)breakRock(a,false);
 }
+
+/* ---- enemies ---- */
+function spawnEnemy(type,x,y){const d=EN[type],m=enemyScale();enemies.push({type,x,y,vx:0,vy:0,R:d.r,hp:d.hp*m,max:d.hp*m,dmg:d.dmg*m,hitT:0,cd:0,stolen:0,wx:x,wy:y,wt:0,flee:0,ang:0})}
+function killEnemy(e){
+  const i=enemies.indexOf(e);if(i<0)return;enemies.splice(i,1);const d=EN[e.type];
+  run.kills++;taskProg('kills',1);gainXP(d.xp);
+  let ch=d.chit;if(ch){ch=Math.round(ch*(1+.5*sk('trophy')));S.chitin+=ch;run.chit+=ch;floatText(e.x,e.y-8,'+'+ch+' хітин','#b9a2ff',false)}
+  if(e.stolen){for(let k=0;k<e.stolen*2;k++){const a=rnd()*6.3,t=RES[(rnd()*2.2)|0];pickups.push({type:t,val:1,x:e.x,y:e.y,vx:Math.cos(a)*50,vy:Math.sin(a)*50,age:0,spin:rnd()*6,pull:0})}floatText(e.x,e.y-16,'Повернуто ×2!','#ffd23f',true)}
+  burst(e.x,e.y,['#7a5cff','#3f9a96','#9ff3ff','#2a2238'],10+d.size*8,60,.45);
+  rings.push({x:e.x,y:e.y,r:2,vr:90,life:.25,max:.25,c:'#9ff3ff'});SFX.edie(d.size);hap('light');shake(.08+d.size*.05,1+d.size);
+}
+function hitEnemy(e,dmg,src){if(!enemies.includes(e))return;e.hp-=dmg*enemyMul();e.hitT=.09;if(src){const dx=e.x-src.x,dy=e.y-src.y,d=Math.max(1,Math.hypot(dx,dy));e.vx+=dx/d*40;e.vy+=dy/d*40}
+  burst(e.x,e.y,['#9ff3ff','#7a5cff'],2,40,.25);if(e.hp<=0)killEnemy(e);else if(rnd()<.5)SFX.ehit()}
+function hurt(n,from){
+  if(mode!=='fly')return;ship.hp-=n;lastHitT=timeT;shake(.2,2);SFX.hit();hap('warning');
+  const f=$('#flash');f.style.opacity=.35;setTimeout(()=>f.style.opacity=0,120);
+  if(sk('counter')&&counterCd<=0){counterCd=4;rings.push({x:ship.x,y:ship.y,r:4,vr:200,life:.3,max:.3,c:'#ffb347'});
+    for(const e of [...enemies])if(Math.hypot(e.x-ship.x,e.y-ship.y)<55)hitEnemy(e,40,ship);
+    for(const a of [...asteroids])if(a.si===0&&Math.hypot(a.x-ship.x,a.y-ship.y)<50)breakRock(a,false)}
+  if(ship.hp<=0){ship.hp=0;run.wreck=true;startTow()}
+}
+function updateEnemies(dt){
+  const fear=S.ship==='kozh'&&L('kgrip')>=4;
+  for(const e of [...enemies]){
+    const d=EN[e.type],dx=ship.x-e.x,dy=ship.y-e.y,dist=Math.hypot(dx,dy)||1;e.cd-=dt;if(e.hitT>0)e.hitT-=dt;
+    let tx=0,ty=0,sp=d.spd;
+    if(fear&&d.size<2&&dist<160){tx=-dx/dist;ty=-dy/dist;sp*=1.2;e.flee=.5}
+    else if(e.type==='soroka'){
+      if(e.stolen>=4||(e.stolen>0&&dist<90)){tx=-dx/dist;ty=-dy/dist}
+      else{let best=null,bd=300;for(const p of pickups){const q=Math.hypot(p.x-e.x,p.y-e.y);if(q<bd){bd=q;best=p}}
+        if(best){const q=bd||1;tx=(best.x-e.x)/q;ty=(best.y-e.y)/q;if(q<6){pickups.splice(pickups.indexOf(best),1);e.stolen+=best.val;SFX.steal();once('steal',LINES.steal)}}
+        else if(dist<260){const a=Math.atan2(-dy,-dx)+dt*1.2,r=80;tx=(ship.x+Math.cos(a)*r-e.x)/60;ty=(ship.y+Math.sin(a)*r-e.y)/60}}
+    }else if(dist<(e.type==='drone'?260:220)){tx=dx/dist;ty=dy/dist;
+      if(e.type==='scout')for(const p of pickups){if(Math.hypot(p.x-e.x,p.y-e.y)<10){pickups.splice(pickups.indexOf(p),1);burst(p.x,p.y,['#2a2238'],3,20,.3);break}}}
+    else{e.wt-=dt;if(e.wt<=0){e.wt=2+rnd()*3;e.wx=e.x+(rnd()-.5)*160;e.wy=e.y+(rnd()-.5)*160}const q=Math.hypot(e.wx-e.x,e.wy-e.y)||1;tx=(e.wx-e.x)/q*.4;ty=(e.wy-e.y)/q*.4}
+    e.vx+=(tx*sp-e.vx)*Math.min(1,dt*4);e.vy+=(ty*sp-e.vy)*Math.min(1,dt*4);e.x+=e.vx*dt;e.y+=e.vy*dt;if(Math.abs(e.vx)>1)e.ang=e.vx;
+    if(d.dmg&&dist<e.R+6&&e.cd<=0){e.cd=.9;hurt(e.dmg,e);ship.vx-=dx/dist*90;ship.vy-=dy/dist*90;e.vx+=dx/dist*-120;e.vy+=dy/dist*-120}
+  }
+  if(curSec.k!=='north'){alarmT-=dt;if(alarmT<=0){alarmT=38+rnd()*20;if(enemies.length<40){const a=rnd()*6.3,cx=ship.x+Math.cos(a)*260,cy=ship.y+Math.sin(a)*260;
+    const pack=curSec.k==='east'?['soroka','scout','scout']:curSec.k==='west'?['scout','scout','scout','drone']:['scout','scout','scout','soroka'];
+    pack.forEach(t=>spawnEnemy(t,cx+(rnd()-.5)*40,cy+(rnd()-.5)*40));SFX.alarm();once('alarm',LINES.alarm)}}}
+}
+const nearestEnemy=(x,y,r,f)=>{let best=null,bd=r;for(const e of enemies){if(f&&!f(e))continue;const d=Math.hypot(e.x-x,e.y-y);if(d<bd){bd=d;best=e}}return best};
+
+/* ---- Chaika: Віраж ---- */
+function doViraj(){if(viraj.cd>0)return;const lv=L('viraj'),R=VIRAJ_R[lv-1],D=VIRAJ_D[lv-1];viraj.cd=VIRAJ_CD*cdMul();viraj.t=.4;viraj.R=R;
+  SFX.viraj();shake(.15,1.5);hap('medium');rings.push({x:ship.x,y:ship.y,r:6,vr:R*3,life:.3,max:.3,c:'#ffb347'});
+  for(const a of [...asteroids])if(Math.hypot(a.x-ship.x,a.y-ship.y)-a.R<R)laserTick(a,D,null,'viraj');
+  for(const e of [...enemies])if(Math.hypot(e.x-ship.x,e.y-ship.y)<R)hitEnemy(e,D,ship);
+  for(let k=0;k<20;k++){const a=k/20*6.28,px=ship.x+Math.cos(a)*R*.8,py=ship.y+Math.sin(a)*R*.8;const h=hugeAt(px,py);if(h)hugeDamage(h,px,py,1.5,6)}}
+
+/* ---- Kozhumyaka: warp bombs and manipulators ---- */
+function fireWarp(){const n=nosePt(),ang=aimDir(160);lastAimAng=ang;bombs.push({x:n.x,y:n.y,vx:Math.cos(ang)*240+ship.vx*.5,vy:Math.sin(ang)*240+ship.vy*.5,t:0});SFX.warp();muzzle=.08}
+function updateWarp(dt){
+  warpCd-=dt;if(S.ship==='kozh'&&firing&&warpCd<=0&&!(manip.ph)){warpCd=WARP_CD;fireWarp()}
+  for(let i=bombs.length-1;i>=0;i--){const b=bombs[i];b.t+=dt;b.x+=b.vx*dt;b.y+=b.vy*dt;
+    const near=enemies.some(e=>Math.hypot(e.x-b.x,e.y-b.y)<e.R+8)||asteroids.some(a=>Math.hypot(a.x-b.x,a.y-b.y)<a.R+4)||hugeAt(b.x,b.y);
+    if(b.t>.5||near){bombs.splice(i,1);implos.push({x:b.x,y:b.y,t:0,R:62,caught:[]});SFX.implode()}}
+  for(let i=implos.length-1;i>=0;i--){const m=implos[i];m.t+=dt;const k=Math.min(1,m.t/.35);
+    const objs=[...enemies.filter(e=>Math.hypot(e.x-m.x,e.y-m.y)<m.R),...asteroids.filter(a=>a.si<=1&&Math.hypot(a.x-m.x,a.y-m.y)<m.R)];
+    for(const o of objs){const dx=m.x-o.x,dy=m.y-o.y,d=Math.hypot(dx,dy)||1,pull=Math.min(d,(160+400*k)*dt);o.x+=dx/d*pull;o.y+=dy/d*pull;if(!m.caught.includes(o))m.caught.push(o)}
+    if(m.t>=.35){implos.splice(i,1);const n=m.caught.length;let crushed=0;
+      for(const o of m.caught){if(enemies.includes(o)){const d=EN[o.type];if(d.size===0){o.hp=0;killEnemy(o);crushed++}else hitEnemy(o,24+8*Math.max(0,n-1),m)}
+        else if(asteroids.includes(o)){if(o.si===0){breakRock(o,false);crushed++}else laserTick(o,25,m,'warp')}}
+      const h=hugeAt(m.x,m.y)||huges.find(h=>cellIdx(h,m.x,m.y)>=0);if(h)hugeDamage(h,m.x,m.y,4,99);
+      rings.push({x:m.x,y:m.y,r:m.R*.3,vr:120,life:.25,max:.25,c:'#c79bff'});burst(m.x,m.y,['#c79bff','#fff','#7a5cff'],14,90,.35);SFX.crush(n);shake(.12+.02*n,1.5+.4*n);
+      if(n>=3)floatText(m.x,m.y-12,`Зіткнення ×${n}`,'#e8d6ff',true)}}
+}
+function doManip(){if(manip.cd>0||manip.ph)return;const lv=L('kgrip'),maxSize=lv>=3?2:lv>=2?1:0;
+  let ts=enemies.filter(e=>EN[e.type].size<=maxSize&&Math.hypot(e.x-ship.x,e.y-ship.y)<150).sort((a,b)=>Math.hypot(a.x-ship.x,a.y-ship.y)-Math.hypot(b.x-ship.x,b.y-ship.y)).slice(0,2);
+  if(ts.length<2){const rocks=asteroids.filter(a=>a.si<=Math.min(maxSize,1)+ (lv>=3?1:0)&&Math.hypot(a.x-ship.x,a.y-ship.y)<130).sort((a,b)=>Math.hypot(a.x-ship.x,a.y-ship.y)-Math.hypot(b.x-ship.x,b.y-ship.y));ts=ts.concat(rocks).slice(0,2)}
+  if(!ts.length){SFX.whiff();once('manipMiss','Маніпуляторам нема кого хапати. Підлети ближче до ворогів або каміння.');manip.cd=.6;return}
+  manip.ph='reach';manip.t=0;manip.tg=ts;manip.hits=lv>=3?3:1;manip.from=ts.map(o=>({x:o.x,y:o.y}));SFX.shoot();
+}
+function updateManip(dt){
+  if(manip.cd>0)manip.cd-=dt;if(!manip.ph)return;manip.t+=dt;
+  manip.tg=manip.tg.filter(o=>enemies.includes(o)||asteroids.includes(o));if(!manip.tg.length){manip.ph=null;manip.cd=MANIP_CD*cdMul()*.5;return}
+  const n=nosePt(),ca=Math.cos(ship.ang),sa=Math.sin(ship.ang),px=-sa,py=ca;
+  const spot=(i,spread)=>({x:n.x+ca*10+px*(i?spread:-spread),y:n.y+sa*10+py*(i?spread:-spread)});
+  if(manip.ph==='reach'){if(manip.t>=.14){manip.ph='pull';manip.t=0;SFX.latch()}}
+  else if(manip.ph==='pull'){const k=Math.min(1,manip.t/.22);manip.tg.forEach((o,i)=>{const sp=spot(i,16),f=manip.from[i]||sp;o.x=f.x+(sp.x-f.x)*k;o.y=f.y+(sp.y-f.y)*k;o.vx=0;o.vy=0});
+    if(k>=1){manip.ph='swing';manip.t=0}}
+  else if(manip.ph==='swing'){const k=Math.min(1,manip.t/.12);manip.tg.forEach((o,i)=>{const sp=spot(i,16*(1-k)+2);o.x=sp.x;o.y=sp.y});
+    if(k>=1){const dmg=60+30*L('kgrip');const c=spot(0,0);
+      for(const o of manip.tg){if(enemies.includes(o))hitEnemy(o,dmg,null);else if(asteroids.includes(o))breakRock(o,true)}
+      SFX.smash();SFX.crush(2);shake(.3,3.5);freeze=.08;hap('heavy');burst(c.x,c.y,['#fff','#c79bff','#ffb347'],16,90,.35);rings.push({x:c.x,y:c.y,r:3,vr:150,life:.22,max:.22,c:'#fff'});
+      manip.hits--;manip.tg=manip.tg.filter(o=>enemies.includes(o)||asteroids.includes(o));
+      if(manip.hits>0&&manip.tg.length){manip.ph='pull';manip.t=0;manip.from=manip.tg.map((o,i)=>spot(i,22))}else{manip.ph=null;manip.cd=MANIP_CD*cdMul()}}}
+}
+function drawManip(){if(!manip.ph)return;const n=nosePt(),ca=Math.cos(ship.ang),sa=Math.sin(ship.ang),px=-sa,py=ca;
+  manip.tg.forEach((o,i)=>{const side=i?1:-1,bx=n.x+px*5*side,by=n.y+py*5*side;let ex=o.x,ey=o.y;
+    if(manip.ph==='reach'){const k=Math.min(1,manip.t/.14);ex=bx+(o.x-bx)*k;ey=by+(o.y-by)*k}
+    const mx=(bx+ex)/2+px*side*6,my=(by+ey)/2+py*side*6;ctx.fillStyle='#8a7a6a';pxLine(ctx,bx,by,mx,my);pxLine(ctx,mx,my,ex,ey);ctx.fillStyle='#5a4a42';pxLine(ctx,bx+1,by,mx+1,my);
+    ctx.fillStyle='#c79bff';ctx.fillRect(Math.round(mx)-1,Math.round(my)-1,2,2);ctx.fillStyle='#b4642a';ctx.fillRect(Math.round(ex)-2,Math.round(ey)-2,4,1);ctx.fillRect(Math.round(ex)-2,Math.round(ey)+1,4,1)})}
+
+/* ---- XP ---- */
+function gainXP(n){if(S.shipLv>=MAX_LV)return;S.xp+=n;run.xp+=n;
+  while(S.shipLv<MAX_LV&&S.xp>=XP_NEED(S.shipLv)){S.xp-=XP_NEED(S.shipLv);S.shipLv++;run.lv++;
+    if(mode==='fly'){floatText(ship.x,ship.y-26,'Рівень '+S.shipLv+'!','#7ff5ea',true);burst(ship.x,ship.y,['#7ff5ea','#fff','#ffd23f'],20,80,.6);rings.push({x:ship.x,y:ship.y,r:4,vr:120,life:.4,max:.4,c:'#7ff5ea'})}
+    SFX.lvup();hap('success');say(LINES.lvup,5)}}
 
 /* ---- giant boulders: cell grids that get carved and split ---- */
 const CS=3,HHP={ice:5,iron:8,irid:12};
@@ -1280,7 +1550,7 @@ function makeHuge(x,y,type,R){
 function cellIdx(h,wx,wy){const i=Math.floor((wx-h.x)/CS),j=Math.floor((wy-h.y)/CS);if(i<0||j<0||i>=h.n||j>=h.n)return-1;return j*h.n+i}
 function hugeAt(wx,wy){for(const h of huges){if(wx<h.x||wy<h.y||wx>=h.x+h.n*CS||wy>=h.y+h.n*CS)continue;const k=cellIdx(h,wx,wy);if(k>=0&&h.cells[k])return h}return null}
 let carveSnd=0;
-function hugeDamage(h,wx,wy,rc,dmg){
+function hugeDamage(h,wx,wy,rc,dmg){dmg*=1+sk('tecton');
   const ci=Math.floor((wx-h.x)/CS),cj=Math.floor((wy-h.y)/CS),r=Math.ceil(rc);let gone=0;const P=ROCK[h.type];
   for(let dj=-r;dj<=r;dj++)for(let di=-r;di<=r;di++){if(di*di+dj*dj>rc*rc+.5)continue;const i=ci+di,j=cj+dj;if(i<0||j<0||i>=h.n||j>=h.n)continue;const k=j*h.n+i;if(!h.cells[k])continue;
     h.cells[k]=Math.max(0,h.cells[k]-dmg);
@@ -1312,7 +1582,7 @@ function splitHuge(h){
     if(L_>=10){const si=L_>=70?2:L_>=28?1:0,R=SIZES[si],hard=h.type==='irid'?2.4:h.type==='iron'?1.4:1;
       const dx=wx-h.cx,dy=wy-h.cy,d=Math.max(1,Math.hypot(dx,dy));
       asteroids.push({x:wx,y:wy,type:h.type,si,R,v:(rnd()*3)|0,hp:[10,24,46][si]*hard,max:[10,24,46][si]*hard,rot:rnd()*6.3,vr:(rnd()-.5)*1.2,vx:dx/d*(14+rnd()*16),vy:dy/d*(14+rnd()*16),hitT:.09,tickT:0,stage:1,cracks:makeCracks(R),kx:0,ky:0});
-      taskProg('split',1);burst(wx,wy,ROCK[h.type].t.concat(ROCK[h.type].o),10+si*6,50,.5);SFX.crunch(Math.max(0,si-1),h.type);shake(.1,1);hap('light');
+      taskProg('split',1);gainXP(3);burst(wx,wy,ROCK[h.type].t.concat(ROCK[h.type].o),10+si*6,50,.5);SFX.crunch(Math.max(0,si-1),h.type);shake(.1,1);hap('light');
       if(!flags.splitHint){flags.splitHint=1;floatText(wx,wy-12,'Відколото!','#fff3d6',true)}}
     else{for(let q=0;q<Math.max(1,Math.round(L_/4));q++){const a=rnd()*6.3;pickups.push({type:h.type,val:1,x:wx,y:wy,vx:Math.cos(a)*35,vy:Math.sin(a)*35,age:0,spin:rnd()*6,pull:0})}}
   });
@@ -1323,7 +1593,9 @@ function rayHit(x0,y0,ang,range){
   const c=Math.cos(ang),sn=Math.sin(ang);
   const rocks=asteroids.filter(a=>Math.hypot(a.x-x0,a.y-y0)<range+a.R+2);
   const hs=huges.filter(h=>h.cx+h.n*CS>x0-range&&h.cx-h.n*CS<x0+range&&h.cy+h.n*CS>y0-range&&h.cy-h.n*CS<y0+range);
+  const ens=enemies.filter(e=>Math.hypot(e.x-x0,e.y-y0)<range+e.R+2);
   for(let t=4;t<=range;t+=1.5){const px=x0+c*t,py=y0+sn*t;
+    for(const e of ens)if(Math.hypot(px-e.x,py-e.y)<e.R+1)return{kind:'enemy',e,x:px,y:py};
     for(const a of rocks)if(Math.hypot(px-a.x,py-a.y)<a.R)return{kind:'rock',a,x:px,y:py};
     for(const h of hs){const k=cellIdx(h,px,py);if(k>=0&&h.cells[k])return{kind:'huge',h,x:px,y:py}}}
   return{kind:null,x:x0+c*range,y:y0+sn*range};
@@ -1332,14 +1604,16 @@ function rayHit(x0,y0,ang,range){
 /* ---- weapons ---- */
 let aimT=null,wTick=0,heat=0,overheat=false,bullets=[],waves=[],laserRay=null,barrelI=0,muzzle=0,lastAimAng=0;
 function aimDir(range){
-  const lv=L('aim'),cone=STAT.aim[lv],base=aim.active?aim.ang:ship.ang;aimT=null;
+  const lv=stormOn?0:L('aim'),cone=STAT.aim[lv],base=aim.active?aim.ang:ship.ang;aimT=null;
   if(lv>0){let best=null,bd=1e9;
+    for(const e of enemies){const dx=e.x-ship.x,dy=e.y-ship.y,d=Math.hypot(dx,dy)-e.R;if(d>range)continue;let da=Math.atan2(dy,dx)-base;da=Math.abs(Math.atan2(Math.sin(da),Math.cos(da)));if(da>cone)continue;const sc=d+da*25-30;if(sc<bd){bd=sc;best=e}}
     for(const a of asteroids){const dx=a.x-ship.x,dy=a.y-ship.y,d=Math.hypot(dx,dy)-a.R;if(d>range)continue;let da=Math.atan2(dy,dx)-base;da=Math.abs(Math.atan2(Math.sin(da),Math.cos(da)));if(da>cone)continue;
       const sc=d+da*25+(a===target?-15:0);if(sc<bd){bd=sc;best=a}}
     if(best){aimT=best;return Math.atan2(best.y-ship.y,best.x-ship.x)}}
   return base;
 }
 function weaponUpdate(dt,blocked){
+  if(S.ship==='kozh'){muzzle=Math.max(0,muzzle-dt);laserRay=null;target=null;return}
   const w=S.weapon;muzzle=Math.max(0,muzzle-dt);
   if(w!=='sonic'||!firing||overheat){heat=Math.max(0,heat-STAT.scool[L('sonic')-1]*dt);if(overheat&&heat<.25){overheat=false;SFX.ready()}}
   laserRay=null;target=null;
@@ -1348,7 +1622,8 @@ function weaponUpdate(dt,blocked){
     const range=STAT.range[L('laser')-1],ang=aimDir(range);lastAimAng=ang;const hit=rayHit(ship.x,ship.y,ang,range);laserRay=hit;
     if(hit.kind==='rock')target=hit.a;
     wTick+=dt;while(wTick>=TICK){wTick-=TICK;const dmg=STAT.dps[L('laser')-1]*TICK;
-      if(hit.kind==='rock'&&asteroids.includes(hit.a))laserTick(hit.a,dmg);
+      if(hit.kind==='enemy')hitEnemy(hit.e,dmg,ship);
+      else if(hit.kind==='rock'&&asteroids.includes(hit.a))laserTick(hit.a,dmg);
       else if(hit.kind==='huge'){hugeDamage(hit.h,hit.x,hit.y,1.3,Math.ceil(dmg*.55));burst(hit.x,hit.y,['#ffe9b0','#ffb347'],3,40,.25)}}
   }else if(w==='mg'){
     const br=STAT.barrels[L('mg')-1],iv=Math.max(.04,.13/br);wTick+=dt;
@@ -1360,6 +1635,7 @@ function weaponUpdate(dt,blocked){
     if(overheat)return;
     wTick-=dt;if(wTick<=0){wTick=.28;const ang=aimDir(85);lastAimAng=ang;const dmg=STAT.sdmg[L('sonic')-1],R=85,cone=.48;
       waves.push({x:ship.x,y:ship.y,ang,r:6,life:.35,max:.35});SFX.sonic();shake(.06,.6);
+      for(const e of [...enemies]){const dx=e.x-ship.x,dy=e.y-ship.y,d=Math.hypot(dx,dy);if(d>R)continue;let da=Math.atan2(dy,dx)-ang;da=Math.abs(Math.atan2(Math.sin(da),Math.cos(da)));if(da<=cone)hitEnemy(e,dmg,ship)}
       for(const a of [...asteroids]){const dx=a.x-ship.x,dy=a.y-ship.y,d=Math.hypot(dx,dy)-a.R;if(d>R)continue;let da=Math.atan2(dy,dx)-ang;da=Math.abs(Math.atan2(Math.sin(da),Math.cos(da)));if(da>cone)continue;laserTick(a,dmg*(1-Math.max(0,d)/R*.4),null,'sonic')}
       for(const h of huges){if(Math.hypot(h.cx-ship.x,h.cy-ship.y)>R+h.n*CS)continue;let any=0;
         for(let k=0;k<h.n*h.n;k++){if(!h.cells[k])continue;const cx=h.x+(k%h.n+.5)*CS,cy=h.y+(((k/h.n)|0)+.5)*CS,dx=cx-ship.x,dy=cy-ship.y,d=Math.hypot(dx,dy);if(d>R*.75)continue;
@@ -1372,7 +1648,8 @@ function weaponUpdate(dt,blocked){
 function updateBullets(dt){
   for(let i=bullets.length-1;i>=0;i--){const b=bullets[i];b.px=b.x;b.py=b.y;b.life-=dt;let hit=false;
     const steps=4;for(let s=1;s<=steps&&!hit;s++){const x=b.px+(b.vx*dt)*s/steps,y=b.py+(b.vy*dt)*s/steps;
-      for(const a of asteroids){if(Math.hypot(x-a.x,y-a.y)<a.R+1){laserTick(a,2.6,{x:b.px,y:b.py},'mg');hit=true;break}}
+      for(const e of enemies){if(Math.hypot(x-e.x,y-e.y)<e.R+1){hitEnemy(e,2.6,{x:b.px,y:b.py});hit=true;break}}
+      if(!hit)for(const a of asteroids){if(Math.hypot(x-a.x,y-a.y)<a.R+1){laserTick(a,2.6,{x:b.px,y:b.py},'mg');hit=true;break}}
       if(!hit){const h=hugeAt(x,y);if(h){hugeDamage(h,x,y,.8,2);burst(x,y,['#ffe9b0'],2,30,.2);hit=true}}
       if(hit){b.x=x;b.y=y}}
     if(!hit){b.x+=b.vx*dt;b.y+=b.vy*dt}
@@ -1385,8 +1662,9 @@ const hyper={charging:false,charge:0,cd:0,bolts:[]};
 function jag(x0,y0,x1,y1,amp){const pts=[[x0,y0]],n=Math.max(3,Math.round(Math.hypot(x1-x0,y1-y0)/7)),px=-(y1-y0),py=x1-x0,l=Math.hypot(px,py)||1;
   for(let i=1;i<n;i++){const t=i/n,o=(rnd()-.5)*amp;pts.push([x0+(x1-x0)*t+px/l*o,y0+(y1-y0)*t+py/l*o])}pts.push([x1,y1]);return pts}
 function fireHyper(){
-  hyper.charging=false;hyper.charge=0;hyper.cd=HYPER_CD;
+  hyper.charging=false;hyper.charge=0;hyper.cd=HYPER_CD*cdMul();
   const n=nosePt(),range=170;let first=null,bd=1e9;
+  for(const e of enemies){const dx=e.x-ship.x,dy=e.y-ship.y,d=Math.hypot(dx,dy);if(d>range)continue;let da=Math.atan2(dy,dx)-ship.ang;da=Math.abs(Math.atan2(Math.sin(da),Math.cos(da)));if(da>Math.max(.45,STAT.aim[L('aim')]))continue;if(d+da*40-30<bd){bd=d+da*40-30;first=e}}
   for(const a of asteroids){const dx=a.x-ship.x,dy=a.y-ship.y,d=Math.hypot(dx,dy)-a.R;if(d>range)continue;let da=Math.atan2(dy,dx)-ship.ang;da=Math.abs(Math.atan2(Math.sin(da),Math.cos(da)));if(da>Math.max(.45,STAT.aim[L('aim')]))continue;if(d+da*40<bd){bd=d+da*40;first=a}}
   SFX.hyper();shake(.25,2.5);freeze=.06;hap('heavy');
   const ang=first?Math.atan2(first.y-ship.y,first.x-ship.x):ship.ang;
@@ -1397,9 +1675,9 @@ function fireHyper(){
   hyper.bolts.push({pts:jag(n.x,n.y,end.x,end.y,first?8:5),life:.3,w:2});
   if(!first){once('hyperMiss','Гіперлуч найкраще працює, коли камінь просто по курсу. Брили-гіганти він ріже наскрізь.');return}
   let cur=first;const hit=[first];
-  for(let c=0;c<STAT.chain[L('chain')-1];c++){let nx=null,nd=95;for(const a of asteroids){if(hit.includes(a))continue;const d=Math.hypot(a.x-cur.x,a.y-cur.y);if(d<nd){nd=d;nx=a}}
+  for(let c=0;c<STAT.chain[L('chain')-1];c++){let nx=null,nd=95;for(const a of [...enemies,...asteroids]){if(hit.includes(a))continue;const d=Math.hypot(a.x-cur.x,a.y-cur.y);if(d<nd){nd=d;nx=a}}
     if(!nx)break;hyper.bolts.push({pts:jag(cur.x,cur.y,nx.x,nx.y,10),life:.3+c*.04,w:1});hit.push(nx);cur=nx}
-  hit.forEach((a,i)=>setTimeout(()=>{if(asteroids.includes(a)){breakRock(a,false);if(i)burst(a.x,a.y,['#fff6a0','#9ff3ff'],8,60,.3)}},i*45));
+  hit.forEach((a,i)=>setTimeout(()=>{if(enemies.includes(a)){hitEnemy(a,90,null);burst(a.x,a.y,['#fff6a0','#9ff3ff'],8,60,.3)}else if(asteroids.includes(a)){breakRock(a,false);if(i)burst(a.x,a.y,['#fff6a0','#9ff3ff'],8,60,.3)}},i*45));
   if(hit.length>2)floatText(ship.x,ship.y-18,`Ланцюг ×${hit.length}`,'#fff6a0',true);
 }
 function updateHyper(dt){
@@ -1437,7 +1715,7 @@ function updateGrab(dt){
 }
 let grabReadyFlag=true;
 function smash(a,nx,ny){
-  grab=null;grabCd=TCD[L('tcd')-1];grabReadyFlag=false;
+  grab=null;grabCd=TCD[L('tcd')-1]*cdMul();grabReadyFlag=false;
   ship.vx=-nx*90;ship.vy=-ny*90;
   SFX.smash();hap('heavy');breakRock(a,true);
   shake(.3,3+a.si);freeze=.09+a.si*.02;
@@ -1453,10 +1731,12 @@ function updateFleet(dt){
     const fx=ship.x+off[0]*ca-off[1]*sa,fy=ship.y+off[0]*sa+off[1]*ca;
     if(b.job&&b.job.kind==='rock'&&!asteroids.includes(b.job.a))b.job=null;
     if(b.job&&b.job.kind==='pick'&&!pickups.includes(b.job.p))b.job=null;
+    if(b.job&&b.job.kind==='enemy'&&!enemies.includes(b.job.e))b.job=null;
     if(!b.job&&b.cool<=0){
       let best=null,bd=1e9;
       if(!full)for(const p of pickups){if(p.claim&&p.claim!==b)continue;const d=Math.hypot(p.x-ship.x,p.y-ship.y);if(d<110&&d<bd&&p.age>.3){bd=d;best=p}}
       if(best){best.claim=b;b.job={kind:'pick',p:best}}
+      else if(BOT_DMG[b.lv]>0&&(best=nearestEnemy(ship.x,ship.y,110))){b.job={kind:'enemy',e:best}}
       else if(BOT_DMG[b.lv]>0){for(const a of asteroids){if(a.si>BOT_SIZE[b.lv]||a===target||(grab&&grab.target===a)||fleet.some(o=>o!==b&&o.job&&o.job.a===a))continue;
           const d=Math.hypot(a.x-ship.x,a.y-ship.y);if(d<90&&d<bd){bd=d;best=a}}
         if(best)b.job={kind:'rock',a:best}}
@@ -1469,7 +1749,9 @@ function updateFleet(dt){
     else if(b.job&&b.job.kind==='rock'){const a=b.job.a,dx=b.x-a.x,dy=b.y-a.y,d=Math.max(1,Math.hypot(dx,dy));gx=a.x+dx/d*(a.R+14);gy=a.y+dy/d*(a.R+14);
       if(d<a.R+24){b.zap=a;b.tick=(b.tick||0)+dt;if(b.tick>.3){b.tick=0;laserTick(a,BOT_DMG[b.lv],b,'bot')}}else b.zap=null;
       if(Math.hypot(b.x-ship.x,b.y-ship.y)>150)b.job=null}
-    if(!b.job||b.job.kind!=='rock')b.zap=null;
+    else if(b.job&&b.job.kind==='enemy'){const e=b.job.e,dx=b.x-e.x,dy=b.y-e.y,d=Math.max(1,Math.hypot(dx,dy));gx=e.x+dx/d*30;gy=e.y+dy/d*30;
+      if(d<55){b.zap=e;b.tick=(b.tick||0)+dt;if(b.tick>.3){b.tick=0;hitEnemy(e,BOT_DMG[b.lv]*1.5,b)}}else b.zap=null;if(Math.hypot(b.x-ship.x,b.y-ship.y)>170)b.job=null}
+    if(!b.job||(b.job.kind!=='rock'&&b.job.kind!=='enemy'))b.zap=null;
     const dx=gx-b.x,dy=gy-b.y,d=Math.hypot(dx,dy),sp=Math.min(190,d*7);
     const tvx=d>0?dx/d*sp:0,tvy=d>0?dy/d*sp:0;b.vx+=(tvx-b.vx)*Math.min(1,dt*9);b.vy+=(tvy-b.vy)*Math.min(1,dt*9);
     b.x+=b.vx*dt;b.y+=b.vy*dt;
@@ -1478,17 +1760,21 @@ function updateFleet(dt){
 
 function updateFly(dt){
   for(const a of asteroids){a.x+=a.vx*dt;a.y+=a.vy*dt;a.rot+=a.vr*dt;if(a.hitT>0)a.hitT-=dt;a.kx*=Math.max(0,1-dt*14);a.ky*=Math.max(0,1-dt*14)}
-  for(const d of debris){d.x+=d.vx*dt;d.y+=d.vy*dt;d.rot+=d.vr*dt;if(d.x<2800)d.x+=1200;if(d.x>4000)d.x-=1200;if(d.y<720)d.y+=960;if(d.y>1680)d.y-=960}
+  for(const d of debris){d.x+=d.vx*dt;d.y+=d.vy*dt;d.rot+=d.vr*dt;if(d.x<d.x0)d.x+=d.w;if(d.x>d.x0+d.w)d.x-=d.w;if(d.y<720)d.y+=960;if(d.y>1680)d.y-=960}
   for(const it of items)it.a+=dt*1.4;
   if(mode!=='fly')return;
   if(comboT>0){comboT-=dt;if(comboT<=0)combo=0}
   if(ship.pulse>0)ship.pulse-=dt;
   if(grabCd>0){grabCd-=dt;if(grabCd<=0&&!grabReadyFlag){grabReadyFlag=true;SFX.ready()}}
+  if(viraj.cd>0){viraj.cd-=dt;if(viraj.cd<=0)SFX.ready()}if(viraj.t>0)viraj.t-=dt;
+  if(goldT>0)goldT-=dt;if(counterCd>0)counterCd-=dt;
+  if(sk('shield')&&timeT-lastHitT>3&&ship.hp<maxHp())ship.hp=Math.min(maxHp(),ship.hp+3*dt);
+  if(curSec.storm){stormT-=dt;if(stormT<=0){stormOn=!stormOn;stormT=stormOn?7:24+rnd()*10;if(stormOn){SFX.hot();once('storm',LINES.storm)}}}
   const iv=inputVec();ship.thrust=iv.m;
   if(iv.m>0&&!S.seen){S.seen=true;$('#tut').hidden=true;save()}
   const pulling=grab&&grab.phase==='pull';
   if(!pulling){
-    const max=STAT.speed[L('engine')-1],k=STAT.resp[L('engine')-1],kk=iv.m>0?k:k*1.4;
+    const ag=1+.08*sk('agil'),max=STAT.speed[L('engine')-1]*ag,k=STAT.resp[L('engine')-1]*ag,kk=iv.m>0?k:k*1.4;
     ship.vx+=(iv.x*max-ship.vx)*Math.min(1,dt*kk);ship.vy+=(iv.y*max-ship.vy)*Math.min(1,dt*kk);
     if(iv.m===0&&Math.hypot(ship.vx,ship.vy)<4){ship.vx=0;ship.vy=0}
     const wantA=aim.active?aim.ang:iv.m>0?Math.atan2(iv.y,iv.x):null;
@@ -1503,15 +1789,14 @@ function updateFly(dt){
     if(d<m&&d>0){const nx=dx/d,ny=dy/d;ship.x=a.x+nx*m;ship.y=a.y+ny*m;const vn=ship.vx*nx+ship.vy*ny;if(vn<0){ship.vx-=vn*nx;ship.vy-=vn*ny}}}
   hitCd-=dt;
   for(const d of debris){const dx=ship.x-d.x,dy=ship.y-d.y,dd=Math.hypot(dx,dy);
-    if(dd<7&&hitCd<=0){hitCd=1;ship.fuel=Math.max(0,ship.fuel-12);ship.vx+=dx/(dd||1)*120;ship.vy+=dy/(dd||1)*120;shake(.25,2.5);SFX.hit();hap('warning');
-      const f=$('#flash');f.style.opacity=.35;setTimeout(()=>f.style.opacity=0,120);burst(ship.x,ship.y,['#ff7a2a','#c0503e'],10,60);once('hit',LINES.hit)}}
-  weaponUpdate(dt,pulling);updateBullets(dt);updateHyper(dt);
+    if(dd<7&&hitCd<=0){hitCd=1;ship.vx+=dx/(dd||1)*120;ship.vy+=dy/(dd||1)*120;burst(ship.x,ship.y,['#ff7a2a','#c0503e'],10,60);once('hit',LINES.hit);hurt(12,d);if(mode!=='fly')return}}
+  weaponUpdate(dt,pulling||!!manip.ph);updateBullets(dt);updateHyper(dt);updateWarp(dt);updateManip(dt);updateEnemies(dt);if(mode!=='fly')return;
   // giant boulders: split detached pieces, block the ship, introduce them once
   for(const h of [...huges]){if(h.split)splitHuge(h)}
   {const h=hugeAt(ship.x,ship.y)||hugeAt(ship.x+Math.cos(ship.ang)*5,ship.y+Math.sin(ship.ang)*5);if(h&&!pulling){ship.x-=ship.vx*dt*1.2;ship.y-=ship.vy*dt*1.2;ship.vx*=-.2;ship.vy*=-.2}}
   for(const h of huges){if(!h.seen&&Math.hypot(h.cx-ship.x,h.cy-ship.y)<h.n*CS){h.seen=true;once('huge',LINES.huge)}}
   updateFleet(dt);
-  const mag=STAT.magnet[L('magnet')-1],full=cargoSum()>=cargoCap();
+  const mag=STAT.magnet[L('magnet')-1]*(1+.2*sk('mag'))*(stormOn?.3:1),full=cargoSum()>=cargoCap();
   if(full&&pickups.length&&!flags.full){flags.full=1;say(LINES.full);SFX.full()}
   for(let k=pickups.length-1;k>=0;k--){const p=pickups[k];p.age+=dt;p.spin+=dt*6;
     const dx=ship.x-p.x,dy=ship.y-p.y,d=Math.hypot(dx,dy)||1;
@@ -1523,10 +1808,10 @@ function updateFly(dt){
   for(let k=items.length-1;k>=0;k--){const it=items[k];if(Math.hypot(ship.x-it.x,ship.y-it.y)<13){
     items.splice(k,1);burst(it.x,it.y,['#fff','#ffd23f'],18,60);SFX.bonus();
     if(it.kind==='bag'){S.found.bag++;S.credits+=50;tx('Кешбек за пакет з пакетами',50);say(LINES.bag,4.5);floatText(it.x,it.y-8,'+₴50','#ffd23f',true)}
-    else if(it.kind==='capsule'){if(!S.frags.includes(it.frag))S.frags.push(it.frag);taskProg('capsule',1);say(LINES.capsule,3);floatText(it.x,it.y-8,'Сигнал '+S.frags.length+'/'+FRAGS.length,'#7ff5ea',true);
+    else if(it.kind==='capsule'){if(!S.frags.includes(it.frag))S.frags.push(it.frag);taskProg('capsule',1);gainXP(40);say(LINES.capsule,3);floatText(it.x,it.y-8,'Сигнал '+S.frags.length+'/'+FRAGS.length,'#7ff5ea',true);
       setTimeout(()=>{if(mode==='fly')say('«…'+FRAGS[it.frag].slice(0,90)+(FRAGS[it.frag].length>90?'…':'')+'»',6)},1600)}save()}}
   let zi=0;ZONES.forEach((z,i)=>{if(ship.x>=z.x)zi=i});
-  if(zi!==zoneIdx){zoneIdx=zi;const z=ZONES[zi];$('#zone').textContent=z.name;$('#zone').classList.toggle('danger',!!z.danger);if(zi===2){once('z3',LINES.zone3);taskProg('zone3',1)}}
+  if(zi!==zoneIdx){zoneIdx=zi;const z=ZONES[zi];$('#zone').textContent=curSec.short+' · '+z.name;$('#zone').classList.toggle('danger',!!z.danger);if(zi===2){once('z3',LINES.zone3);taskProg('zone3',1)}}
   $('#dockBtn').hidden=Math.hypot(ship.x-ST.x,ship.y-ST.y)>70;
   cam.x+=(ship.x-cam.x)*Math.min(1,dt*9);cam.y+=(ship.y-cam.y)*Math.min(1,dt*9);
   hud();
@@ -1535,8 +1820,9 @@ function updateFly(dt){
 let bumpT=0;
 function bumpCargo(){const b=$('#cargoTxt');if(timeT-bumpT>.06){bumpT=timeT;b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}}
 function collect(p,byBot){
-  (byBot?byBot.cargo:ship.cargo)[p.type]+=p.val;taskProg(p.type,p.val);
+  const val=p.val*(goldT>0?2:1);(byBot?byBot.cargo:ship.cargo)[p.type]+=val;taskProg(p.type,val);
   if(comboT>0)combo++;else combo=0;comboT=.9;taskMax('combo',combo+1);
+  if(combo===9&&sk('gold')&&goldT<=0){goldT=10;floatText(ship.x,ship.y-24,'Золота лихоманка!','#ffd23f',true);SFX.bonus()}
   SFX.pick(combo,p.type);
   if(byBot){burst(byBot.x,byBot.y,['#bff7f2',PC[p.type][1]],3,30,.3);floatText(byBot.x,byBot.y-8,`+${p.val} ${byBot.name}`,RCOL[p.type],false)}
   else{ship.pulse=.12;burst(ship.x,ship.y,[PC[p.type][0],PC[p.type][1]],4,35,.3);floatText(ship.x,ship.y-10,'+'+p.val,RCOL[p.type],p.val>1)}
@@ -1546,8 +1832,8 @@ function collect(p,byBot){
 
 function breakRock(a,direct){
   const i=asteroids.indexOf(a);if(i<0)return;asteroids.splice(i,1);if(target===a)target=null;
-  taskProg('rocks',1);if(a.si===2)taskProg('big',1);if(direct)taskProg('grab',1);
-  const n=[2,4,7][a.si],lucky=rnd()<.12+a.si*.04+(catHappy()?.05:0),val=lucky?2:1;
+  taskProg('rocks',1);if(a.si===2)taskProg('big',1);if(direct)taskProg('grab',1);run.rocks++;gainXP([2,4,7][a.si]);
+  const n=[2,4,7][a.si],lucky=rnd()<.12+a.si*.04+(catHappy()?.05:0)+.05*sk('vein')+(runTubes.has('med')?.15:0),val=lucky?2:1;
   if(direct){
     let got=0;
     for(let k=0;k<n;k++){if(cargoSum()<cargoCap()){ship.cargo[a.type]+=val;got+=val;taskProg(a.type,val);SFX.pick(Math.min(k*2,14),a.type,.05+k*.045)}
@@ -1586,18 +1872,21 @@ function tx(t,a){S.tx.unshift({t,a});S.tx=S.tx.slice(0,5)}
 /* ================= HUD ================= */
 let lastHud='',lastP=-1;
 function hud(){
-  const fc=fuelCap(),f=ship.fuel/fc,cs=cargoSum(),cc=cargoCap();
+  const fc=fuelCap(),f=ship.fuel/fc,cs=cargoSum(),cc=cargoCap(),mh=maxHp();
+  $('#hpBar').style.transform=`scaleX(${Math.max(0,Math.min(1,ship.hp/mh))})`;$('#hpTxt').textContent=Math.ceil(ship.hp);$('#hpTrack').classList.toggle('low',mode==='fly'&&ship.hp<mh*.3);
   $('#fuelBar').style.transform=`scaleX(${Math.max(0,Math.min(1,f))})`;$('#fuelTxt').textContent=Math.ceil(ship.fuel);
   $('#fuelTrack').classList.toggle('low',mode==='fly'&&f<.25);
   $('#cargoBar').style.transform=`scaleX(${Math.min(1,cs/cc)})`;$('#cargoTrack').classList.toggle('full',cs>=cc);
   const fl=mode==='fly'?fleetLoad():0,key=cs+'/'+cc+'|'+fl+'|'+S.credits;if(key!==lastHud){lastHud=key;$('#cargoTxt').innerHTML=cs+'/'+cc+(fl?` <i>+${fl}</i>`:'');$('#moneyHud').textContent='₴'+S.credits}
   const gb=$('#grabBtn'),fb=$('#fireBtn');
-  if(mode==='fly'&&(S.ship==='kalmar'||S.ship==='perun')){gb.hidden=false;let p;
-    if(S.ship==='kalmar'){const total=TCD[L('tcd')-1];p=grabCd>0?1-grabCd/Math.max(total,.7):1}
-    else p=hyper.charging?hyper.charge/.5:hyper.cd>0?1-hyper.cd/HYPER_CD:1;
-    const pr=Math.round(p*50)/50,lab=S.ship;if(gb.dataset.s!==lab){gb.dataset.s=lab;gb.classList.toggle('perun',lab==='perun');gb.querySelector('span').innerHTML=lab==='perun'?'Гіпер-<br>луч':'Щупаль-<br>ця'}
+  if(mode==='fly'){gb.hidden=false;let p;const cm=cdMul();
+    if(S.ship==='kalmar'){const total=TCD[L('tcd')-1]*cm;p=grabCd>0?1-grabCd/Math.max(total,.7):1}
+    else if(S.ship==='perun')p=hyper.charging?hyper.charge/.5:hyper.cd>0?1-hyper.cd/(HYPER_CD*cm):1;
+    else if(S.ship==='chaika')p=viraj.cd>0?1-viraj.cd/(VIRAJ_CD*cm):1;
+    else p=manip.ph?0:manip.cd>0?1-manip.cd/(MANIP_CD*cm):1;
+    const pr=Math.round(p*50)/50,lab=S.ship;if(gb.dataset.s!==lab){gb.dataset.s=lab;['perun','chaika','kozh'].forEach(c=>gb.classList.toggle(c,lab===c));gb.querySelector('span').innerHTML={perun:'Гіпер-<br>луч',kalmar:'Щупаль-<br>ця',chaika:'Віраж',kozh:'Маніпу-<br>лятори'}[lab]}
     if(pr!==lastP){lastP=pr;gb.style.setProperty('--p',pr);gb.classList.toggle('ready',pr>=1&&!hyper.charging)}}else gb.hidden=true;
-  if(mode==='fly'){fb.hidden=false;const w=S.weapon;if(fb.dataset.w!==w){fb.dataset.w=w;fb.querySelector('span').textContent=WEAPONS[w].short}
+  if(mode==='fly'){fb.hidden=false;const w=S.ship==='kozh'?'warp':S.weapon;if(fb.dataset.w!==w){fb.dataset.w=w;fb.querySelector('span').textContent=w==='warp'?'Варп':WEAPONS[w].short}
     const hv=w==='sonic'?Math.round((1-heat)*40)/40:1;if(fb.dataset.h!==String(hv)+overheat){fb.dataset.h=String(hv)+overheat;fb.style.setProperty('--h',hv);fb.style.setProperty('--hc',overheat?'#d8613c':w==='sonic'?'#e2a0ff':'#f2b64a');fb.classList.toggle('hot',overheat)}}
   else{fb.hidden=true;firing=false}
   updateGoalPill();if(tasksDirty||($('#tasksHud').hidden===(mode==='fly')))renderTasksHud();
@@ -1609,7 +1898,11 @@ function hud(){
       sa.style.transform=`translate(${cssW/2+dx*t-18}px,${cssH/2+dy*t-12}px)`;sa.querySelector('svg').style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI+90}deg)`;$('#sigDist').textContent='сигнал '+Math.round(bd/10)+' км'}}
   else sa.hidden=true;
   const ar=$('#arrow');
-  if(mode!=='fly'){ar.hidden=true;return}
+  if(mode!=='fly'){const g=guide&&devices.find(d=>d.id===guide.id);
+    if(!g||panelKind){ar.hidden=true;return}const z=zoom+1,gx=(g.ix-cam.x)*z,gy=(g.iy-cam.y)*z;
+    if(Math.abs(gx)<cssW/2-30&&Math.abs(gy)<cssH/2-60){ar.hidden=true;return}
+    ar.hidden=false;const d=Math.hypot(gx,gy),dx=gx/d,dy=gy/d,t=Math.min((cssW/2-28)/Math.max(.001,Math.abs(dx)),(cssH/2-120)/Math.max(.001,Math.abs(dy)));
+    ar.style.transform=`translate(${cssW/2+dx*t-20}px,${cssH/2+dy*t-14}px)`;ar.querySelector('svg').style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI+90}deg)`;$('#arrowDist').textContent=g.label;return}
   const sx=(ST.x-cam.x)*zoom,sy=(ST.y-cam.y)*zoom;
   if(Math.abs(sx)<cssW/2-30&&Math.abs(sy)<cssH/2-30){ar.hidden=true}
   else{ar.hidden=false;const d=Math.hypot(sx,sy),dx=sx/d,dy=sy/d;
@@ -1655,6 +1948,10 @@ function drawBase(){
     ctx.fillStyle='rgba(0,0,0,.3)';ctx.fillRect(Math.round(man.x)-3,Math.round(man.y),7,2);ctx.drawImage(tex,Math.round(man.x)-4,Math.round(man.y)-11)}});
   list.sort((a,b)=>a.y-b.y).forEach(o=>o.f());
   for(const p of parts){if(p.c==='heart'){ctx.globalAlpha=Math.max(0,p.life);ctx.drawImage(T.heart,Math.round(p.x)-2,Math.round(p.y)-2)}}ctx.globalAlpha=1;
+  for(const d of devices){if(!d.label||!attn(d.id))continue;const X=Math.round(d.ix),Y=Math.round(d.id==='ship'?154:d.iy-40)+Math.round(Math.sin(timeT*4+d.ix)*1.5);
+    ctx.fillStyle='#2a1a10';ctx.fillRect(X-3,Y-1,7,10);ctx.fillStyle='#ffb347';ctx.fillRect(X-2,Y,5,8);ctx.fillStyle='#1b1206';ctx.fillRect(X,Y+1,1,4);ctx.fillRect(X,Y+6,1,1)}
+  if(guide&&guide.t>0){const d=devices.find(x=>x.id===guide.id);if(d){const X=Math.round(d.ix),Y=Math.round(d.id==='ship'?140:d.iy-52)+Math.round(Math.sin(timeT*7)*3);ctx.fillStyle='#7ff5ea';
+    for(let i=0;i<5;i++)ctx.fillRect(X-4+i,Y+i,9-i*2,1);ctx.fillRect(X-1,Y-6,3,6)}}
   if(nearDev&&!panelKind){const bob=Math.round(Math.sin(timeT*5));ctx.fillStyle='#f2b64a';const X=Math.round(nearDev.ix),Y=Math.round(nearDev.id==='cat'?nearDev.iy-16+bob:nearDev.iy-32+bob);
     ctx.fillRect(X-2,Y,5,1);ctx.fillRect(X-1,Y+1,3,1);ctx.fillRect(X,Y+2,1,1)}
   ctx.globalCompositeOperation='lighter';
@@ -1681,8 +1978,9 @@ function drawTentacles(){
 function drawFly(){
   const vw=cv.width/scale,vh=cv.height/scale;
   drawStars(vw,vh,1);
-  const satX=Math.round(vw*.62-(cam.x-ST.x)*.02-100),satY=Math.round(vh*.18-(cam.y-ST.y)*.02-30);
-  ctx.globalAlpha=.72;ctx.drawImage(T.saturn,satX*scale,satY*scale,T.saturn.width*scale,T.saturn.height*scale);ctx.globalAlpha=1;
+  const sp=curSec.sat,satX=Math.round(vw*sp[0]-(cam.x-ST.x)*.02-100),satY=Math.round(vh*sp[1]-(cam.y-ST.y)*.02-55);
+  ctx.globalAlpha=curSec.dark?.35:.72;ctx.drawImage(T.saturn,satX*scale,satY*scale,T.saturn.width*scale,T.saturn.height*scale);ctx.globalAlpha=1;
+  if(curSec.k==='north'){ctx.strokeStyle='rgba(159,216,255,.55)';ctx.lineWidth=scale;ctx.beginPath();for(let k=0;k<=6;k++){const a=k/6*Math.PI*2,x=(satX+100+Math.cos(a)*7)*scale,y=(satY+32+Math.sin(a)*4)*scale;k?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}
   const sh=shakeT>0?shakeA:0,sx0=(rnd()-.5)*2*sh,sy0=(rnd()-.5)*2*sh;
   const ox=Math.round((cam.x-vw/2+sx0)*scale)/scale,oy=Math.round((cam.y-vh/2+sy0)*scale)/scale;
   ctx.setTransform(scale,0,0,scale,-ox*scale,-oy*scale);
@@ -1717,7 +2015,14 @@ function drawFly(){
     if(p.val>1){ctx.globalAlpha=.35+.25*Math.sin(timeT*8);ctx.fillStyle='#ffd23f';ctx.fillRect(Math.round(p.x)-3,Math.round(p.y)-3+bob,7,7);ctx.globalAlpha=1}
     ctx.drawImage(T.pick[p.type],Math.round(p.x)-2,Math.round(p.y)-2+bob);
     if(Math.sin(p.spin*1.3)>.85){ctx.fillStyle='#fff';ctx.fillRect(Math.round(p.x)-1,Math.round(p.y)-4+bob,1,1);ctx.fillRect(Math.round(p.x)+2,Math.round(p.y)-1+bob,1,1)}}
-  for(const b of fleet){if(b.zap&&asteroids.includes(b.zap)){ctx.globalAlpha=.8;ctx.fillStyle='#7ff5ea';pxLine(ctx,b.x,b.y,b.zap.x,b.zap.y);ctx.globalAlpha=1}}
+  for(const e of enemies){if(!inView(e.x,e.y,16))continue;const tx=e.type==='soroka'&&e.ang<0?T.en.sorokaL:T.en[e.type],w=tx.width,h=tx.height;const bob=Math.round(Math.sin(timeT*8+e.x)*.6);
+    ctx.drawImage(tx,Math.round(e.x-w/2),Math.round(e.y-h/2)+bob);if(e.hitT>0){ctx.globalAlpha=.7;ctx.drawImage(T.enW[e.type==='soroka'?'soroka':e.type],Math.round(e.x-w/2),Math.round(e.y-h/2)+bob);ctx.globalAlpha=1}
+    if(e.stolen){ctx.drawImage(T.pick.irid,Math.round(e.x)-2,Math.round(e.y)+4)}
+    if(e.hp<e.max){const bw=Math.max(6,e.R*2);ctx.fillStyle='#0b0810';ctx.fillRect(Math.round(e.x-bw/2),Math.round(e.y-e.R-5),bw,2);ctx.fillStyle='#ff6f7a';ctx.fillRect(Math.round(e.x-bw/2),Math.round(e.y-e.R-5),Math.max(1,Math.round(bw*e.hp/e.max)),2)}}
+  for(const b of bombs){ctx.fillStyle=Math.sin(timeT*40)>0?'#c79bff':'#fff';ctx.fillRect(Math.round(b.x)-2,Math.round(b.y)-2,4,4);ctx.fillStyle='rgba(199,155,255,.4)';ctx.fillRect(Math.round(b.x-b.vx*.03)-1,Math.round(b.y-b.vy*.03)-1,2,2)}
+  for(const m of implos){const k=Math.min(1,m.t/.35);ctx.strokeStyle='#c79bff';ctx.lineWidth=1;for(let q=0;q<3;q++){ctx.globalAlpha=.25+.25*q;ctx.beginPath();ctx.arc(m.x,m.y,Math.max(1,m.R*(1-k)*(1-q*.25)),timeT*8+q,timeT*8+q+4.5);ctx.stroke()}ctx.globalAlpha=1;ctx.fillStyle='#2a1d3a';ctx.fillRect(Math.round(m.x)-2,Math.round(m.y)-2,5,5)}
+  if(viraj.t>0){const k=1-viraj.t/.4;ctx.strokeStyle='#ffb347';ctx.lineWidth=1;for(let q=0;q<6;q++){const a=k*Math.PI*4+q/6*Math.PI*2;ctx.beginPath();ctx.arc(ship.x,ship.y,viraj.R*(.3+.7*k),a,a+.5);ctx.stroke()}}
+  for(const b of fleet){if(b.zap&&(asteroids.includes(b.zap)||enemies.includes(b.zap))){ctx.globalAlpha=.8;ctx.fillStyle='#7ff5ea';pxLine(ctx,b.x,b.y,b.zap.x,b.zap.y);ctx.globalAlpha=1}}
   for(const b of fleet){ctx.drawImage(T.drone,Math.round(b.x)-3,Math.round(b.y)-2+Math.round(Math.sin(timeT*6+b.x*.1)));if(Math.sin(timeT*8+b.y)>.5){ctx.fillStyle='#ff7a2a';ctx.fillRect(Math.round(b.x),Math.round(b.y)+3,1,1)}}
   if(mode==='fly'&&laserRay){const fl=1-Math.max(0,wTick)/TICK,ex=laserRay.x,ey=laserRay.y,n=nosePt();
     ctx.globalAlpha=.25+.35*fl;ctx.strokeStyle='#ffb347';ctx.lineWidth=2+fl*2;ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(ex,ey);ctx.stroke();
@@ -1732,16 +2037,20 @@ function drawFly(){
     if(b.w>1){ctx.fillStyle='rgba(255,246,160,.35)';pxLine(ctx,b.pts[k-1][0]+1,b.pts[k-1][1],b.pts[k][0]+1,b.pts[k][1])}}}ctx.globalAlpha=1;
   if(hyper.charging){const n=nosePt(),k=hyper.charge/.5;ctx.globalAlpha=.5+.5*k;ctx.fillStyle=Math.sin(timeT*60)>0?'#fff6a0':'#9ff3ff';const r=Math.round(1+k*3);ctx.fillRect(Math.round(n.x)-r,Math.round(n.y)-r,r*2+1,r*2+1);ctx.globalAlpha=1;
     for(let q=0;q<3;q++){const a=rnd()*6.3,d=8+rnd()*10;parts.push({x:n.x+Math.cos(a)*d,y:n.y+Math.sin(a)*d,vx:-Math.cos(a)*d*4,vy:-Math.sin(a)*d*4,life:.2,max:.25,c:'#9ff3ff'})}}
-  drawTentacles();
+  drawTentacles();drawManip();
   const stx=shipTex(),hw=Math.floor(stx.width/2),hh=Math.floor(stx.height/2);
-  ctx.save();ctx.translate(Math.round(ship.x),Math.round(ship.y));ctx.rotate(ship.ang+Math.PI/2);
+  ctx.save();ctx.translate(Math.round(ship.x),Math.round(ship.y));ctx.rotate(ship.ang+Math.PI/2+(viraj.t>0?(1-viraj.t/.4)*Math.PI*2:0));
   const ps=ship.pulse>0?1+ship.pulse*1.2:1;ctx.scale(ps,ps);
   if(mode==='fly'&&(ship.thrust>0||(grab&&grab.phase==='pull'))){const s=.6+Math.max(ship.thrust,.8)*.6+rnd()*.3;
-    if(S.ship==='kalmar'||S.ship==='perun'){[-2,2].forEach(o=>{ctx.save();ctx.translate(o,hh);ctx.scale(1,s);ctx.drawImage(T.flameS,-1,0);ctx.restore()})}
+    if(S.ship!=='chaika'){(S.ship==='kozh'?[-4,4]:[-2,2]).forEach(o=>{ctx.save();ctx.translate(o,hh);ctx.scale(1,s);ctx.drawImage(T.flameS,-1,0);ctx.restore()})}
     else{ctx.save();ctx.translate(0,hh);ctx.scale(1,s);ctx.drawImage(T.flame,-2,0);ctx.restore()}}
   ctx.drawImage(stx,-hw,-hh);ctx.restore();
   for(const p of parts){if(p.c==='heart')continue;ctx.globalAlpha=Math.max(0,Math.min(1,p.life/p.max*1.5));ctx.fillStyle=p.c;ctx.fillRect(Math.round(p.x),Math.round(p.y),1,1)}ctx.globalAlpha=1;
-  ctx.setTransform(1,0,0,1,0,0);ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.setTransform(1,0,0,1,0,0);
+  if(curSec.dark){const sx=(ship.x-ox)*scale,sy=(ship.y-oy)*scale,g=ctx.createRadialGradient(sx,sy,70*scale,sx,sy,150*scale);g.addColorStop(0,'rgba(6,4,12,0)');g.addColorStop(1,'rgba(6,4,12,.9)');ctx.fillStyle=g;ctx.fillRect(0,0,cv.width,cv.height)}
+  if(stormOn){ctx.fillStyle=`rgba(80,140,255,${.06+.05*Math.sin(timeT*30)})`;ctx.fillRect(0,0,cv.width,cv.height)}
+  if(goldT>0){ctx.strokeStyle=`rgba(255,210,63,${.25+.15*Math.sin(timeT*10)})`;ctx.lineWidth=6*dpr;ctx.strokeRect(0,0,cv.width,cv.height)}
+  ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.font=`700 ${Math.round(9*dpr)}px "Exo 2", sans-serif`;
   for(const b of fleet){const sx=(b.x-ox)*scale,sy=(b.y-9-oy)*scale;ctx.globalAlpha=.85;ctx.lineWidth=2.5*dpr;ctx.strokeStyle='#120d1a';ctx.strokeText(b.name,sx,sy);ctx.fillStyle='#bff7f2';ctx.fillText(b.name,sx,sy)}
   ctx.globalAlpha=1;
@@ -1776,27 +2085,31 @@ function launch(){
   let left=0;RES.forEach(r=>{S.store[r]+=ship.cargo[r];left+=ship.cargo[r];ship.cargo[r]=0});
   closePanel();$('#actBtn').hidden=true;nearDev=null;$('#toast').hidden=true;toastT=0;
   genField();flags={};zoneIdx=0;combo=0;grab=null;grabCd=0;grabReadyFlag=true;target=null;heat=0;overheat=false;hyper.cd=0;hyper.charging=false;firing=false;
-  ship.fuel=fuelCap()*(S.borsch?1.15:1);S.borsch=false;S.ate=false;
+  runTubes=new Set();S.loadout.slice(0,slots()).forEach(k=>{if(k&&S.tubes[k]>0&&!runTubes.has(k)){S.tubes[k]--;runTubes.add(k)}});
+  ship.fuel=fuelCap()*(runTubes.has('uzvar')?1.25:1);ship.hp=maxHp();
+  run={xp:0,lv:0,rocks:0,kills:0,chit:0,taskSum:0,food:0,wreck:false,sector:sectorIdx()};viraj={cd:0,t:0};manip={cd:0,ph:null};warpCd=0;goldT=0;stormOn=false;stormT=20;alarmT=35;counterCd=0;lastHitT=-9;
   ship.x=ST.x+34;ship.y=ST.y+6;ship.vx=60;ship.vy=0;ship.ang=0;cam.x=ship.x;cam.y=ship.y;
   fleet=ownedBots().map((o,i)=>({name:o.name,lv:o.lv,cap:Math.max(1,Math.round(cargoCap()*BOT_CAP[o.lv])),cargo:{ice:0,iron:0,irid:0},x:ship.x-20-i*6,y:ship.y+(i-1)*10,vx:0,vy:0,job:null,cool:i*.1,zap:null}));
   S.trips++;S.flying=true;save();SFX.launch();
-  mode='fly';setHudMode();$('#zone').textContent=ZONES[0].name;musicStart('flight');
+  mode='fly';setHudMode();$('#zone').textContent=curSec.short+' · '+ZONES[0].name;musicStart('flight');
+  if(curSec.dark)setTimeout(()=>{if(mode==='fly')once('dark',LINES.dark)},1500);
+  if(runTubes.size)setTimeout(()=>{if(mode==='fly'&&toastT<=0)say('Пайок на рейс: '+[...runTubes].map(k=>TUBES[k].name).join(', ')+'.',3.5)},2500);
   if(!S.seen){$('#tut').innerHTML='Ліворуч тягни пальцем, щоб летіти.<br>Кнопку «Вогонь» праворуч можна тягти як джойстик: так цілишся, не змінюючи курсу.';$('#tut').hidden=false}
-  else if(S.ship!=='chaika'&&!S.seenGrab){S.seenGrab=true;$('#tut').innerHTML=S.ship==='kalmar'?'Наведи ніс на камінь і тисни «Щупальця».':'Наведи ніс на камінь і затисни «Гіперлуч» на пів секунди.';$('#tut').hidden=false;setTimeout(()=>$('#tut').hidden=true,5000)}
+  else if(!(S.seenAb||{})[S.ship]){S.seenAb=S.seenAb||{};S.seenAb[S.ship]=1;$('#tut').innerHTML={chaika:'Кнопка «Віраж» над «Вогнем»: корабель робить оберт і ріже все довкола.',kalmar:'Наведи ніс на камінь і тисни «Щупальця».',perun:'Наведи ніс на камінь і затисни «Гіперлуч» на пів секунди.',kozh:'«Вогонь» кидає варп-бомби. «Маніпулятори» хапають двох найближчих і б\'ють лобами.'}[S.ship];$('#tut').hidden=false;setTimeout(()=>$('#tut').hidden=true,5000)}
   else $('#tut').hidden=true;
   if(left)say(`Залишок вантажу (${left}) я склала на склад.`);
   if(fleet.length&&!left)setTimeout(()=>{if(mode==='fly'&&toastT<=0)say(`${fleet.map(b=>b.name).join(', ')} ${fleet.length>1?'летять':'летить'} з тобою.`,3)},800);
   hud();
 }
 function dock(){
-  let msg=pick(LINES.back);
-  if(S.flying){S.threat=Math.max(30,S.threat-3);claimTasks();checkAct1();S.flying=false;S.quota.left--;if(S.quota.left<=0&&!quotaMet()&&!S.testMode){S.strict=true;S.quota.left=0;msg=LINES.strict}if(S.quota.left<=0&&S.testMode)S.quota.left=4}
-  let fromBots=0;fleet.forEach(b=>RES.forEach(r=>{ship.cargo[r]+=b.cargo[r];fromBots+=b.cargo[r]}));if(fromBots)msg+=` Брати привезли ще ${fromBots} од. руди.`;
-  ship.vx=ship.vy=0;save(true);SFX.dock();enterBase(msg);
+  let msg=null;
+  if(S.flying){S.threat=Math.max(30,S.threat-3);const ct=claimTasks(true);run.taskSum=ct.sum;run.food=ct.food;run.tasksDone=ct.n;checkAct1();S.flying=false;S.quota.left--;if(S.quota.left<=0&&!quotaMet()&&!S.testMode){S.strict=true;S.quota.left=0;msg=LINES.strict}if(S.quota.left<=0&&S.testMode)S.quota.left=4}
+  run.fromBots=0;fleet.forEach(b=>RES.forEach(r=>{ship.cargo[r]+=b.cargo[r];run.fromBots+=b.cargo[r]}));
+  ship.vx=ship.vy=0;enemies=[];bombs=[];implos=[];save(true);SFX.dock();enterBase(null);run.msg=msg;openPanel('report');
 }
 function startTow(){
   mode='tow';$('#dockBtn').hidden=true;$('#grabBtn').hidden=true;$('#fireBtn').hidden=true;firing=false;$('#fade').style.opacity=1;
-  setTimeout(()=>{RES.forEach(r=>{ship.cargo[r]=Math.floor(ship.cargo[r]/2)});dock();if(!S.strict)say(LINES.tow,6);$('#fade').style.opacity=0},700);
+  setTimeout(()=>{RES.forEach(r=>{ship.cargo[r]=Math.floor(ship.cargo[r]/2)});fleet.forEach(b=>RES.forEach(r=>{b.cargo[r]=Math.floor(b.cargo[r]/2)}));run.towed=true;dock();$('#fade').style.opacity=0},700);
 }
 
 /* ================= PANELS ================= */
@@ -1807,9 +2120,10 @@ function dronePending(){
   const rate=botRate(),lv=Math.max(0,...ownedBots().map(b=>b.lv));if(!rate)return null;const hrs=Math.min(8,(Date.now()-S.droneLast)/3.6e6),total=Math.floor(rate*hrs);
   if(total<1)return{total:0,hrs};const irid=lv>=3?Math.floor(total*.15):0,iron=Math.floor((total-irid)*.45);return{total,hrs,ice:total-irid-iron,iron,irid};
 }
-function afford(c){if(S.testMode)return true;return Object.entries(c).every(([k,v])=>k==='cr'?S.credits>=v:S.store[k]>=v)}
-function pay(c,label){if(S.testMode){tx(label,0);return}Object.entries(c).forEach(([k,v])=>{if(k==='cr')S.credits-=v;else S.store[k]-=v});tx(label,-(c.cr||0))}
-const costHtml=c=>Object.entries(c).map(([k,v])=>k==='cr'?`<span class="${!S.testMode&&S.credits<v?'no':''}">₴${v}</span>`:`<span class="res ${k} ${!S.testMode&&S.store[k]<v?'no':''}"><i></i>${v} ${RSHORT[k]}</span>`).join('');
+const haveRes=k=>k==='cr'?S.credits:k==='chit'?S.chitin:S.store[k];
+function afford(c){if(S.testMode)return true;return Object.entries(c).every(([k,v])=>haveRes(k)>=v)}
+function pay(c,label){if(S.testMode){tx(label,0);return}Object.entries(c).forEach(([k,v])=>{if(k==='cr')S.credits-=v;else if(k==='chit')S.chitin-=v;else S.store[k]-=v});tx(label,-(c.cr||0))}
+const costHtml=c=>Object.entries(c).map(([k,v])=>k==='cr'?`<span class="${!S.testMode&&S.credits<v?'no':''}">₴${v}</span>`:`<span class="res ${k} ${!S.testMode&&haveRes(k)<v?'no':''}"><i></i>${v} ${k==='chit'?'хітину':RSHORT[k]}</span>`).join('');
 const locked=rq=>!S.testMode&&S.quota.level<rq;
 const testBar=()=>S.testMode?`<div class="testbar">Режим тестера: усі покращення, кораблі й товари відкриті та безкоштовні. Вимикається у Либіді на містку.</div>`:'';
 const strictBox=()=>S.strict?`<div class="strict">Либідь заморозила майстерні, поки норму не виконано. Відправ потрібне на Землю через термінал вантажу в гаражі.</div>`:'';
@@ -1825,7 +2139,7 @@ function secShop(room,title){
     return`<div class="upg"><span class="nm">${u.name} <span class="dots">${dots}</span></span>${body}${btn}</div>`}).join('')+
     `<p class="note">Ресурси беруться зі складу.</p></section>`;
 }
-const secStoreChips=()=>`<section class="box"><h2>Склад</h2><div class="chips">${RES.map(r=>resChip(r,S.store[r],' '+RNAME[r].toLowerCase())).join('')}</div></section>`;
+const secStoreChips=()=>`<section class="box"><h2>Склад</h2><div class="chips">${RES.map(r=>resChip(r,S.store[r],' '+RNAME[r].toLowerCase())).join('')}${resChip('chit',S.chitin,' хітин')}</div></section>`;
 function secQuota(){const q=S.quota;
   return`<section class="box"><h2>Норма Укрзоряниці <small>${q.level}-й рівень · ${quotaMet()?'виконано':'ще '+Math.max(0,q.left)+' рейс.'}</small></h2>${S.strict?`<div class="strict">Строк вийшов. Майстерні заморожено, поки норму не виконано.</div>`:''}`+
    RES.filter(r=>q.need[r]).map(r=>`<div class="qline"><span class="res ${r}"><i></i>${RNAME[r]}</span><div class="prog"><i style="width:${Math.min(100,q.got[r]/q.need[r]*100)}%"></i></div><span class="num">${Math.min(q.got[r],q.need[r])}/${q.need[r]}</span></div>`).join('')+
@@ -1845,7 +2159,8 @@ function secShips(){
 function itemIcon(it){
   const c=document.createElement('canvas');c.width=40;c.height=22;const x=c.getContext('2d');x.imageSmoothingEnabled=false;
   const R=(a,b,w,h,col)=>{x.fillStyle=col;x.fillRect(a,b,w,h)};
-  if(it.id==='food5'){R(14,4,12,15,'#ffd23f');R(14,4,12,3,'#c8423a');R(17,9,6,5,'#e8a33a');R(18,10,1,1,'#24182b');R(21,10,1,1,'#24182b')}
+  if(it.kind==='tube'){[0,1,2].forEach(i=>x.drawImage(tubeTex(it.tube),11+i*7,6))}
+  else if(it.id==='food5'){R(14,4,12,15,'#ffd23f');R(14,4,12,3,'#c8423a');R(17,9,6,5,'#e8a33a');R(18,10,1,1,'#24182b');R(21,10,1,1,'#24182b')}
   else if(it.id==='bed'){R(8,10,24,8,'#bfe3ff');R(8,10,24,2,'#e8f6ff');R(11,12,18,4,'#8fc6f0');x.drawImage(T.kat.sleep,16,8)}
   else if(it.id==='ball'){x.drawImage(T.ball,18,9)}
   else if(it.id==='post'){R(15,17,10,3,'#c8b896');R(18,5,4,12,'#d8c8a0');R(17,2,6,4,'#c8423a')}
@@ -1858,7 +2173,7 @@ function itemIcon(it){
 function secMarket(){
   const items=SHOP.filter(s=>s.cat===shopTab);
   const owned=it=>it.kind==='once'?S.have[it.id]:it.kind==='skin'?S.skins[it.id]:false;
-  const pending=it=>S.orders.some(o=>o.item===it.id)||S.parcels.some(o=>o.item===it.id);
+  const pending=it=>it.kind!=='tube'&&(S.orders.some(o=>o.item===it.id)||S.parcels.some(o=>o.item===it.id));
   return`<div class="shop"><div class="shop-h"><span class="logo"><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="5" width="18" height="12" rx="3" fill="#fff"/><rect x="6" y="9" width="2" height="4" fill="#00a046"/><rect x="14" y="9" width="2" height="4" fill="#00a046"/><path d="M11 17v4" stroke="#fff" stroke-width="2"/></svg>подовжувач</span><span class="bal2">₴${S.credits}</span></div>
    <div class="shop-s">Я шукаю… корм, лежанку, фарбу для корабля</div>
    <div class="shop-tabs">${Object.entries(SHOP_CATS).map(([k,v])=>`<button data-a="tab" data-k="${k}" class="${shopTab===k?'on':''}">${v}</button>`).join('')}</div>
@@ -1884,8 +2199,9 @@ let lybTab='goals';
 function secLybHub(){
   const msg=lybTab==='signal'&&S.frags.length?FRAG_LYB[S.frags[S.frags.length-1]]:lybTab==='earth'?(S.fleetLv?'Земля будує флот із нашої руди. Кожна відправка робить його сильнішим.':'Поки що на Землі не вірять у Рій. Розшифровки й руда це змінять.'):(S.act1?LINES.act1:pick(LINES.greet));
   let body='';
-  if(lybTab==='goals'){
-    body=`<section class="box"><h2>Завдання на сьогодні <small>нагорода при поверненні</small></h2>${S.tasks.map(t=>`<div class="task"><span class="tn">${t.p>=t.n?'✓ ':''}${taskText(t)}</span><span class="tr">₴${t.r}</span><div class="prog"><i style="width:${t.p/t.n*100}%"></i></div></div>`).join('')}</section>
+  if(lybTab==='orbit'){body=secOrbit()}
+  else if(lybTab==='goals'){const ns=nextStep();
+    body=`<div class="nextstep"><span><b>Що далі:</b> ${ns.t}</span><button class="btn" data-a="guide" data-k="${ns.dev}" data-r="${ns.tab||''}">Показати</button></div><section class="box"><h2>Завдання на сьогодні <small>нагорода при поверненні</small></h2>${S.tasks.map(t=>`<div class="task"><span class="tn">${t.p>=t.n?'✓ ':''}${taskText(t)}</span><span class="tr">₴${t.r}</span><div class="prog"><i style="width:${t.p/t.n*100}%"></i></div></div>`).join('')}</section>
     <section class="box"><h2>Ковчег «Обрій» <small>${arkCount()}/${ARK.length} модулі</small></h2><div class="prog"><i style="width:${arkCount()/ARK.length*100}%;background:var(--lyb)"></i></div>
      <p class="note">Модулі ковчега будуються на терміналі «Модулі станції» тут, на містку.</p></section>
     <section class="box"><h2>Мапа шляху</h2><div class="acts">${ACTS.map((a,i)=>{const st=i===0?(S.act1?'done':'now'):(i===1&&S.act1?'now':'lock');return`<div class="act ${st}"><i>${a.n}</i><b>${a.name}</b><span>${a.goal}</span></div>`}).join('')}</div></section>`+secQuota();
@@ -1899,8 +2215,43 @@ function secLybHub(){
     <section class="box"><h2>Листівки з Землі</h2>${S.cards.length?S.cards.map(i=>`<div class="card"><canvas class="pix" width="64" height="30" data-card="${i}"></canvas><small>${FLEET[i].name} · верф «Миколаїв»</small><p>${FLEET[i].text}</p></div>`).join(''):'<p class="note">Листівок ще немає. Відправляй руду на Землю через термінал вантажу.</p>'}</section>`;
   }
   const play=`<p class="note">Час у грі: ${Math.floor(S.playSec/3600)} год ${Math.floor(S.playSec%3600/60)} хв · рейсів: ${S.trips}</p><div class="testrow">${S.tipsOff?'<button class="btn alt" data-a="tipson">Увімкнути підказки</button>':''}<button class="btn alt" data-a="t_mode">${S.testMode?'Вимкнути':'Увімкнути'} режим тестера</button></div>`;
-  const tests=S.testMode?`<div class="testrow"><button class="btn alt" data-a="t_frag">Тест: +капсула</button><button class="btn alt" data-a="t_fleet">Тест: +250 флоту</button><button class="btn alt" data-a="t_task">Тест: виконати завдання</button></div>`:'';
-  return secLyb(msg)+`<div class="tabs"><button data-a="ltab" data-k="goals" class="${lybTab==='goals'?'on':''}">Цілі</button><button data-a="ltab" data-k="signal" class="${lybTab==='signal'?'on':''}">Сигнал ${S.frags.length}/${FRAGS.length}</button><button data-a="ltab" data-k="earth" class="${lybTab==='earth'?'on':''}">Земля</button></div>`+body+tests+play;
+  const tests=S.testMode?`<div class="testrow"><button class="btn alt" data-a="t_frag">Тест: +капсула</button><button class="btn alt" data-a="t_fleet">Тест: +250 флоту</button><button class="btn alt" data-a="t_task">Тест: виконати завдання</button><button class="btn alt" data-a="t_lv">Тест: +1 рівень</button><button class="btn alt" data-a="t_chit">Тест: +30 хітину</button><button class="btn alt" data-a="t_tube">Тест: +3 кожного тюбика</button></div>`:'';
+  return secLyb(msg)+`<div class="tabs"><button data-a="ltab" data-k="goals" class="${lybTab==='goals'?'on':''}">Цілі</button><button data-a="ltab" data-k="orbit" class="${lybTab==='orbit'?'on':''}">Орбіта</button><button data-a="ltab" data-k="signal" class="${lybTab==='signal'?'on':''}">Сигнал ${S.frags.length}/${FRAGS.length}</button><button data-a="ltab" data-k="earth" class="${lybTab==='earth'?'on':''}">Земля</button></div>`+body+tests+play;
+}
+function secManeuver(){
+  const ok=S.shipLv>=5||S.testMode,c={iron:40,ice:40,cr:300};
+  if(S.maneuver)return`<section class="box"><h2>Орбітальний маневр <small>збудовано</small></h2><p class="note">Перехід між секторами — у Либіді, вкладка «Орбіта». Гілки навичок «Добувач» і «Мисливець» відкрито.</p></section>`;
+  return`<section class="box"><h2>Орбітальний маневр</h2><p class="note">Двигуни коригування орбіти: дозволяють перейти в будь-який сектор, не чекаючи. Разом із маневром відкривається вибір шляху: гілки навичок «Добувач» і «Мисливець».</p>
+   ${ok?`<div class="row" style="justify-content:space-between"><span class="cost" style="display:flex;gap:10px;flex-wrap:wrap">${costHtml(c)}</span><button class="btn" data-a="mbuild" ${afford(c)?'':'disabled'}>Збудувати</button></div>`:`<span class="lock" style="color:#c9a4ff">Потрібен 5-й рівень корабля (зараз ${S.shipLv})</span>`}</section>`;
+}
+function secSkills(){
+  const sp=spFree(),need=XP_NEED(S.shipLv);
+  const node=x=>{const r=sk(x.k),dots=Array.from({length:x.max},(_,i)=>`<i class="${i<r?'on':''}"></i>`).join('');
+    let lock='';if(x.br!=='base'&&!branchOpen())lock='після «Орбітального маневру»';else if(x.lv&&S.shipLv<x.lv)lock=`з ${x.lv}-го рівня`;else if(x.ult&&brSpent(x.br)<3)lock=`вклади 3 очки в гілку (зараз ${brSpent(x.br)})`;
+    return`<div class="sk ${x.ult?'ult':''}"><span class="nm">${x.ult?'★ ':''}${x.name} <span class="dots">${dots}</span></span><span class="st">${x.d}${lock?` · <span style="color:#c9a4ff">${lock}</span>`:''}</span><button class="btn" data-a="skill" data-k="${x.k}" ${!lock&&sp>0&&r<x.max?'':'disabled'}>+1</button></div>`};
+  const br=b=>`<section class="box"><h2>${BRANCH[b]} <small>${b==='base'?'для всіх':b==='miner'?'фарм і руда':'бій із Роєм'}</small></h2>${b!=='base'&&!branchOpen()?'<p class="note">Гілка відкриється разом з модулем «Орбітальний маневр» (5-й рівень корабля).</p>':''}${SKILLS.filter(x=>x.br===b).map(node).join('')}</section>`;
+  const rc=150*S.shipLv;
+  return`<section class="box"><h2>Рівень корабля</h2><div class="row" style="justify-content:space-between"><span class="lvbig">${S.shipLv}</span><span>Очок: <span class="sp">${sp}</span></span></div>
+   <div class="prog"><i style="width:${S.shipLv>=MAX_LV?100:S.xp/need*100}%;background:var(--lyb)"></i></div><p class="note">${S.shipLv>=MAX_LV?'Максимальний рівень.':`${S.xp}/${need} досвіду до наступного рівня.`} Досвід дають камені, вороги, капсули й завдання. Рівень спільний для всіх кораблів.</p></section>`+
+   br('base')+br('miner')+br('hunter')+
+   `<section class="box"><h2>Скинути навички</h2><p class="note">Усі очки повернуться, можна розподілити заново.</p><div class="row" style="justify-content:space-between"><span>₴${rc}</span><button class="btn alt" data-a="respec" ${spSpent()&&(S.testMode||S.credits>=rc)?'':'disabled'}>Скинути</button></div></section>`;
+}
+function orbitArt(c){
+  const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.fillStyle='#0b0812';x.fillRect(0,0,220,150);
+  const r=mulberry(3);for(let k=0;k<50;k++){x.fillStyle='#d8d4ff';x.globalAlpha=r()*.6+.2;x.fillRect((r()*220)|0,(r()*150)|0,1,1)}x.globalAlpha=1;
+  x.drawImage(T.saturn,10,20);
+  const cur=sectorIdx(),prog=1-sectorLeft()/SECTOR_MS;
+  SECTORS.forEach((sc,i)=>{const a0=-Math.PI/2+i*Math.PI/2-Math.PI/4,a1=a0+Math.PI/2;x.strokeStyle=sc.col;x.globalAlpha=i===cur?1:.35;x.lineWidth=i===cur?4:2;x.beginPath();x.ellipse(110,75,98,62,0,a0+.05,a1-.05);x.stroke();
+    const am=(a0+a1)/2;x.fillStyle=sc.col;x.font='bold 9px "Exo 2",sans-serif';x.textAlign='center';x.fillText(sc.short,110+Math.cos(am)*82,75+Math.sin(am)*48+3)});
+  x.globalAlpha=1;const as=-Math.PI/2-Math.PI/4+(cur+prog)*Math.PI/2,sx=110+Math.cos(as)*98,sy=75+Math.sin(as)*62;x.drawImage(T.station,0,0,96,64,sx-12,sy-8,24,16);
+}
+function secOrbit(){
+  const cur=sectorIdx(),left=sectorLeft();
+  return`<section class="box"><h2>Орбіта «Обрію» <small>сектор змінюється щогодини</small></h2><canvas id="orbitCv" width="220" height="150"></canvas>`+
+   SECTORS.map((sc,i)=>{const wait=i===cur?0:(((i-cur+4)%4)-1)*SECTOR_MS+left;const en=Object.keys(sc.en);
+     return`<div class="orbitrow"><b style="color:${sc.col}">${sc.name}</b><span class="st">${sc.desc}<br>${en.length?'Вороги: '+en.map(k=>EN[k].name).join(', '):'Без ворогів'}</span>
+      ${i===cur?`<span class="now">Зараз · ще ${Math.ceil(left/60000)} хв</span>`:S.maneuver||S.testMode?`<button class="btn alt" data-a="jump" data-k="${i}" ${afford({ice:15,cr:60})?'':'disabled'}>Перейти · 15 лід, ₴60</button>`:`<span class="now" style="color:var(--muted)">через ${Math.ceil(wait/60000)} хв</span>`}</div>`}).join('')+
+   (S.maneuver||S.testMode?'':'<p class="note">Щоб переходити між секторами без очікування, збудуй «Орбітальний маневр» у модулях станції.</p>')+`</section>`;
 }
 function secArk(){
   return`<section class="box"><h2>Ковчег «Обрій» <small>${arkCount()}/${ARK.length}</small></h2>`+ARK.map(m=>{const done=S.ark[m.k],need=m.frag&&S.frags.length<m.frag;
@@ -1930,7 +2281,7 @@ function secBots(){
 const TIPS={
  garage:{t:'Гараж',i:['<b>Корабель</b>: підійди з будь-якого боку й натисни кнопку дії, щоб вилетіти в кільце. Там же обираєш корабель і фарбу.','<b>Верстат</b> (ліворуч): зброя, автоприціл і покращення корабля.','<b>Термінал вантажу</b>: після рейсу вирішуєш, куди руда. На Землю: гроші, норма й новий флот. На склад: ресурси для покращень.','<b>«Подовжувач»</b>: магазин корму для кота, фарб і декору.','<b>Червоний поштомат</b>: посилки Наднової Пошти й листівки з Землі.']},
  bridge:{t:'Капітанський місток',i:['<b>Либідь</b> у центрі: завдання на сьогодні, розшифровка сигналу й новини з Землі. Заходь до неї після кожного рейсу.','<b>Модулі станції</b> ліворуч: будуєш ковчег «Обрій» і покращуєш станцію.','<b>Стереобанк</b> праворуч: баланс і всі операції.']},
- kitchen:{t:'Кухня',i:['<b>Плита з борщем</b>: тарілка перед вильотом дає +15% пального.',`<b>Миска ${CAT}а</b>: ситий кіт приносить удачу, частіше випадає подвійна руда.`,'<b>Полиця знахідок</b>: твоя колекція з кільця.',`${CAT}а можна погладити: просто підійди до нього й натисни кнопку дії.`]},
+ kitchen:{t:'Кухня',i:['<b>Пайковик</b>: тюбики з космічною їжею. Обираєш тюбик перед вильотом у космольоті, і він дає бонус на весь рейс.',`<b>Миска ${CAT}а</b>: ситий кіт приносить удачу, частіше випадає подвійна руда.`,'<b>Полиця знахідок</b>: твоя колекція з кільця.',`${CAT}а можна погладити: просто підійди до нього й натисни кнопку дії.`]},
  storage:{t:'Склад',i:['Сюди йде руда, яку ти відклав на покращення.','Ящики ростуть разом із запасами, а термінал показує точні цифри.']},
  bots:{t:'Цех автоботів',i:['<b>Конвеєр</b>: збирай і прокачуй ботів. Кий уже в команді, Щека й Хорива можна докупити.','На 1-му рівні бот лише збирає кристали у власний трюм. Прокачаний стріляє по каменях і носить більше.','<b>Бункер</b> праворуч: руда, яку боти накопали, поки тебе не було. До 8 годин.']}
 };
@@ -1938,16 +2289,40 @@ let curTip='garage';
 const PANELS={
  tip:{t:()=>TIPS[curTip].t,s:'підказка · що тут є',b(){return`<section class="box"><ul class="tiplist">${TIPS[curTip].i.map(x=>`<li>${x}</li>`).join('')}</ul>
    <div class="row" style="justify-content:space-between"><button class="btn alt" data-a="tipoff">Вимкнути підказки</button><button class="btn" data-a="tipok">Зрозуміло</button></div></section>`}},
- ship:{t:()=>`Космоліт «${SHIPS[S.ship].name}»`,s:'гараж · стартовий майданчик',b(){
-   const cs=cargoSum();
-   return`<section class="box"><h2>Перед вильотом</h2><div class="stats">
-     <div><span>Пальне</span><b>${Math.round(fuelCap()*(S.borsch?1.15:1))}</b></div><div><span>Трюм</span><b>${cargoCap()}</b></div>
-     <div><span>Лазер</span><b>${L('laser')} рів.</b></div><div><span>Екіпаж</span><b>${crewN()?crewNames():'—'}</b></div></div>
-     ${S.borsch?'<p class="note">Ти ситий після борщу: +15% пального.</p>':'<p class="note">На кухні є борщ. Ситий пілот летить довше.</p>'}
+ ship:{t:()=>`Космоліт «${SHIPS[S.ship].name}»`,s:'гараж · усе про корабель',b(){
+   const tabs=[['fly','Виліт'],['skills','Навички'],['gear','Спорядження'],['weapons','Зброя'],['hull','Корпус']];
+   const tb=`<div class="stabs">${tabs.map(([k,n])=>`<button data-a="stab" data-k="${k}" class="${S.shipTab===k?'on':''} ${k==='skills'&&spFree()?'dot':''}">${n}</button>`).join('')}</div>`;
+   const t=S.shipTab;
+   if(t==='skills')return tb+secSkills();
+   if(t==='gear')return tb+secShop('garage',`Спорядження «${SHIPS[S.ship].name}»`)+secStoreChips();
+   if(t==='weapons')return tb+(S.ship==='kozh'?'<section class="box"><h2>Варп-бомби</h2><p class="note">Кожум\'яка має власну зброю: «Вогонь» кидає варп-бомбу раз на секунду. Інша зброя стане доступна на інших кораблях.</p></section>':'')+secWeapons();
+   if(t==='hull')return tb+secShips();
+   const cs=cargoSum(),sec=SECTORS[sectorIdx()],en=Object.keys(sec.en);
+   return tb+`<div class="secinfo" style="border-color:${sec.col}"><b style="color:${sec.col}">${sec.name}</b><span>${sec.desc}</span>
+     <span>${en.length?en.map(k=>`<span class="tag">${EN[k].name}</span>`).join(''):'<span class="tag ok">без ворогів</span>'} ще ${Math.ceil(sectorLeft()/60000)} хв</span></div>
+     <section class="box"><h2>Пайок на рейс <small>${slots()} ${slots()>1?'слоти':'слот'}</small></h2>${[...Array(slots())].map((_,si)=>`<span class="slot">Слот ${si+1}</span><div class="loadout"><button data-a="tube" data-k="" data-r="${si}" class="${!S.loadout[si]?'on':''}">Без пайка</button>${Object.entries(TUBES).map(([k,tb])=>`<button data-a="tube" data-k="${k}" data-r="${si}" class="${S.loadout[si]===k?'on':''}" ${(S.tubes[k]||0)>0?'':'disabled'}><canvas class="pix" width="5" height="9" data-tube="${k}"></canvas>${tb.name} ×${S.tubes[k]||0}</button>`).join('')}</div>`).join('')}
+     ${S.loadout.slice(0,slots()).filter(Boolean).map(k=>`<p class="note">${TUBES[k].name}: ${TUBES[k].desc}.</p>`).join('')}</section>
+     <section class="box"><h2>Корабель</h2><div class="stats">
+     <div><span>Броня</span><b>${maxHp()}</b></div><div><span>Пальне</span><b>${fuelCap()}</b></div><div><span>Трюм</span><b>${cargoCap()}</b></div><div><span>Екіпаж</span><b>${crewN()?crewNames():'—'}</b></div></div>
      ${catHappy()?`<p class="note">${CAT} ситий: удача +5%.</p>`:`<p class="note">${CAT} голодний. Нагодуй перед вильотом, і він принесе удачу.</p>`}
      ${cs?`<p class="note">У трюмі ще ${cs} од. руди. При вильоті вона піде на склад.</p>`:''}
-     <button class="btn big" data-a="launch">Вилетіти в кільце</button></section>`+secShips()}},
- workbench:{t:'Верстат',s:'гараж · зброя й покращення',b(){return secWeapons()+secShop('garage',`Корабель «${SHIPS[S.ship].name}»`)+secStoreChips()}},
+     <button class="btn big" data-a="launch">Вилетіти в ${sec.name.toLowerCase()}</button></section>`}},
+ report:{t:'Рейс завершено',s:'звіт Либіді',b(){const cs=cargoSum();
+   return secLyb(run.towed?(run.wreck?LINES.wreck:LINES.tow):run.msg||pick(LINES.back))+
+   (run.lv?`<div class="levelup">Новий рівень корабля: ${S.shipLv}! Очок навичок: ${spFree()}. Розподіли їх у космольоті.</div>`:'')+
+   `<section class="box"><h2>Підсумок <small>${SECTORS[run.sector].name}</small></h2><div class="rep">
+     <div><span>Каменів</span><b>${run.rocks}</b></div><div><span>Ворогів</span><b>${run.kills}</b></div><div><span>Досвід</span><b>+${run.xp}</b></div>
+     <div><span>Хітин</span><b>+${run.chit}</b></div><div><span>Завдання</span><b>${run.tasksDone||0}${run.taskSum?` · ₴${run.taskSum}`:''}</b></div><div><span>Від ботів</span><b>${run.fromBots||0}</b></div></div>
+     <div class="prog"><i style="width:${S.shipLv>=MAX_LV?100:S.xp/XP_NEED(S.shipLv)*100}%;background:var(--lyb)"></i></div><p class="note">Рівень ${S.shipLv}: ${S.xp}/${XP_NEED(S.shipLv)} досвіду${run.food?` · ${CAT}у прийшло ${run.food} порц. корму`:''}</p></section>
+   <section class="box"><h2>Вантаж <small>${cs} од.</small></h2>`+(cs?`<div class="unload">${RES.filter(r=>ship.cargo[r]).map(r=>`
+     <span class="res ${r}"><i></i>${RNAME[r]} ${ship.cargo[r]} <span>· ₴${Math.round(PRICE[r]*payMul())}/од.</span></span>
+     <button class="btn" data-a="earth" data-r="${r}">На Землю</button><button class="btn alt" data-a="store" data-r="${r}">На склад</button>`).join('')}</div>
+     <div class="row" style="justify-content:space-between"><button class="btn alt" data-a="allstore">Усе на склад</button><button class="btn" data-a="allearth">Усе на Землю</button></div>
+     <p class="note">Земля платить гривнями, зараховує норму й будує флот. Склад іде на покращення.</p>`:'<p class="note">Трюм порожній.</p>')+`</section>
+   <button class="btn big" data-a="repok">Готово</button>`}},
+ pantry:{t:'Пайковик',s:'кухня · космічна їжа в тюбиках',b(){return`<section class="box"><h2>Тюбики</h2>${Object.entries(TUBES).map(([k,t])=>`<div class="sk"><span class="nm"><canvas class="pix" width="5" height="9" data-tube="${k}" style="width:10px;height:18px"></canvas>${t.name} <small class="note">×${S.tubes[k]||0}</small></span><span class="st">${t.desc} на один рейс</span></div>`).join('')}
+   <p class="note">Бери тюбик перед вильотом у космольоті, вкладка «Виліт». Нові тюбики продаються на «Подовжувачі» у вкладці «Пайки».</p></section>`}},
+ workbench:{t:'Верстат',s:'гараж',b(){return''}},
  turbo:{t:'Турбоприскорювач «Карпати»',s:'гараж · донат',b(){const eng=L('engine');
    return`<section class="box donate"><h2>«Карпати» <small class="star">★ 75 Stars</small></h2>
     <p class="note">Двигун одразу на 3-й рівень. Те саме можна прокачати грою на верстаті, це просто швидше.</p>
@@ -1964,7 +2339,7 @@ const PANELS={
      <p class="note">Земля платить гривнями й зараховує норму. Склад іде на покращення.</p>`
    :`<p class="note">Трюм порожній. Час летіти по ресурси.</p>`)+`</section>`+secQuota()}},
  lyb:{t:'Либідь',s:'капітанський місток · бортовий ШІ',b(){return secLybHub()}},
- modules:{t:'Модулі станції',s:'капітанський місток · ковчег і покращення',b(){return secArk()+secShop('bridge','Станція «Обрій»')+secStoreChips()}},
+ modules:{t:'Модулі станції',s:'капітанський місток · маневр, ковчег, покращення',b(){return secManeuver()+secArk()+secShop('bridge','Станція «Обрій»')+secStoreChips()}},
  bank:{t:'Стереобанк',s:'капітанський місток',b(){return`<section class="box bank"><div class="bankhead"><canvas class="pix" width="10" height="9" id="catAva"></canvas><div><div class="bn">Стереобанк</div><div class="bt">Банк, який завжди з тобою. Навіть на орбіті Сатурна.</div></div></div>
    <div class="bal">₴${S.credits.toLocaleString('uk-UA')}</div>
    <div class="tx">${S.tx.map(t=>`<div class="${t.a<0?'neg':''}"><span>${t.t}</span><span>${t.a>0?'+':''}${t.a}</span></div>`).join('')}</div></section>`}},
@@ -1981,9 +2356,6 @@ const PANELS={
    `<section class="box"><h2>${CAT} <small>${h?'ситий і щасливий':'голодний'}</small></h2><div class="stats"><div><span>Корму в запасі</span><b>${S.cat.food} порц.</b></div><div><span>Бонус</span><b>${h?'удача +5%':'—'}</b></div></div>
    <button class="btn" data-a="feed" ${S.cat.food>0&&!h?'':'disabled'}>${h?'Ще не зголоднів':'Насипати корм'}</button>
    <p class="note">Котик їсть раз на два рейси. Ситий кіт додає удачі: частіше випадає подвійна руда. Корм замовляй на «Подовжувачі» в гаражі.</p></section>`}},
- stove:{t:'Плита з борщем',s:'кухня',b(){return secLyb(S.ate?LINES.borschDone:'Борщ гарячий, з учора настоявся. Сметана в холодильнику, пампушки під рушником.')+
-   `<section class="box"><h2>Тарілка борщу</h2><p class="note">+15% пального на наступний виліт. Одна тарілка між рейсами.</p>
-   <button class="btn" data-a="eat" ${S.ate?'disabled':''}>${S.ate?'Уже поїв':'З\'їсти'}</button></section>`}},
  shelf:{t:'Полиця знахідок',s:'кухня · колекція',b(){return`<section class="box"><h2>Знайдено в кільці</h2><div class="coll">
     <div><canvas class="pix" width="9" height="9" id="cBag" style="width:27px;height:27px"></canvas>Пакет з пакетами × ${S.found.bag}</div>
     <div><canvas class="pix" width="5" height="10" id="cCap" style="width:15px;height:30px"></canvas>Капсули сигналу × ${S.frags.length}</div></div>
@@ -1996,9 +2368,10 @@ function openPanel(id){
 function renderPanel(msg){
   const P=PANELS[panelKind];if(!P)return;const keep=$('#sheet').scrollTop;
   $('#pTitle').textContent=typeof P.t==='function'?P.t():P.t;$('#pSub').textContent=P.s;
-  $('#pBody').innerHTML=(['ship','workbench','modules','conveyor','shop'].includes(panelKind)?testBar():'')+P.b();$('#sheet').scrollTop=keep;
+  $('#pBody').innerHTML=(['ship','modules','conveyor','shop'].includes(panelKind)?testBar():'')+P.b();$('#sheet').scrollTop=keep;
   const la=$('#lybAva');if(la)paintInto(la,T.lyb);if(msg&&$('#lybText'))$('#lybText').textContent=msg;
   const ca=$('#catAva');if(ca)paintInto(ca,T.cat);const cb=$('#cBag');if(cb)paintInto(cb,T.bag);const cj=$('#cCap');if(cj)paintInto(cj,T.capsule);
+  document.querySelectorAll('canvas[data-tube]').forEach(c=>paintInto(c,tubeTex(c.dataset.tube)));const oc=$('#orbitCv');if(oc)orbitArt(oc);
   document.querySelectorAll('canvas[data-card]').forEach(c=>paintInto(c,drawCard(+c.dataset.card)));
   document.querySelectorAll('canvas[data-ship]').forEach(c=>paintInto(c,shipTexFor(c.dataset.ship,S.skin)));
   document.querySelectorAll('canvas[data-item]').forEach(c=>{const it=SHOP.find(s=>s.id===c.dataset.item);if(it)paintInto(c,itemIcon(it))});
@@ -2036,7 +2409,19 @@ $('#panel').addEventListener('click',e=>{if(e.target.id==='panel'){closePanel();
   else if(a==='feed'){if(S.cat.food>0){S.cat.food--;S.cat.fedTrip=S.trips;SFX.meow();setTimeout(()=>SFX.purr(),300);msg=LINES.fed;say(LINES.fed,4);catGo({x:51,y:76},'sit')}}
   else if(a==='drones'){const dp=dronePending();if(dp&&dp.total){RES.forEach(x=>S.store[x]+=dp[x]||0);S.droneLast=Date.now();say(LINES.drones);SFX.coin()}}
   else if(a==='donate'){S.lv.engine=Math.max(3,S.lv.engine);say(LINES.donate,5);SFX.bonus()}
-  else if(a==='eat'){S.ate=true;S.borsch=true;msg=LINES.borsch;SFX.ui()}
+  else if(a==='stab'){S.shipTab=k;SFX.ui()}
+  else if(a==='tube'){S.loadout[+r]=k||null;SFX.ui()}
+  else if(a==='skill'){const x=SKILLS.find(q=>q.k===k);if(x&&spFree()>0&&sk(k)<x.max){S.skills[k]=sk(k)+1;SFX.bonus();hap('success')}}
+  else if(a==='respec'){const rc=150*S.shipLv;if(!S.testMode){if(S.credits<rc)return;S.credits-=rc;tx('Скидання навичок',-rc)}S.skills={};SFX.ui();say('Навички скинуто. Очки повернулись.',3)}
+  else if(a==='mbuild'){const c={iron:40,ice:40,cr:300};if(!afford(c))return;pay(c,'Модуль: Орбітальний маневр');S.maneuver=true;SFX.bonus();say(LINES.maneuver,6)}
+  else if(a==='jump'){const c={ice:15,cr:60};if(!afford(c))return;pay(c,'Орбітальний маневр');const base=Math.floor(Date.now()/SECTOR_MS);S.orbitShift=((+k-base)%4+4)%4;SFX.launch();say(`«Обрій» переходить у ${SECTORS[+k].name.toLowerCase()}.`,4)}
+  else if(a==='guide'){closePanel();guide={id:k,t:12};if(r)S.shipTab=r;SFX.ui();return}
+  else if(a==='allstore'){RES.forEach(x=>{S.store[x]+=ship.cargo[x];ship.cargo[x]=0});SFX.ui()}
+  else if(a==='allearth'){let p=0,pts=0;RES.forEach(x=>{const n=ship.cargo[x];if(!n)return;p+=Math.round(n*PRICE[x]*payMul());S.quota.got[x]+=n;pts+=n*FLEET_PTS[x];ship.cargo[x]=0});if(p){S.credits+=p;tx('Укрзоряниця: увесь вантаж',p);addFleet(pts);SFX.coin();if(quotaMet())completeQuota()}}
+  else if(a==='repok'){closePanel();save();return}
+  else if(a==='t_lv'){gainXP(XP_NEED(S.shipLv)-S.xp)}
+  else if(a==='t_chit'){S.chitin+=30}
+  else if(a==='t_tube'){Object.keys(TUBES).forEach(k=>S.tubes[k]=(S.tubes[k]||0)+3)}
   save();renderPanel(msg);hud();
 });
 function completeQuota(){
@@ -2083,7 +2468,7 @@ if(S.flying)S.flying=false;
 if(S.testMode)S.strict=false;
 if(!S.introSeen){enterBase(null);showIntro()}else enterBase(pick(LINES.greet));S.lybIntro=true;save();
 requestAnimationFrame(loop);
-window.__game={get huges(){return huges},fireHyper,setFiring:v=>firing=v,S,claimTasks,addFleet,man,kat,ship,devices,openPanel,launch,tryGrab,checkDeliveries,get mode(){return mode},get asteroids(){return asteroids},get fleet(){return fleet},MUS,AU};
+window.__game={get enemies(){return enemies},get curSec(){return curSec},doManip,dock,get huges(){return huges},fireHyper,setFiring:v=>firing=v,S,claimTasks,addFleet,man,kat,ship,devices,openPanel,launch,tryGrab,checkDeliveries,get mode(){return mode},get asteroids(){return asteroids},get fleet(){return fleet},MUS,AU};
 })();
 </script>
 
