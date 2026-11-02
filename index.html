@@ -90,7 +90,7 @@ button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
 #app.inbase #toast{top:auto;bottom:calc(92px + env(safe-area-inset-bottom,0px))}
 #joy{position:absolute;width:84px;height:84px;margin:-42px 0 0 -42px;border:2px solid rgba(243,230,200,.25);border-radius:50%;pointer-events:none}
 #knob{position:absolute;left:50%;top:50%;width:32px;height:32px;margin:-16px 0 0 -16px;background:rgba(242,182,74,.7);border-radius:50%}
-#tut{position:absolute;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));bottom:calc(240px + env(safe-area-inset-bottom,0px));text-align:center;font-family:var(--display);font-weight:600;font-size:15px;line-height:1.4;color:var(--cream);text-shadow:0 2px 0 #000;pointer-events:none}
+#tut{position:absolute;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));top:180px;text-align:center;font-family:var(--display);font-weight:600;font-size:15px;line-height:1.4;color:var(--cream);text-shadow:0 2px 0 #000;pointer-events:none}
 #app.inbase #tut{bottom:auto;top:84px}
 #flash{position:absolute;inset:0;background:var(--rust);opacity:0;pointer-events:none;transition:opacity .25s}
 #fade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .5s}
@@ -247,6 +247,25 @@ button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
 .card small{font-size:11px;color:#7a6a5a;letter-spacing:.05em;text-transform:uppercase}
 .threat{background:#2a1220;border:2px solid #6a2a48;border-radius:4px;padding:8px 10px;font-size:13px;color:#ffc6dd}
 .testrow{display:flex;gap:8px;flex-wrap:wrap}
+.botc{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding-block:10px;border-top:1px dashed var(--line)}
+.botc:first-of-type{border-top:0;padding-top:0}
+.botc .nm{font-family:var(--display);font-size:16px;font-weight:800;display:flex;gap:8px;align-items:center}
+.botc .st{font-size:12.5px;color:var(--muted);grid-column:1}
+.botc .cost{font-size:12.5px;grid-column:1;display:flex;gap:10px;flex-wrap:wrap}
+.botc button{grid-column:2;grid-row:1 / span 3;align-self:center}
+#cargoTxt i{font-style:normal;color:var(--lyb)}
+#fireBtn span{transition:transform .05s}
+#intro{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,#22183a 0,#0b0812 70%);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));padding-block:60px 40px;z-index:5}
+#intro canvas{width:min(100%,360px);height:auto;aspect-ratio:200/110;image-rendering:pixelated;max-width:100%}
+#intro p{margin:0;max-width:36ch;text-align:center;font-size:17px;line-height:1.55;color:var(--cream);text-wrap:pretty;min-height:7.8em}
+#intro .dots{display:flex;gap:6px}
+#intro .dots i{width:7px;height:7px;border-radius:50%;background:#3a2e50}
+#intro .dots i.on{background:var(--lyb)}
+#intro .nav{display:flex;gap:10px;width:100%;max-width:360px}
+#intro .nav .btn{flex:1;font-size:17px;padding:12px}
+#introSkip{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));background:transparent;color:var(--muted);font-family:var(--display);font-weight:700;font-size:14px;padding:6px 8px}
+.tiplist{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.45}
+.tiplist b{color:var(--amber);font-weight:600}
 @media (prefers-reduced-motion:reduce){#dockBtn,.track.low,.lbl b.bump{animation:none}}
 </style>
 
@@ -287,6 +306,13 @@ button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
       </div>
     </div>
   </div>
+  <div id="intro" hidden>
+    <button id="introSkip">Пропустити</button>
+    <canvas id="introCv" class="pix" width="200" height="110"></canvas>
+    <p id="introText"></p>
+    <div class="dots" id="introDots"></div>
+    <div class="nav"><button class="btn" id="introNext">Далі</button></div>
+  </div>
   <div id="fade"></div>
 </div>
 
@@ -302,6 +328,10 @@ const RSHORT={ice:'лід',iron:'зал.',irid:'ірид.'};
 const RCOL={ice:'#bfefff',iron:'#ff9a4a',irid:'#e2a0ff'};
 const PRICE={ice:4,iron:9,irid:30};
 const BOT_NAMES=['Кий','Щек','Хорив'];
+const BOT_CAP=[0,.15,.25,.35,.5],BOT_DMG=[0,0,2,3.2,5],BOT_SIZE=[0,-1,0,1,1],BOT_RATE=[0,6,12,20,30];
+const BOT_UP=[{iron:15,ice:10,cr:120},{iron:35,irid:5,cr:350},{iron:60,irid:12,cr:800}];
+const BOT_BUY=[null,{cost:{iron:30,ice:20,cr:300},req:2},{cost:{iron:50,irid:8,cr:600},req:3}];
+const BOT_DESC=['','збирає кристали у власний трюм','стріляє по дрібних каменях','стріляє сильніше, бере й середні','потужний лазер і великий трюм'];
 const CAT='Бублик';
 const TCD=[6,4.5,3,2];
 const HYPER_CD=3.5;
@@ -355,9 +385,7 @@ const UPG=[
   costs:[{iron:15,cr:120},{iron:30,irid:5,cr:400},{iron:50,irid:12,cr:900}],req:[1,2,3]},
  {k:'antenna',room:'bridge',name:'Антена «Говорить Сатурн»',base:0,stat:l=>l?`+${l*15}% до виплат Землі`:'Земля платитиме більше за вантаж',
   costs:[{iron:12,ice:12,cr:100},{iron:30,irid:4,cr:350},{iron:50,irid:10,cr:800}],req:[1,2,3]},
- {k:'drones',room:'bots',name:'Конвеєр автоботів',base:0,stat:l=>l?`${BOT_NAMES.slice(0,l).join(', ')} · у польоті летять з тобою, без тебе дають ${STAT.drones[l]} од./год`:'перший бот: Кий',
-  costs:[{iron:20,ice:10,cr:150},{iron:40,irid:6,cr:450},{iron:70,irid:15,cr:1000}],req:[2,3,4]},
-];
+ ];
 const SHOP=[
  {id:'food5',cat:'cat',name:'Корм «Котяча зоря» ×5',desc:'П\'ять порцій. Курка з космічним тунцем.',price:60,old:79,kind:'food',n:5},
  {id:'bed',cat:'cat',name:'Лежанка «Хмаринка»',desc:`${CAT} спатиме на кухні, як король.`,price:300,old:420,kind:'once'},
@@ -463,9 +491,10 @@ const LINES={
  borsch:'Борщ зі сметаною. Ситий пілот летить довше: +15% пального на наступний виліт.',
  borschDone:'Друга тарілка після наступного рейсу, окей?',
  kalmar:'Кальмар у гаражі! Наводиш ніс на камінь і тиснеш «Щупальця» праворуч унизу, або пробіл.',
- bot1:'Кий зібраний! Старший брат, літатиме з тобою й підбиратиме дрібноту.',
- bot2:'Щек на зв\'язку. Команда росте!',
- bot3:'Хорив готовий. Три брати в зборі, а я їхня сестра Либідь. Сімейний бізнес!',
+ bot0:'Кий прокачаний! Тепер він носить більше й працює краще.',
+ bot1:'Щек на зв\'язку. Команда росте!',
+ bot2:'Хорив готовий. Три брати в зборі, а я їхня сестра Либідь. Сімейний бізнес!',
+ botUp:'Бот прокачаний: більший трюм і міцніший лазер.',
  grabMiss:'Щупальця ловлять тільки камінь просто по курсу. Розвернись носом до брили.',
  grabBig:'Ця брила завелика для щупалець. Прокачай хватку на верстаті.',
  pet:[`${CAT} муркоче. Рівень затишку на станції +100.`,`${CAT} підставив пузико. Це пастка, але мила.`,`Мрр. ${CAT} схвалює твою кар'єру астрошахтаря.`,`${CAT} потерся об твій чобіт. Ти офіційно його людина.`],
@@ -479,7 +508,7 @@ const LINES={
 
 /* ================= SAVE ================= */
 const KEY='khutir_saturn_v1';
-const fresh=()=>({credits:120,store:{ice:0,iron:0,irid:0},lv:{engine:1,tank:1,cargo:1,laser:1,magnet:1,antenna:0,drones:0,tcd:1,tgrip:1,mg:1,sonic:1,aim:0,chain:1},weapon:'laser',weapons:{laser:true,mg:false,sonic:false},testMode:false,playSec:0,savedAt:0,
+const fresh=()=>({credits:120,store:{ice:0,iron:0,irid:0},lv:{engine:1,tank:1,cargo:1,laser:1,magnet:1,antenna:0,drones:0,tcd:1,tgrip:1,mg:1,sonic:1,aim:0,chain:1},botLv:[1,0,0],introSeen:false,tips:{},tipsOff:false,weapon:'laser',weapons:{laser:true,mg:false,sonic:false},testMode:false,playSec:0,savedAt:0,
   quota:{level:1,need:{ice:20,iron:6,irid:0},got:{ice:0,iron:0,irid:0},left:4},strict:false,
   tx:[{t:'Підйомні від Укрзоряниці',a:120}],found:{bag:0,jar:0},trips:0,droneLast:Date.now(),seen:false,seenBase:false,seenGrab:false,borsch:false,ate:false,
   mute:false,musicOff:false,ship:'chaika',owned:{chaika:true,kalmar:false,perun:false},skin:'classic',skins:{classic:true},have:{},
@@ -487,7 +516,8 @@ const fresh=()=>({credits:120,store:{ice:0,iron:0,irid:0},lv:{engine:1,tank:1,ca
 let S;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
 if(!S||!S.lv)S=fresh();
-{const f=fresh();S=Object.assign(f,S);S.lv=Object.assign(fresh().lv,S.lv);S.owned=Object.assign(fresh().owned,S.owned||{});S.weapons=Object.assign(fresh().weapons,S.weapons||{});S.skins=Object.assign({classic:true},S.skins||{});
+{const f=fresh();S=Object.assign(f,S);S.lv=Object.assign(fresh().lv,S.lv);S.owned=Object.assign(fresh().owned,S.owned||{});S.weapons=Object.assign(fresh().weapons,S.weapons||{});
+ if(!Array.isArray(S.botLv)){const d=(S.lv&&S.lv.drones)||0;S.botLv=[Math.max(1,d>=1?2:1),d>=2?1:0,d>=3?1:0]}if(S.trips>0&&S.introSeen===false&&S.lybIntro)S.introSeen=true;S.tips=S.tips||{};S.skins=Object.assign({classic:true},S.skins||{});
  S.cat=Object.assign(fresh().cat,S.cat||{});S.ark=S.ark||{};S.frags=S.frags||[];S.cards=S.cards||[];S.tasks=S.tasks||[];S.cargo=Object.assign({ice:0,iron:0,irid:0},S.cargo||{})}
 const save=(force)=>{try{S.cargo={...ship.cargo};S.savedAt=Date.now();localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}cloudSave(force)};
 
@@ -838,7 +868,9 @@ function buildBase(){
 let BASE=null;
 const L=k=>S.lv[k];
 const shipTex=()=>shipTexFor(S.ship,S.skin);
-const crewN=()=>Math.min(3,L('drones'));
+const ownedBots=()=>BOT_NAMES.map((n,i)=>({name:n,i,lv:S.botLv[i]||0})).filter(b=>b.lv>0);
+const crewN=()=>ownedBots().length;
+const crewNames=()=>ownedBots().map(b=>b.name).join(', ');
 const catHappy=()=>S.trips-S.cat.fedTrip<2;
 
 /* ---- station devices & decor (world px) ---- */
@@ -856,7 +888,7 @@ function drawCrates(c){
     else R_(c,X+2,Y+9,8,1,'#2c2734')}});
 }
 const devices=[
- {id:'ship',get label(){return`Космоліт «${SHIPS[S.ship].name}»`},ix:104,iy:214,solid:[91,172,26,28],y:200,
+ {id:'ship',get label(){return`Космоліт «${SHIPS[S.ship].name}»`},ix:104,iy:186,reach:40,solid:[91,172,26,28],y:200,
   draw(c,t){const tx=shipTex();c.save();c.translate(104,186);c.scale(2,2);c.drawImage(tx,-Math.floor(tx.width/2),-Math.floor(tx.height/2));c.restore();if(Math.sin(t*3)>0)R_(c,104,171,1,1,'#ff4d3a')}},
  {id:'workbench',label:'Верстат',ix:37,iy:156,solid:[20,134,34,12],y:146,
   draw(c){R_(c,22,115,30,9,'#8a6444');R_(c,25,116,1,6,'#c9c3b4');R_(c,29,116,3,1,'#c9c3b4');R_(c,30,116,1,5,'#c9c3b4');R_(c,36,116,5,2,'#e2a33a');R_(c,38,118,1,4,'#6b4428');R_(c,45,116,1,6,'#c9c3b4');R_(c,44,117,3,1,'#c9c3b4');
@@ -921,7 +953,7 @@ const devices=[
  {id:'conveyor',label:'Конвеєр автоботів',ix:225,iy:156,solid:[200,134,50,12],y:146,
   draw(c,t){const on=crewN()<3;R_(c,200,134,50,10,'#2a2030');R_(c,200,134,50,1,'#55506a');
     for(let i=0;i<50;i+=6)R_(c,200+((i+t*18)%48),138,3,2,'#55506a');R_(c,200,144,50,2,'#1a1320');
-    R_(c,222,118,4,16,'#e2a33a');R_(c,216,118,16,3,'#e2a33a');R_(c,230,121,2,6,'#c9c3b4');if(on&&L('drones')>0)c.drawImage(T.bot,200+((t*18)%43),127)}},
+    R_(c,222,118,4,16,'#e2a33a');R_(c,216,118,16,3,'#e2a33a');R_(c,230,121,2,6,'#c9c3b4');if(on&&crewN()>0)c.drawImage(T.bot,200+((t*18)%43),127)}},
  {id:'bunker',label:'Бункер ботів',ix:314,iy:158,solid:[300,132,28,16],y:148,
   draw(c,t){R_(c,300,126,28,22,'#55506a');R_(c,300,126,28,2,'#7b7085');for(let i=0;i<28;i+=6)R_(c,300+i,144,3,4,'#f2b64a');for(let i=3;i<28;i+=6)R_(c,300+i,144,3,4,'#1d1622');
     const dp=dronePending(),ready=dp&&dp.total>0;R_(c,311,131,6,4,'#1a1320');R_(c,312,132,4,2,ready?(Math.sin(t*5)>0?'#7ee0a6':'#2f6f4a'):'#c8423a')}},
@@ -955,7 +987,7 @@ const cargoSum=()=>ship.cargo.ice+ship.cargo.iron+ship.cargo.irid;
 const fuelCap=()=>STAT.fuel[L('tank')-1];
 const payMul=()=>1+.15*L('antenna');
 
-function syncBots(){const n=crewN();while(bots.length<n)bots.push({x:220+rnd()*90,y:170+rnd()*30,tx:0,ty:0,wait:rnd()*2,flip:false,name:BOT_NAMES[bots.length]});bots.length=n}
+function syncBots(){const ob=ownedBots();bots=bots.filter(b=>ob.some(o=>o.name===b.name));ob.forEach(o=>{if(!bots.some(b=>b.name===o.name))bots.push({x:220+rnd()*90,y:170+rnd()*30,tx:0,ty:0,wait:rnd()*2,flip:false,name:o.name})});}
 
 function makeCracks(R){
   const out=[],o=[(rnd()-.5)*R*.4,(rnd()-.5)*R*.4];
@@ -1009,10 +1041,14 @@ function inputVec(){
   if(m<.12)return{x:0,y:0,m:0};
   const k=Math.min(1,(m-.12)/.6)/m;return{x:x*k,y:y*k,m:Math.min(1,m*k)};
 }
-let firing=false;
+let firing=false;const aim={on:false,active:false,ang:0,cx:0,cy:0};
 {const fb=$('#fireBtn');
- fb.addEventListener('pointerdown',e=>{e.preventDefault();audioInit();firing=true;fb.classList.add('on');try{fb.setPointerCapture(e.pointerId)}catch(_){}});
- const off=()=>{firing=false;fb.classList.remove('on')};fb.addEventListener('pointerup',off);fb.addEventListener('pointercancel',off);fb.addEventListener('lostpointercapture',off);
+ const sp=fb.querySelector('span');
+ fb.addEventListener('pointerdown',e=>{e.preventDefault();audioInit();firing=true;fb.classList.add('on');const r=fb.getBoundingClientRect();aim.cx=r.left+r.width/2;aim.cy=r.top+r.height/2;aim.on=true;aim.active=false;try{fb.setPointerCapture(e.pointerId)}catch(_){}});
+ fb.addEventListener('pointermove',e=>{if(!aim.on)return;let dx=e.clientX-aim.cx,dy=e.clientY-aim.cy;const d=Math.hypot(dx,dy);
+   if(d>12){aim.active=true;aim.ang=Math.atan2(dy,dx);if(!S.seenAim){S.seenAim=true;save()}}else aim.active=false;
+   const k=Math.min(1,18/Math.max(d,1));sp.style.transform=`translate(${dx*k}px,${dy*k}px)`});
+ const off=()=>{firing=false;aim.on=false;aim.active=false;sp.style.transform='';fb.classList.remove('on')};fb.addEventListener('pointerup',off);fb.addEventListener('pointercancel',off);fb.addEventListener('lostpointercapture',off);
  const gb=$('#grabBtn');
  gb.addEventListener('pointerdown',e=>{e.preventDefault();audioInit();abilityDown();try{gb.setPointerCapture(e.pointerId)}catch(_){}});
  gb.addEventListener('pointerup',abilityUp);gb.addEventListener('pointercancel',abilityUp);}
@@ -1021,7 +1057,7 @@ function abilityUp(){if(hyper.charging){hyper.charging=false;hyper.charge=0;SFX.
 
 /* ================= TOAST & SOUND BUTTONS ================= */
 let toastT=0;
-function say(text,dur=3.6){$('#toastText').textContent=text;$('#toast').hidden=false;toastT=dur}
+function say(text,dur=3.6){$('#toastText').textContent=text;$('#toast').hidden=false;toastT=Math.min(16,Math.max(dur,3+text.length*.065))}
 function once(k,text){if(flags[k])return;flags[k]=1;say(text)}
 const pick=a=>a[(rnd()*a.length)|0];
 function drawSoundBtns(){
@@ -1095,7 +1131,7 @@ function petCat(){
 /* ================= STATION UPDATE ================= */
 function interact(d){if(d.id==='cat')petCat();else openPanel(d.id)}
 function updateBase(dt){
-  const iv=panelKind?{x:0,y:0,m:0}:inputVec(),sp=58;
+  const iv=panelKind||!$('#intro').hidden?{x:0,y:0,m:0}:inputVec(),sp=58;
   man.moving=iv.m>0;
   if(man.moving){
     if(!S.seenBase){S.seenBase=true;$('#tut').hidden=true;save()}
@@ -1106,18 +1142,18 @@ function updateBase(dt){
   }else{man.walk=0;man.stepT=0}
   updateCat(dt);updateBall(dt);
   const r=roomAt[Math.floor(man.y/TS)]?.[Math.floor(man.x/TS)];
-  if(r&&r!==curRoom){curRoom=r;$('#zone').textContent=r.name}
-  let best=null,bd=20;
+  if(r&&r!==curRoom){curRoom=r;$('#zone').textContent=r.name;if(!S.tipsOff&&!S.tips[r.id]&&TIPS[r.id]&&!panelKind&&$('#intro').hidden){S.tips[r.id]=1;curTip=r.id;openPanel('tip');save()}}
+  let best=null;
   if(!panelKind){
-    for(const d of devices){if(!d.label)continue;const dd=Math.hypot(man.x-d.ix,man.y-d.iy);if(dd<bd){bd=dd;best=d}}
-    const dc=Math.hypot(man.x-kat.x,man.y-kat.y);if(dc<16&&dc<bd+6)best={id:'cat',label:`Погладити ${CAT}а`,ix:kat.x,iy:kat.y};
+    let bs=1;for(const d of devices){if(!d.label)continue;const sc=Math.hypot(man.x-d.ix,man.y-d.iy)/(d.reach||20);if(sc<bs){bs=sc;best=d}}
+    const dc=Math.hypot(man.x-kat.x,man.y-kat.y);if(dc<16&&dc/16<bs+.3)best={id:'cat',label:`Погладити ${CAT}а`,ix:kat.x,iy:kat.y};
   }
   const lab=best?best.label:null;
   if(lab!==(nearDev&&nearDev.label)){const b=$('#actBtn');if(best){b.innerHTML=`${best.label}<kbd>E</kbd>`;b.hidden=false}else b.hidden=true}
   nearDev=best;
   for(const b of bots){if(b.wait>0){b.wait-=dt;if(b.wait<=0){b.tx=204+rnd()*124;b.ty=162+rnd()*44}continue}
     const dx=b.tx-b.x,dy=b.ty-b.y,d=Math.hypot(dx,dy);if(d<2){b.wait=1+rnd()*3;continue}b.x+=dx/d*20*dt;b.y+=dy/d*20*dt;b.flip=dx<0}
-  const z=zoom,vw=cssW/z,vh=cssH/z,bw=MW*TS,bh=MH*TS,topM=88/z,botM=(panelKind?cssH*.58:96)/z;
+  const z=zoom+1,vw=cssW/z,vh=cssH/z,bw=MW*TS,bh=MH*TS,topM=88/z,botM=(panelKind?cssH*.58:96)/z;
   let tx=bw<=vw?bw/2:Math.max(vw/2,Math.min(bw-vw/2,man.x));
   const lo=vh/2-topM,hi=bh-vh/2+botM;let ty=man.y-(topM-botM)/2;
   ty=lo>hi?(lo+hi)/2:Math.max(lo,Math.min(hi,ty));
@@ -1296,12 +1332,12 @@ function rayHit(x0,y0,ang,range){
 /* ---- weapons ---- */
 let aimT=null,wTick=0,heat=0,overheat=false,bullets=[],waves=[],laserRay=null,barrelI=0,muzzle=0,lastAimAng=0;
 function aimDir(range){
-  const lv=L('aim'),cone=STAT.aim[lv];aimT=null;
+  const lv=L('aim'),cone=STAT.aim[lv],base=aim.active?aim.ang:ship.ang;aimT=null;
   if(lv>0){let best=null,bd=1e9;
-    for(const a of asteroids){const dx=a.x-ship.x,dy=a.y-ship.y,d=Math.hypot(dx,dy)-a.R;if(d>range)continue;let da=Math.atan2(dy,dx)-ship.ang;da=Math.abs(Math.atan2(Math.sin(da),Math.cos(da)));if(da>cone)continue;
+    for(const a of asteroids){const dx=a.x-ship.x,dy=a.y-ship.y,d=Math.hypot(dx,dy)-a.R;if(d>range)continue;let da=Math.atan2(dy,dx)-base;da=Math.abs(Math.atan2(Math.sin(da),Math.cos(da)));if(da>cone)continue;
       const sc=d+da*25+(a===target?-15:0);if(sc<bd){bd=sc;best=a}}
     if(best){aimT=best;return Math.atan2(best.y-ship.y,best.x-ship.x)}}
-  return ship.ang;
+  return base;
 }
 function weaponUpdate(dt,blocked){
   const w=S.weapon;muzzle=Math.max(0,muzzle-dt);
@@ -1408,10 +1444,11 @@ function smash(a,nx,ny){
   rings.push({x:ship.x+nx*6,y:ship.y+ny*6,r:3,vr:160,life:.25,max:.25,c:'#ffd6ea'});
 }
 
+const botLoad=b=>b.cargo.ice+b.cargo.iron+b.cargo.irid;
+const fleetLoad=()=>fleet.reduce((a,b)=>a+botLoad(b),0);
 function updateFleet(dt){
-  const full=cargoSum()>=cargoCap();
   fleet.forEach((b,i)=>{
-    b.cool-=dt;
+    b.cool-=dt;const full=botLoad(b)>=b.cap;if(full&&!b.fullSaid){b.fullSaid=1;floatText(b.x,b.y-10,b.name+': трюм повний','#bff7f2',false)}
     const off=[[-16,-12],[-16,12],[-26,0]][i],ca=Math.cos(ship.ang),sa=Math.sin(ship.ang);
     const fx=ship.x+off[0]*ca-off[1]*sa,fy=ship.y+off[0]*sa+off[1]*ca;
     if(b.job&&b.job.kind==='rock'&&!asteroids.includes(b.job.a))b.job=null;
@@ -1420,7 +1457,7 @@ function updateFleet(dt){
       let best=null,bd=1e9;
       if(!full)for(const p of pickups){if(p.claim&&p.claim!==b)continue;const d=Math.hypot(p.x-ship.x,p.y-ship.y);if(d<110&&d<bd&&p.age>.3){bd=d;best=p}}
       if(best){best.claim=b;b.job={kind:'pick',p:best}}
-      else{for(const a of asteroids){if(a.si>1||a===target||(grab&&grab.target===a)||fleet.some(o=>o!==b&&o.job&&o.job.a===a))continue;
+      else if(BOT_DMG[b.lv]>0){for(const a of asteroids){if(a.si>BOT_SIZE[b.lv]||a===target||(grab&&grab.target===a)||fleet.some(o=>o!==b&&o.job&&o.job.a===a))continue;
           const d=Math.hypot(a.x-ship.x,a.y-ship.y);if(d<90&&d<bd){bd=d;best=a}}
         if(best)b.job={kind:'rock',a:best}}
       b.cool=.25;
@@ -1430,7 +1467,7 @@ function updateFleet(dt){
     if(b.job&&b.job.kind==='pick'){gx=b.job.p.x;gy=b.job.p.y;
       if(Math.hypot(b.x-gx,b.y-gy)<6){const p=b.job.p;pickups.splice(pickups.indexOf(p),1);b.job=null;collect(p,b)}}
     else if(b.job&&b.job.kind==='rock'){const a=b.job.a,dx=b.x-a.x,dy=b.y-a.y,d=Math.max(1,Math.hypot(dx,dy));gx=a.x+dx/d*(a.R+14);gy=a.y+dy/d*(a.R+14);
-      if(d<a.R+24){b.zap=a;b.tick=(b.tick||0)+dt;if(b.tick>.3){b.tick=0;laserTick(a,6*.3*1.4,b,'bot')}}else b.zap=null;
+      if(d<a.R+24){b.zap=a;b.tick=(b.tick||0)+dt;if(b.tick>.3){b.tick=0;laserTick(a,BOT_DMG[b.lv],b,'bot')}}else b.zap=null;
       if(Math.hypot(b.x-ship.x,b.y-ship.y)>150)b.job=null}
     if(!b.job||b.job.kind!=='rock')b.zap=null;
     const dx=gx-b.x,dy=gy-b.y,d=Math.hypot(dx,dy),sp=Math.min(190,d*7);
@@ -1454,7 +1491,8 @@ function updateFly(dt){
     const max=STAT.speed[L('engine')-1],k=STAT.resp[L('engine')-1],kk=iv.m>0?k:k*1.4;
     ship.vx+=(iv.x*max-ship.vx)*Math.min(1,dt*kk);ship.vy+=(iv.y*max-ship.vy)*Math.min(1,dt*kk);
     if(iv.m===0&&Math.hypot(ship.vx,ship.vy)<4){ship.vx=0;ship.vy=0}
-    if(iv.m>0){const ta=Math.atan2(iv.y,iv.x);let da=ta-ship.ang;da=Math.atan2(Math.sin(da),Math.cos(da));ship.ang+=da*Math.min(1,dt*22)}
+    const wantA=aim.active?aim.ang:iv.m>0?Math.atan2(iv.y,iv.x):null;
+    if(wantA!=null){let da=wantA-ship.ang;da=Math.atan2(Math.sin(da),Math.cos(da));ship.ang+=da*Math.min(1,dt*(aim.active?16:9))}
   }
   ship.x=Math.max(20,Math.min(W-20,ship.x+ship.vx*dt));ship.y=Math.max(20,Math.min(H-20,ship.y+ship.vy*dt));
   updateGrab(dt);
@@ -1497,13 +1535,13 @@ function updateFly(dt){
 let bumpT=0;
 function bumpCargo(){const b=$('#cargoTxt');if(timeT-bumpT>.06){bumpT=timeT;b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}}
 function collect(p,byBot){
-  ship.cargo[p.type]+=p.val;taskProg(p.type,p.val);
+  (byBot?byBot.cargo:ship.cargo)[p.type]+=p.val;taskProg(p.type,p.val);
   if(comboT>0)combo++;else combo=0;comboT=.9;taskMax('combo',combo+1);
   SFX.pick(combo,p.type);
   if(byBot){burst(byBot.x,byBot.y,['#bff7f2',PC[p.type][1]],3,30,.3);floatText(byBot.x,byBot.y-8,`+${p.val} ${byBot.name}`,RCOL[p.type],false)}
   else{ship.pulse=.12;burst(ship.x,ship.y,[PC[p.type][0],PC[p.type][1]],4,35,.3);floatText(ship.x,ship.y-10,'+'+p.val,RCOL[p.type],p.val>1)}
   bumpCargo();
-  if(cargoSum()>=cargoCap()&&!flags.full){flags.full=1;say(LINES.full);SFX.full()}
+  if(!byBot&&cargoSum()>=cargoCap()&&!flags.full){flags.full=1;say(LINES.full);SFX.full()}
 }
 
 function breakRock(a,direct){
@@ -1552,7 +1590,7 @@ function hud(){
   $('#fuelBar').style.transform=`scaleX(${Math.max(0,Math.min(1,f))})`;$('#fuelTxt').textContent=Math.ceil(ship.fuel);
   $('#fuelTrack').classList.toggle('low',mode==='fly'&&f<.25);
   $('#cargoBar').style.transform=`scaleX(${Math.min(1,cs/cc)})`;$('#cargoTrack').classList.toggle('full',cs>=cc);
-  const key=cs+'/'+cc+'|'+S.credits;if(key!==lastHud){lastHud=key;$('#cargoTxt').textContent=cs+'/'+cc;$('#moneyHud').textContent='₴'+S.credits}
+  const fl=mode==='fly'?fleetLoad():0,key=cs+'/'+cc+'|'+fl+'|'+S.credits;if(key!==lastHud){lastHud=key;$('#cargoTxt').innerHTML=cs+'/'+cc+(fl?` <i>+${fl}</i>`:'');$('#moneyHud').textContent='₴'+S.credits}
   const gb=$('#grabBtn'),fb=$('#fireBtn');
   if(mode==='fly'&&(S.ship==='kalmar'||S.ship==='perun')){gb.hidden=false;let p;
     if(S.ship==='kalmar'){const total=TCD[L('tcd')-1];p=grabCd>0?1-grabCd/Math.max(total,.7):1}
@@ -1714,7 +1752,7 @@ function drawFly(){
     ctx.globalAlpha=Math.min(1,comboT*2);ctx.lineWidth=3*dpr;ctx.strokeStyle='#120d1a';ctx.strokeText(t,X,Y);ctx.fillStyle='#ffd23f';ctx.fillText(t,X,Y);ctx.globalAlpha=1}
 }
 function draw(){
-  scale=zoom*dpr;
+  scale=(mode==='base'?zoom+1:zoom)*dpr;
   ctx.setTransform(1,0,0,1,0,0);ctx.imageSmoothingEnabled=false;
   ctx.fillStyle='#120d1a';ctx.fillRect(0,0,cv.width,cv.height);
   if(mode==='base')drawBase();else drawFly();
@@ -1731,28 +1769,29 @@ function enterBase(msg){
   man.x=128;man.y=198;man.dir='down';cam.x=man.x;cam.y=man.y;curRoom=null;combo=0;floats=[];
   if(S.trips>0){catGo({x:142,y:200},'sit');kat.t=4}
   setHudMode();syncBots();hud();musicStart('base');
-  if(!S.seenBase){$('#tut').innerHTML='Тягни пальцем, щоб ходити.<br>Підійди до пристрою або до котика і тисни кнопку дії.';$('#tut').hidden=false}else $('#tut').hidden=true;
+  if(!S.seenBase&&$('#intro').hidden){$('#tut').innerHTML='Тягни пальцем, щоб ходити.';$('#tut').hidden=false}else $('#tut').hidden=true;
   if(msg)say(msg,msg.length>90?7:4);
 }
 function launch(){
   let left=0;RES.forEach(r=>{S.store[r]+=ship.cargo[r];left+=ship.cargo[r];ship.cargo[r]=0});
-  closePanel();$('#actBtn').hidden=true;nearDev=null;
+  closePanel();$('#actBtn').hidden=true;nearDev=null;$('#toast').hidden=true;toastT=0;
   genField();flags={};zoneIdx=0;combo=0;grab=null;grabCd=0;grabReadyFlag=true;target=null;heat=0;overheat=false;hyper.cd=0;hyper.charging=false;firing=false;
   ship.fuel=fuelCap()*(S.borsch?1.15:1);S.borsch=false;S.ate=false;
   ship.x=ST.x+34;ship.y=ST.y+6;ship.vx=60;ship.vy=0;ship.ang=0;cam.x=ship.x;cam.y=ship.y;
-  fleet=BOT_NAMES.slice(0,crewN()).map((name,i)=>({name,x:ship.x-20-i*6,y:ship.y+(i-1)*10,vx:0,vy:0,job:null,cool:i*.1,zap:null}));
+  fleet=ownedBots().map((o,i)=>({name:o.name,lv:o.lv,cap:Math.max(1,Math.round(cargoCap()*BOT_CAP[o.lv])),cargo:{ice:0,iron:0,irid:0},x:ship.x-20-i*6,y:ship.y+(i-1)*10,vx:0,vy:0,job:null,cool:i*.1,zap:null}));
   S.trips++;S.flying=true;save();SFX.launch();
   mode='fly';setHudMode();$('#zone').textContent=ZONES[0].name;musicStart('flight');
-  if(!S.seen){$('#tut').innerHTML='Ліворуч тягни пальцем, щоб летіти.<br>Праворуч затискай «Вогонь». Стріляєш туди, куди дивиться ніс.';$('#tut').hidden=false}
+  if(!S.seen){$('#tut').innerHTML='Ліворуч тягни пальцем, щоб летіти.<br>Кнопку «Вогонь» праворуч можна тягти як джойстик: так цілишся, не змінюючи курсу.';$('#tut').hidden=false}
   else if(S.ship!=='chaika'&&!S.seenGrab){S.seenGrab=true;$('#tut').innerHTML=S.ship==='kalmar'?'Наведи ніс на камінь і тисни «Щупальця».':'Наведи ніс на камінь і затисни «Гіперлуч» на пів секунди.';$('#tut').hidden=false;setTimeout(()=>$('#tut').hidden=true,5000)}
   else $('#tut').hidden=true;
   if(left)say(`Залишок вантажу (${left}) я склала на склад.`);
-  if(fleet.length)setTimeout(()=>{if(mode==='fly'&&toastT<=0)say(`${fleet.map(b=>b.name).join(', ')} летять з тобою.`,3)},800);
+  if(fleet.length&&!left)setTimeout(()=>{if(mode==='fly'&&toastT<=0)say(`${fleet.map(b=>b.name).join(', ')} ${fleet.length>1?'летять':'летить'} з тобою.`,3)},800);
   hud();
 }
 function dock(){
   let msg=pick(LINES.back);
   if(S.flying){S.threat=Math.max(30,S.threat-3);claimTasks();checkAct1();S.flying=false;S.quota.left--;if(S.quota.left<=0&&!quotaMet()&&!S.testMode){S.strict=true;S.quota.left=0;msg=LINES.strict}if(S.quota.left<=0&&S.testMode)S.quota.left=4}
+  let fromBots=0;fleet.forEach(b=>RES.forEach(r=>{ship.cargo[r]+=b.cargo[r];fromBots+=b.cargo[r]}));if(fromBots)msg+=` Брати привезли ще ${fromBots} од. руди.`;
   ship.vx=ship.vy=0;save(true);SFX.dock();enterBase(msg);
 }
 function startTow(){
@@ -1763,8 +1802,9 @@ function startTow(){
 /* ================= PANELS ================= */
 const resChip=(r,n,extra='')=>`<span class="res ${r}"><i></i>${n}${extra}</span>`;
 function quotaMet(){return RES.every(r=>S.quota.got[r]>=S.quota.need[r])}
+const botRate=()=>ownedBots().reduce((a,b)=>a+BOT_RATE[b.lv],0);
 function dronePending(){
-  const lv=L('drones');if(!lv)return null;const hrs=Math.min(8,(Date.now()-S.droneLast)/3.6e6),total=Math.floor(STAT.drones[lv]*hrs);
+  const rate=botRate(),lv=Math.max(0,...ownedBots().map(b=>b.lv));if(!rate)return null;const hrs=Math.min(8,(Date.now()-S.droneLast)/3.6e6),total=Math.floor(rate*hrs);
   if(total<1)return{total:0,hrs};const irid=lv>=3?Math.floor(total*.15):0,iron=Math.floor((total-irid)*.45);return{total,hrs,ice:total-irid-iron,iron,irid};
 }
 function afford(c){if(S.testMode)return true;return Object.entries(c).every(([k,v])=>k==='cr'?S.credits>=v:S.store[k]>=v)}
@@ -1858,7 +1898,7 @@ function secLybHub(){
      <p class="note">Очки флоту: ${S.fleet}. ${S.fleetLv<FLEET.length?`Наступний: ${FLEET[S.fleetLv].name} на ${FLEET[S.fleetLv].pts}.`:'Флот зібрано!'} Руда, відправлена на Землю, йде на верфі: лід 1, залізо 2, іридій 6 очок.</p></section>
     <section class="box"><h2>Листівки з Землі</h2>${S.cards.length?S.cards.map(i=>`<div class="card"><canvas class="pix" width="64" height="30" data-card="${i}"></canvas><small>${FLEET[i].name} · верф «Миколаїв»</small><p>${FLEET[i].text}</p></div>`).join(''):'<p class="note">Листівок ще немає. Відправляй руду на Землю через термінал вантажу.</p>'}</section>`;
   }
-  const play=`<p class="note">Час у грі: ${Math.floor(S.playSec/3600)} год ${Math.floor(S.playSec%3600/60)} хв · рейсів: ${S.trips}</p><div class="testrow"><button class="btn alt" data-a="t_mode">${S.testMode?'Вимкнути':'Увімкнути'} режим тестера</button></div>`;
+  const play=`<p class="note">Час у грі: ${Math.floor(S.playSec/3600)} год ${Math.floor(S.playSec%3600/60)} хв · рейсів: ${S.trips}</p><div class="testrow">${S.tipsOff?'<button class="btn alt" data-a="tipson">Увімкнути підказки</button>':''}<button class="btn alt" data-a="t_mode">${S.testMode?'Вимкнути':'Увімкнути'} режим тестера</button></div>`;
   const tests=S.testMode?`<div class="testrow"><button class="btn alt" data-a="t_frag">Тест: +капсула</button><button class="btn alt" data-a="t_fleet">Тест: +250 флоту</button><button class="btn alt" data-a="t_task">Тест: виконати завдання</button></div>`:'';
   return secLyb(msg)+`<div class="tabs"><button data-a="ltab" data-k="goals" class="${lybTab==='goals'?'on':''}">Цілі</button><button data-a="ltab" data-k="signal" class="${lybTab==='signal'?'on':''}">Сигнал ${S.frags.length}/${FRAGS.length}</button><button data-a="ltab" data-k="earth" class="${lybTab==='earth'?'on':''}">Земля</button></div>`+body+tests+play;
 }
@@ -1877,12 +1917,32 @@ function secWeapons(){
     else act=`<span class="cost" style="display:flex;gap:10px;flex-wrap:wrap">${costHtml(w.cost)}</span><button class="btn" data-a="wbuy" data-k="${k}" ${afford(w.cost)?'':'disabled'}>Купити</button>`;
     return`<div class="shipc ${on?'on':''}" style="grid-template-columns:1fr"><div class="sn">${w.name}</div><div class="sd">${w.desc}</div><div class="sa">${act}</div></div>`}).join('')+`</div></section>`;
 }
+function secBots(){
+  return`<section class="box"><h2>Боти-брати <small>літають з будь-яким кораблем</small></h2>`+BOT_NAMES.map((n,i)=>{
+    const lv=S.botLv[i]||0,dots=[1,2,3,4].map(k=>`<i class="${k<=lv?'on':''}"></i>`).join('');let body,btn;
+    if(!lv){const b=BOT_BUY[i],lk=locked(b.req);body=`<span class="st">Ще не зібраний</span>`+(lk?`<span class="lock">Креслення після норми ${b.req-1}-го рівня</span>`:`<span class="cost">${costHtml(b.cost)}</span>`);
+      btn=`<button class="btn" data-a="botbuy" data-k="${i}" ${!lk&&afford(b.cost)?'':'disabled'}>Зібрати</button>`}
+    else{const c=BOT_UP[lv-1];body=`<span class="st">${BOT_DESC[lv]} · трюм ${Math.round(BOT_CAP[lv]*100)}% від твого (${Math.max(1,Math.round(cargoCap()*BOT_CAP[lv]))} од.) · без тебе ${BOT_RATE[lv]} од./год</span>`+(c?`<span class="cost">${costHtml(c)}</span>`:'');
+      btn=c?`<button class="btn" data-a="botup" data-k="${i}" ${afford(c)?'':'disabled'}>Прокачати</button>`:`<button class="btn alt" disabled>Макс.</button>`}
+    return`<div class="botc"><span class="nm">${n} <span class="dots">${dots}</span></span>${body}${btn}</div>`}).join('')+
+    `<p class="note">Боти збирають кристали у власний трюм і віддають усе при стикуванні. З 2-го рівня стріляють по каменях. Поки тебе немає, копають самі й складають руду в бункер, до 8 годин.</p></section>`;
+}
+const TIPS={
+ garage:{t:'Гараж',i:['<b>Корабель</b>: підійди з будь-якого боку й натисни кнопку дії, щоб вилетіти в кільце. Там же обираєш корабель і фарбу.','<b>Верстат</b> (ліворуч): зброя, автоприціл і покращення корабля.','<b>Термінал вантажу</b>: після рейсу вирішуєш, куди руда. На Землю: гроші, норма й новий флот. На склад: ресурси для покращень.','<b>«Подовжувач»</b>: магазин корму для кота, фарб і декору.','<b>Червоний поштомат</b>: посилки Наднової Пошти й листівки з Землі.']},
+ bridge:{t:'Капітанський місток',i:['<b>Либідь</b> у центрі: завдання на сьогодні, розшифровка сигналу й новини з Землі. Заходь до неї після кожного рейсу.','<b>Модулі станції</b> ліворуч: будуєш ковчег «Обрій» і покращуєш станцію.','<b>Стереобанк</b> праворуч: баланс і всі операції.']},
+ kitchen:{t:'Кухня',i:['<b>Плита з борщем</b>: тарілка перед вильотом дає +15% пального.',`<b>Миска ${CAT}а</b>: ситий кіт приносить удачу, частіше випадає подвійна руда.`,'<b>Полиця знахідок</b>: твоя колекція з кільця.',`${CAT}а можна погладити: просто підійди до нього й натисни кнопку дії.`]},
+ storage:{t:'Склад',i:['Сюди йде руда, яку ти відклав на покращення.','Ящики ростуть разом із запасами, а термінал показує точні цифри.']},
+ bots:{t:'Цех автоботів',i:['<b>Конвеєр</b>: збирай і прокачуй ботів. Кий уже в команді, Щека й Хорива можна докупити.','На 1-му рівні бот лише збирає кристали у власний трюм. Прокачаний стріляє по каменях і носить більше.','<b>Бункер</b> праворуч: руда, яку боти накопали, поки тебе не було. До 8 годин.']}
+};
+let curTip='garage';
 const PANELS={
+ tip:{t:()=>TIPS[curTip].t,s:'підказка · що тут є',b(){return`<section class="box"><ul class="tiplist">${TIPS[curTip].i.map(x=>`<li>${x}</li>`).join('')}</ul>
+   <div class="row" style="justify-content:space-between"><button class="btn alt" data-a="tipoff">Вимкнути підказки</button><button class="btn" data-a="tipok">Зрозуміло</button></div></section>`}},
  ship:{t:()=>`Космоліт «${SHIPS[S.ship].name}»`,s:'гараж · стартовий майданчик',b(){
    const cs=cargoSum();
    return`<section class="box"><h2>Перед вильотом</h2><div class="stats">
      <div><span>Пальне</span><b>${Math.round(fuelCap()*(S.borsch?1.15:1))}</b></div><div><span>Трюм</span><b>${cargoCap()}</b></div>
-     <div><span>Лазер</span><b>${L('laser')} рів.</b></div><div><span>Екіпаж</span><b>${crewN()?BOT_NAMES.slice(0,crewN()).join(', '):'—'}</b></div></div>
+     <div><span>Лазер</span><b>${L('laser')} рів.</b></div><div><span>Екіпаж</span><b>${crewN()?crewNames():'—'}</b></div></div>
      ${S.borsch?'<p class="note">Ти ситий після борщу: +15% пального.</p>':'<p class="note">На кухні є борщ. Ситий пілот летить довше.</p>'}
      ${catHappy()?`<p class="note">${CAT} ситий: удача +5%.</p>`:`<p class="note">${CAT} голодний. Нагодуй перед вильотом, і він принесе удачу.</p>`}
      ${cs?`<p class="note">У трюмі ще ${cs} од. руди. При вильоті вона піде на склад.</p>`:''}
@@ -1910,14 +1970,12 @@ const PANELS={
    <div class="tx">${S.tx.map(t=>`<div class="${t.a<0?'neg':''}"><span>${t.t}</span><span>${t.a>0?'+':''}${t.a}</span></div>`).join('')}</div></section>`}},
  storage:{t:'Облік складу',s:'склад',b(){return`<section class="box"><h2>Запаси</h2><div class="stats">${RES.map(r=>`<div><span>${RNAME[r]}</span><b>${S.store[r]}</b></div>`).join('')}</div>
    <p class="note">Кожен ящик на складі вміщує 15 од. Руда звідси йде на верстат, модулі й конвеєр.</p></section>`}},
- conveyor:{t:'Конвеєр автоботів',s:'цех · брати-засновники',b(){return secShop('bots','Автоботи')+
-   `<section class="box"><h2>Екіпаж</h2><div class="crew">${BOT_NAMES.map((n,i)=>`<span class="${i<crewN()?'on':''}">${n}</span>`).join('')}</div>
-   <p class="note">Боти не залежать від корабля. Коли ти в кільці, вони летять поруч: добивають дрібні й середні камені та підбирають кристали. Коли тебе немає в грі, вони самі копають і складають руду в бункер, максимум за 8 годин.</p></section>`+secStoreChips()}},
+ conveyor:{t:'Конвеєр автоботів',s:'цех · брати-засновники',b(){return secBots()+secStoreChips()}},
  bunker:{t:'Бункер ботів',s:'цех · оффлайн-видобуток',b(){const dp=dronePending();
    if(!dp)return`<section class="box"><h2>Бункер порожній</h2><p class="note">Ботів ще немає. Збудуй Кия на конвеєрі.</p></section>`;
-   return`<section class="box"><h2>Здобич ботів <small>${BOT_NAMES.slice(0,crewN()).join(', ')}</small></h2>`+(dp.total?
+   return`<section class="box"><h2>Здобич ботів <small>${crewNames()} · ${botRate()} од./год</small></h2>`+(dp.total?
      `<div class="chips">${RES.map(r=>dp[r]?resChip(r,dp[r],' '+RNAME[r].toLowerCase()):'').join('')}</div><button class="btn" data-a="drones">Забрати на склад</button>`
-     :`<p class="note">Боти працюють. Перша партія приблизно за ${Math.ceil(60/STAT.drones[L('drones')])} хв, максимум накопичують 8 годин.</p>`)+`</section>`}},
+     :`<p class="note">Боти працюють. Перша партія приблизно за ${Math.ceil(60/botRate())} хв, максимум накопичують 8 годин.</p>`)+`</section>`}},
  bowl:{t:`Миска ${CAT}а`,s:'кухня',b(){const h=catHappy();
    return secLyb(h?`${CAT} ситий. Він уже двічі сказав «мяу», що означає «дякую» і «ще».`:LINES.hungry)+
    `<section class="box"><h2>${CAT} <small>${h?'ситий і щасливий':'голодний'}</small></h2><div class="stats"><div><span>Корму в запасі</span><b>${S.cat.food} порц.</b></div><div><span>Бонус</span><b>${h?'удача +5%':'—'}</b></div></div>
@@ -1955,7 +2013,12 @@ $('#panel').addEventListener('click',e=>{if(e.target.id==='panel'){closePanel();
   else if(a==='store'){S.store[r]+=ship.cargo[r];ship.cargo[r]=0;SFX.ui()}
   else if(a==='upg'){const u=UPG.find(x=>x.k===k),c=u.costs[L(u.k)-u.base];if(!afford(c))return;pay(c,`Майстерня: ${u.name}`);
     S.lv[u.k]++;SFX.bonus();
-    if(u.k==='drones'){if(S.lv.drones===1)S.droneLast=Date.now();syncBots();say(LINES['bot'+crewN()]||pick(LINES.upg),5)}else say(pick(LINES.upg))}
+    say(pick(LINES.upg))}
+  else if(a==='botbuy'){const i=+k,b=BOT_BUY[i];if(!b||!afford(b.cost))return;pay(b.cost,`Конвеєр: бот ${BOT_NAMES[i]}`);S.botLv[i]=1;syncBots();SFX.bonus();say(LINES['bot'+i],5)}
+  else if(a==='botup'){const i=+k,lv=S.botLv[i],c=BOT_UP[lv-1];if(!c||!afford(c))return;pay(c,`Конвеєр: ${BOT_NAMES[i]} рів. ${lv+1}`);S.botLv[i]++;SFX.bonus();say(LINES.botUp,4)}
+  else if(a==='tipok'){closePanel()}
+  else if(a==='tipoff'){S.tipsOff=true;closePanel();say('Підказки вимкнено. Увімкнути знову можна в Либіді на містку.',4)}
+  else if(a==='tipson'){S.tipsOff=false;S.tips={};SFX.ui();say('Підказки знову з\'являтимуться в кожній кімнаті.',4)}
   else if(a==='buyship'){const s=SHIPS[k];if(!afford(s.cost))return;pay(s.cost,`Верф: корабель «${s.name}»`);S.owned[k]=true;S.ship=k;SFX.bonus();if(LINES[k])say(LINES[k],6)}
   else if(a==='pickship'){S.ship=k;SFX.ui();say(`У гаражі тепер «${SHIPS[S.ship].name}».`)}
   else if(a==='skin'){S.skin=k;SFX.ui()}
@@ -1985,13 +2048,40 @@ $('#actBtn').addEventListener('click',()=>{if(nearDev)interact(nearDev)});
 $('#dockBtn').addEventListener('click',()=>{if(mode==='fly')dock()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)save(true)});
 
+/* ================= LORE INTRO ================= */
+const INTRO=[
+ {t:'2387 рік. Люди давно освоїли Сонячну систему. На орбіті Сатурна висить стара станція «Обрій». Хто і навіщо її збудував, уже ніхто не пам\'ятає.',img:'saturn'},
+ {t:'Ти новий пілот-шахтар. Твоя робота: добувати лід, залізо й іридій у кільцях Сатурна і відправляти руду на Землю.',img:'mine'},
+ {t:`Станцією керує бортовий ШІ на ім'я Либідь: балакуча, турботлива й трохи драматична. Ще тут живе рудий кіт ${CAT}. Він тут головний, хоча сам про це не знає.`,img:'crew'},
+ {t:'Та останнім часом у кільці знаходять дивні капсули зі старим сигналом. Сто років тому хтось намагався попередити Землю про щось дуже велике.',img:'capsule'},
+ {t:'Збирай руду, прокачуй корабель і станцію, розшифровуй сигнал. Схоже, від тебе залежить більше, ніж здається.',img:'go'}
+];
+let introI=0;
+function introArt(kind){
+  const c=$('#introCv'),x=c.getContext('2d');x.imageSmoothingEnabled=false;x.fillStyle='#0b0812';x.fillRect(0,0,200,110);
+  const r=mulberry(7+introI);for(let k=0;k<70;k++){x.fillStyle=r()<.3?'#ffd9a0':'#d8d4ff';x.globalAlpha=.4+r()*.6;x.fillRect((r()*200)|0,(r()*110)|0,1,1)}x.globalAlpha=1;
+  if(kind==='saturn'){x.drawImage(T.saturn,0,0);x.drawImage(T.station,120,52)}
+  else if(kind==='mine'){x.globalAlpha=.6;x.drawImage(T.saturn,40,-30);x.globalAlpha=1;[[30,60,'ice',2],[150,40,'iron',1],[120,80,'irid',0],[60,25,'iron',0]].forEach(([ax,ay,t,si])=>x.drawImage(T.rock[t][si][0],ax,ay));
+    x.save();x.translate(90,64);x.rotate(-Math.PI/4);x.drawImage(shipTexFor('chaika','classic'),-6,-7);x.restore();x.strokeStyle='#ffb347';x.beginPath();x.moveTo(84,58);x.lineTo(46,74);x.stroke()}
+  else if(kind==='crew'){x.save();x.scale(3,3);x.drawImage(T.lyb,10,8);x.drawImage(T.kat.sit,42,15);x.restore()}
+  else if(kind==='capsule'){for(let k=0;k<4;k++){x.strokeStyle='#7ff5ea';x.globalAlpha=.6-k*.13;x.beginPath();x.arc(100,55,12+k*12,0,6.3);x.stroke()}x.globalAlpha=1;x.save();x.scale(3,3);x.drawImage(T.capsule,31,13);x.restore()}
+  else{x.drawImage(T.station,10,30);x.save();x.translate(130,50);x.rotate(Math.PI/2);x.drawImage(shipTexFor(S.ship,S.skin),-6,-7);x.restore();x.drawImage(T.drone,110,40);x.fillStyle='#ff7a2a';x.fillRect(118,50,6,1)}
+}
+function showIntro(){introI=0;$('#intro').hidden=false;renderIntro()}
+function renderIntro(){const sl=INTRO[introI];$('#introText').textContent=sl.t;introArt(sl.img);
+  $('#introDots').innerHTML=INTRO.map((_,i)=>`<i class="${i===introI?'on':''}"></i>`).join('');$('#introNext').textContent=introI===INTRO.length-1?'Почати':'Далі'}
+function closeIntro(){$('#intro').hidden=true;S.introSeen=true;save();curRoom=null;say(`Привіт, пілоте! Я Либідь. Огляньмося: це гараж, тут стоїть твій корабель. ${CAT} уже десь поруч.`,6);
+  if(!S.seenBase){$('#tut').innerHTML='Тягни пальцем, щоб ходити.';$('#tut').hidden=false}}
+$('#introNext').addEventListener('click',()=>{audioInit();SFX.ui();if(introI<INTRO.length-1){introI++;renderIntro()}else closeIntro()});
+$('#introSkip').addEventListener('click',()=>{audioInit();closeIntro()});
+
 /* ================= BOOT ================= */
 BASE=buildBase();
 tgInit();
 fillTasks();
 if(S.flying)S.flying=false;
 if(S.testMode)S.strict=false;
-enterBase(S.trips===0||!S.lybIntro?LINES.first:pick(LINES.greet));S.lybIntro=true;save();
+if(!S.introSeen){enterBase(null);showIntro()}else enterBase(pick(LINES.greet));S.lybIntro=true;save();
 requestAnimationFrame(loop);
 window.__game={get huges(){return huges},fireHyper,setFiring:v=>firing=v,S,claimTasks,addFleet,man,kat,ship,devices,openPanel,launch,tryGrab,checkDeliveries,get mode(){return mode},get asteroids(){return asteroids},get fleet(){return fleet},MUS,AU};
 })();
