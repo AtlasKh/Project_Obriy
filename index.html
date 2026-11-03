@@ -289,6 +289,34 @@ button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
 #grabBtn.chaika span{background:#3a2410;color:#ffe9b0}
 #grabBtn.kozh{background:conic-gradient(#c79bff calc(var(--p,1)*360deg),#2e2335 0)}
 #grabBtn.kozh span{background:#2a1d3a;color:#e8d6ff;font-size:11px}
+.launchbox{border:2px solid var(--sc);border-radius:6px;padding:10px;margin-bottom:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.2));display:flex;flex-direction:column;gap:8px}
+.lb-sec{display:flex;flex-direction:column;gap:2px}.lb-sec b{font-family:var(--display);font-size:17px}.lb-sec span{font-size:12px;color:var(--muted)}
+.lb-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.lb-tube{display:flex;flex-direction:column;font-size:11px;color:var(--muted);gap:2px}
+.lb-tube select{font:inherit;font-size:13px;background:#0f0b16;color:var(--cream);border:2px solid var(--line);border-radius:4px;padding:5px}
+.lb-stat{font-size:12px;color:var(--muted);margin-left:auto}
+.launchbtn{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;padding:14px 10px;border-radius:8px;border:3px solid #1b1206;background:linear-gradient(180deg,#ffcf6a,#f2a33a);color:#1b1206;cursor:pointer;box-shadow:0 5px 0 #8a5a14,0 0 24px rgba(242,182,74,.35);font-family:var(--display)}
+.launchbtn span{font-size:26px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.launchbtn small{font-size:12px;font-weight:700;opacity:.75}
+.launchbtn:active{transform:translateY(4px);box-shadow:0 1px 0 #8a5a14}
+.seg{display:flex;background:#0f0b16;border:2px solid var(--line);border-radius:22px;padding:3px;margin-bottom:12px}
+.seg button{flex:1;font:inherit;font-family:var(--display);font-weight:800;font-size:15px;padding:8px;border:0;border-radius:18px;background:none;color:var(--muted);position:relative;cursor:pointer}
+.seg button.on{background:var(--panel-2);color:var(--amber);box-shadow:inset 0 0 0 2px var(--amber)}
+.seg button.dot::after{content:"";position:absolute;top:4px;right:12px;width:9px;height:9px;border-radius:50%;background:#ff6f7a}
+.treeh{display:flex;justify-content:space-between;font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:0 2%}
+.tree{position:relative;width:100%;max-width:420px;margin:6px auto;aspect-ratio:1/1.05}
+.tree svg{position:absolute;inset:0;width:100%;height:100%}
+.tree line{stroke:#3a3048;stroke-width:1.2;vector-effect:non-scaling-stroke;stroke-width:3}
+.tree line.on.br-base{stroke:#7ff5ea}.tree line.on.br-miner{stroke:#ffb347}.tree line.on.br-hunter{stroke:#ff7a8a}
+.tn{position:absolute;transform:translate(-50%,-50%);width:15%;aspect-ratio:1;border-radius:50%;border:3px solid #3a3048;background:#151020;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:0;color:var(--cream)}
+.tn span{font-size:clamp(14px,5vw,22px);line-height:1}.tn small{font-size:10px;font-weight:800;font-family:var(--display)}
+.tn.ult{border-radius:22%}
+.tn.br-base{border-color:#2f6f6a}.tn.br-miner{border-color:#8a5a20}.tn.br-hunter{border-color:#8a2f3a}
+.tn.avail{box-shadow:0 0 0 2px rgba(242,182,74,.5),0 0 14px rgba(242,182,74,.45);animation:tnp 1.4s ease-in-out infinite}
+.tn.max.br-base{background:#123a38;border-color:#7ff5ea}.tn.max.br-miner{background:#3a2610;border-color:#ffb347}.tn.max.br-hunter{background:#3a1218;border-color:#ff7a8a}
+.tn.lock{opacity:.4;filter:grayscale(1)}
+.tn.sel{outline:3px solid #fff;outline-offset:2px}
+@keyframes tnp{50%{box-shadow:0 0 0 4px rgba(242,182,74,.25),0 0 20px rgba(242,182,74,.6)}}
+.skcard{border:2px solid var(--line);border-radius:6px;padding:10px;margin-top:8px;background:#0f0b16}
+.skcard.br-base{border-color:#2f6f6a}.skcard.br-miner{border-color:#8a5a20}.skcard.br-hunter{border-color:#8a2f3a}
 .stabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch}
 .stabs button{flex:none;font-size:13px;font-weight:700;padding:7px 11px;border-radius:16px;background:var(--panel-2);color:var(--cream);border:2px solid var(--line);position:relative}
 .stabs button.on{background:var(--amber);color:#1b1206;border-color:var(--amber)}
@@ -389,7 +417,7 @@ const RES=['ice','iron','irid'];
 const RNAME={ice:'Лід',iron:'Залізо',irid:'Іридій'};
 const RSHORT={ice:'лід',iron:'зал.',irid:'ірид.'};
 const RCOL={ice:'#bfefff',iron:'#ff9a4a',irid:'#e2a0ff'};
-const PRICE={ice:4,iron:9,irid:30};
+const PRICE={ice:8,iron:18,irid:60};
 const BOT_NAMES=['Кий','Щек','Хорив'];
 const BOT_CAP=[0,.15,.25,.35,.5],BOT_DMG=[0,0,2,3.2,5],BOT_SIZE=[0,-1,0,1,1],BOT_RATE=[0,6,12,20,30];
 const BOT_UP=[{iron:15,ice:10,cr:120},{iron:35,irid:5,cr:350},{iron:60,irid:12,cr:800}];
@@ -548,7 +576,7 @@ const FLEET=[
  {pts:600,name:'Крейсер «Хортиця»',text:'Крейсер «Хортиця» готовий. Ми прочитали ваші розшифровки. Тепер уся Земля знає, що летить.'},
  {pts:1200,name:'Носій «Мрія»',text:'«Мрія» знову в небі, цього разу в дуже високому. Флот зібрано. Чекаємо на флагман.'}
 ];
-const FLEET_PTS={ice:1,iron:2,irid:6};
+const FLEET_PTS={ice:2,iron:4,irid:11};
 const ACTS=[
  {n:'I',name:'Кільця Сатурна',goal:'Відновити 4 модулі ковчега й розшифрувати 8 капсул'},
  {n:'II',name:'Титан',goal:'Метан для маршового двигуна · у наступному оновленні'},
@@ -634,7 +662,7 @@ const LINES={
 /* ================= SAVE ================= */
 const KEY='khutir_saturn_v1';
 const fresh=()=>({credits:120,store:{ice:0,iron:0,irid:0},lv:{engine:1,tank:1,cargo:1,laser:1,magnet:1,antenna:0,drones:0,tcd:1,tgrip:1,mg:1,sonic:1,aim:0,chain:1,armor:0,viraj:1,kgrip:1},shipLv:1,xp:0,skills:{},chitin:0,tubes:{borsch:2,kava:1,med:1},loadout:['borsch',null],maneuver:false,orbitShift:0,shipTab:'fly',botLv:[1,0,0],introSeen:false,tips:{},tipsOff:false,weapon:'laser',weapons:{laser:true,mg:false,sonic:false},testMode:false,playSec:0,savedAt:0,
-  quota:{level:1,need:{ice:20,iron:6,irid:0},got:{ice:0,iron:0,irid:0},left:4},strict:false,
+  quota:{level:1,need:{ice:12,iron:4,irid:0},got:{ice:0,iron:0,irid:0},left:4},strict:false,
   tx:[{t:'Підйомні від Укрзоряниці',a:120}],found:{bag:0,jar:0},trips:0,droneLast:Date.now(),seen:false,seenBase:false,seenGrab:false,borsch:false,ate:false,
   mute:false,musicOff:false,ship:'chaika',owned:{chaika:true,kalmar:false,perun:false,kozh:false},skin:'classic',skins:{classic:true},have:{},
   cat:{food:3,fedTrip:-9},orders:[],parcels:[],ttn:20451000,frags:[],ark:{},fleet:0,fleetLv:0,cards:[],tasks:[],threat:420,act1:false,stats:{rocks:0},cargo:{ice:0,iron:0,irid:0}});
@@ -1229,7 +1257,7 @@ function petCat(){
 }
 
 /* ================= STATION UPDATE ================= */
-function interact(d){if(d.id==='cat')petCat();else if(d.id==='workbench'){S.shipTab='gear';openPanel('ship')}else openPanel(d.id)}
+function interact(d){if(d.id==='cat')petCat();else if(d.id==='workbench'){S.shipTab='ship';openPanel('ship')}else openPanel(d.id)}
 const baseZ=()=>Math.max(.4,Math.min(cssH*.64/RH,cssW/(RW*.42)));
 function updateBase(dt){
   const iv=panelKind||!$('#intro').hidden?{x:0,y:0,m:0}:inputVec(),sp=270;
@@ -1420,12 +1448,12 @@ function updateEnemies(dt){
   for(const e of [...enemies]){
     const d=EN[e.type],dx=ship.x-e.x,dy=ship.y-e.y,dist=Math.hypot(dx,dy)||1,ux=dx/dist,uy=dy/dist;e.cd-=dt;e.stT-=dt;if(e.hitT>0)e.hitT-=dt;
     let tx=0,ty=0,sp=d.spd,steer=4;
-    const aware=dist<(e.type==='drone'?300:260);
+    const aware=e.hunt||dist<(e.type==='drone'?300:260);
     if(aware&&!e.seen){e.seen=true;e.alertT=1;if(!flags['meet_'+e.type]){flags['meet_'+e.type]=1;say(ENEMY_TIP[e.type],4)}}
     if(e.alertT>0)e.alertT-=dt;
     if(fear&&d.size<2&&dist<160){tx=-ux;ty=-uy;sp*=1.2;e.st='flee'}
     else if(e.type==='scout'&&aware){
-      const want=95,rad=(dist-want)/40;tx=ux*Math.max(-1,Math.min(1,rad))+(-uy)*e.orb*.9;ty=uy*Math.max(-1,Math.min(1,rad))+ux*e.orb*.9;
+      const want=95,rad=(dist-want)/40;if(dist>260)sp*=1.3;tx=ux*Math.max(-1,Math.min(1,rad))+(-uy)*e.orb*.9;ty=uy*Math.max(-1,Math.min(1,rad))+ux*e.orb*.9;
       if(e.st==='charge'){sp*=.25;if(e.stT<=0){e.st='idle';e.cd=1.8+rnd()*1.2;const lead=.25,ax=ship.x+ship.vx*lead-e.x,ay=ship.y+ship.vy*lead-e.y,al=Math.hypot(ax,ay)||1;
         eshots.push({x:e.x+ax/al*e.R,y:e.y+ay/al*e.R,vx:ax/al*130,vy:ay/al*130,life:2.6,dmg:e.dmg});SFX.eshot()}}
       else if(e.cd<=0&&dist<200){e.st='charge';e.stT=.55}
@@ -1435,7 +1463,7 @@ function updateEnemies(dt){
       if(e.st==='aim'){sp=0;e.dashA=Math.atan2(dy,dx);if(e.stT<=0){e.st='dash';e.stT=.45;SFX.dash();e.vx=Math.cos(e.dashA)*330;e.vy=Math.sin(e.dashA)*330}}
       else if(e.st==='dash'){if(e.stT<=0){e.st='daze';e.stT=1.1}}
       else if(e.st==='daze'){sp*=.15;tx=ux;ty=uy;if(e.stT<=0){e.st='idle';e.cd=1.4+rnd()}}
-      else{tx=ux;ty=uy;if(dist<70){tx=-ux*.3;ty=-uy*.3}if(e.cd<=0&&dist<170&&dist>45){e.st='aim';e.stT=.75;SFX.windup()}}
+      else{tx=ux;ty=uy;if(dist>260)sp*=1.4;if(dist<70){tx=-ux*.3;ty=-uy*.3}if(e.cd<=0&&dist<170&&dist>45){e.st='aim';e.stT=.75;SFX.windup()}}
     }
     else if(e.type==='soroka'){
       if(e.st==='flee'||e.stolen>=4){tx=-ux;ty=-uy;sp*=1.15;if(dist>420)e.st='idle'}
@@ -1457,10 +1485,19 @@ function updateEnemies(dt){
     if(Math.hypot(b.x-ship.x,b.y-ship.y)<9){hurt(b.dmg,b);burst(b.x,b.y,['#9ff3ff','#3f9a96'],6,40,.3);eshots.splice(k,1);continue}
     let hit=b.life<=0;if(!hit)for(const a of asteroids){if(Math.abs(a.x-b.x)<a.R&&Math.hypot(a.x-b.x,a.y-b.y)<a.R){hit=true;break}}
     if(hit){burst(b.x,b.y,['#9ff3ff'],3,30,.2);eshots.splice(k,1)}}
-  if(curSec.k!=='north'){alarmT-=dt;if(alarmT<=0){alarmT=38+rnd()*20;if(enemies.length<40){const a=rnd()*6.3,cx=ship.x+Math.cos(a)*260,cy=ship.y+Math.sin(a)*260;
-    const pack=curSec.k==='east'?['soroka','scout','scout']:curSec.k==='west'?['scout','scout','scout','drone']:['scout','scout','scout','soroka'];
-    pack.forEach(t=>spawnEnemy(t,cx+(rnd()-.5)*40,cy+(rnd()-.5)*40));SFX.alarm();once('alarm',LINES.alarm)}}}
+  updateWaves(dt);
 }
+/* Swarm waves: shown on the radar in advance, every wave is bigger, sooner or later you have to pull back */
+let wave={n:0,t:45,warn:false,dir:0,count:0};
+const WAVE_POOL={east:['soroka','scout','scout'],south:['scout','scout','soroka'],west:['scout','drone','scout']};
+function updateWaves(dt){if(curSec.k==='north'||mode!=='fly')return;if(wave.n===0&&Math.hypot(ship.x-ST.x,ship.y-ST.y)<300)return;
+  wave.t-=dt;
+  if(!wave.warn&&wave.t<=12){wave.warn=true;wave.dir=rnd()*6.3;wave.count=Math.min(20,3+wave.n*2);SFX.alarm();hap('warning');
+    say(wave.n===0?`Радар бачить Рій: ${wave.count} цілей, будуть тут за 12 секунд. Добирай руду. Кожна наступна хвиля буде більшою.`:`Хвиля ${wave.n+1}: ${wave.count} цілей за 12 секунд. Може, час додому?`,5)}
+  if(wave.t<=0){wave.n++;run.waves=wave.n;const pool=WAVE_POOL[curSec.k]||WAVE_POOL.south;
+    for(let k=0;k<wave.count;k++){const t=wave.n>=3&&k%4===3?'drone':pool[k%pool.length],a=wave.dir+(rnd()-.5)*.7,d=480+rnd()*120;if(enemies.length<48)spawnEnemy(t,ship.x+Math.cos(a)*d,ship.y+Math.sin(a)*d);const e=enemies[enemies.length-1];if(e){e.hunt=true;e.seen=true}}
+    wave.t=Math.max(24,40-wave.n*2);wave.warn=false}}
+
 const ENEMY_TIP={scout:'Розвідник Рою! Кружляє довкола й плюється плазмою. Коли його око спалахне, зміни курс.',drone:'Трутень Рою! Бачиш червону лінію? Він зараз рвоне по ній. Відлети вбік, а потім бий, поки він приголомшений.',
   soroka:'Кібер-сорока! Краде руду, навіть із трюму. Збий її, і вона поверне вдвічі більше.'};
 const nearestEnemy=(x,y,r,f)=>{let best=null,bd=r;for(const e of enemies){if(f&&!f(e))continue;const d=Math.hypot(e.x-x,e.y-y);if(d<bd){bd=d;best=e}}return best};
@@ -1748,6 +1785,7 @@ function updateFly(dt){
   for(const a of asteroids){a.x+=a.vx*dt;a.y+=a.vy*dt;a.rot+=a.vr*dt;if(a.hitT>0)a.hitT-=dt;a.kx*=Math.max(0,1-dt*14);a.ky*=Math.max(0,1-dt*14)}
   for(const d of debris){d.x+=d.vx*dt;d.y+=d.vy*dt;d.rot+=d.vr*dt;if(d.x<d.x0)d.x+=d.w;if(d.x>d.x0+d.w)d.x-=d.w;if(d.y<720)d.y+=960;if(d.y>1680)d.y-=960}
   for(const it of items)it.a+=dt*1.4;
+  if(mode==='tow'&&rescue){updateRescue(dt);return}
   if(mode!=='fly')return;
   if(comboT>0){comboT-=dt;if(comboT<=0)combo=0}
   if(ship.pulse>0)ship.pulse-=dt;
@@ -1766,7 +1804,8 @@ function updateFly(dt){
     const wantA=aim.active?aim.ang:iv.m>0?Math.atan2(iv.y,iv.x):null;
     if(wantA!=null){let da=wantA-ship.ang;da=Math.atan2(Math.sin(da),Math.cos(da));ship.ang+=da*Math.min(1,dt*(aim.active?16:9))}
   }
-  ship.x=Math.max(20,Math.min(W-20,ship.x+ship.vx*dt));ship.y=Math.max(20,Math.min(H-20,ship.y+ship.vy*dt));
+  ship.x=Math.max(20,Math.min(W-10,ship.x+ship.vx*dt));ship.y=Math.max(10,Math.min(H-10,ship.y+ship.vy*dt));
+  if(fallTick(dt))return;
   updateGrab(dt);
   ship.fuel-=(.45+.85*iv.m)*dt;
   if(ship.fuel<fuelCap()*.25)once('low',LINES.lowfuel);
@@ -1807,25 +1846,27 @@ function updateFly(dt){
 }
 
 /* ---- run pacing: cargo pods, jump home, run events, endless field ---- */
-const POD_CD=25;let podCd=0,pods=[],homeArm=0,evT=30,respT=0,haul={ice:0,iron:0,irid:0};
+const POD_CD=25,POD_MAX=1;let podCd=0,pods=[],homeArm=0,evT=30,respT=0,haul={ice:0,iron:0,irid:0};
+const holdValue=()=>{let v=0;RES.forEach(r=>{v+=ship.cargo[r]*PRICE[r];fleet.forEach(b=>v+=b.cargo[r]*PRICE[r])});return Math.round(v*payMul())};
 const haulSum=()=>haul.ice+haul.iron+haul.irid;
 const nearHome=()=>Math.hypot(ship.x-ST.x,ship.y-ST.y)<=70;
 function podUi(){const b=$('#dockBtn');if(mode!=='fly'){return}
   if(nearHome()){b.hidden=false;b.dataset.m='dock';b.textContent='Стикування';return}
-  const load=cargoSum()+fleetLoad();if(load>=Math.max(4,cargoCap()*.5)){b.hidden=false;b.dataset.m='pod';b.textContent=podCd>0?`Капсула · ${Math.ceil(podCd)} с`:'Капсула на станцію';b.disabled=podCd>0;return}
+  const load=cargoSum()+fleetLoad();if((run.pods||0)<POD_MAX&&load>=Math.max(4,cargoCap()*.6)){b.hidden=false;b.dataset.m='pod';b.textContent='Капсула на станцію · остання';b.disabled=false;return}
   b.hidden=true}
 function dockAct(){const b=$('#dockBtn');if(b.dataset.m==='pod')sendPod();else dock()}
-function sendPod(){if(podCd>0||mode!=='fly')return;let n=0;
+function sendPod(){if((run.pods||0)>=POD_MAX||mode!=='fly')return;let n=0;
   RES.forEach(r=>{haul[r]+=ship.cargo[r];n+=ship.cargo[r];ship.cargo[r]=0});fleet.forEach(b=>RES.forEach(r=>{haul[r]+=b.cargo[r];n+=b.cargo[r];b.cargo[r]=0}));if(!n)return;
   podCd=POD_CD*cdMul();flags.full=0;run.pods=(run.pods||0)+1;
   const a=Math.atan2(ST.y-ship.y,ST.x-ship.x);pods.push({x:ship.x,y:ship.y,vx:Math.cos(a)*40,vy:Math.sin(a)*40,a,life:2.2});
   SFX.launch();hap('medium');floatText(ship.x,ship.y-16,`Капсула: ${n} од. на станцію`,'#7ff5ea',true);
-  if(!flags.podTip){flags.podTip=1;say('Наднова Пошта підхопила капсулу. Вантаж уже твій, навіть якщо тебе відбуксують. Трюм вільний, працюй далі!',5)}
+  if(!flags.podTip){flags.podTip=1;say('Наднова Пошта підхопила капсулу: цей вантаж уже в безпеці. Капсула одна на рейс, тож усе, що набереш далі, доведеться довезти самому.',5.5)}
   bumpCargo();hud()}
 function updatePods(dt){for(let k=pods.length-1;k>=0;k--){const p=pods[k];p.vx+=Math.cos(p.a)*520*dt;p.vy+=Math.sin(p.a)*520*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;
   if(rnd()<.8)parts.push({x:p.x,y:p.y,vx:(rnd()-.5)*20,vy:(rnd()-.5)*20,life:.4,max:.4,c:rnd()<.5?'#ff7a2a':'#ffe08a'});if(p.life<=0)pods.splice(k,1)}}
 function drawPods(){for(const p of pods){ctx.save();ctx.translate(Math.round(p.x),Math.round(p.y));ctx.rotate(p.a+Math.PI/2);ctx.drawImage(T.capsule,-2,-5);ctx.restore()}}
 function homeTap(){if(mode!=='fly')return;SFX.ui();
+  if(enemies.some(e=>e.hunt&&Math.hypot(e.x-ship.x,e.y-ship.y)<380)){say('Рій надто близько: стрибок зірве захоплення. Відірвись від них або відступай до станції.',3.5);SFX.full();return}
   if(homeArm<=0){homeArm=2.5;$('#homeBtn').classList.add('armed');say('Натисни «Додому» ще раз: Либідь перекине тебе на станцію разом із трюмом.',2.5);return}
   homeArm=0;$('#homeBtn').classList.remove('armed');mode='tow';firing=false;$('#grabBtn').hidden=true;$('#fireBtn').hidden=true;$('#dockBtn').hidden=true;$('#fade').style.opacity=1;SFX.launch();
   setTimeout(()=>{run.jumped=true;dock();$('#fade').style.opacity=0},650)}
@@ -1843,11 +1884,35 @@ const RUN_EV={
     for(let k=0;k<12;k++){const off=(k-6)*26,px=bx+Math.cos(ship.ang)*off+(rnd()-.5)*30,py=by+Math.sin(ship.ang)*off+(rnd()-.5)*30,sp=55+rnd()*35;addRock(px,py,rnd()<.6?0:1,{vx:Math.cos(dir)*sp,vy:Math.sin(dir)*sp,rich:true})}}},
   gold:{t:'Золота жила! Десять секунд уся руда подвійна.',go(){goldT=10;SFX.bonus();floatText(ship.x,ship.y-26,'Золота жила','#ffd23f',true)}},
   cache:{t:'На радарі загублений контейнер Наднової Пошти. Стрілка покаже, де він.',go(){const a=rnd()*6.3,d=300+rnd()*180;items.push({kind:'cache',x:Math.max(560,Math.min(W-120,ship.x+Math.cos(a)*d)),y:Math.max(600,Math.min(H-600,ship.y+Math.sin(a)*d)),a:0})}},
-  swarm:{t:'Хвиля Рою! Тримай оборону, за кожного трофейний хітин.',ok:()=>Object.keys(curSec.en).length>0,go(){const ks=Object.keys(curSec.en),n=3+Math.min(4,Math.floor(S.shipLv/3));
+  swarm:{t:'',ok:()=>false,go(){const ks=Object.keys(curSec.en),n=3+Math.min(4,Math.floor(S.shipLv/3));
     for(let k=0;k<n;k++){const a=rnd()*6.3,d=240+rnd()*120;spawnEnemy(ks[(rnd()*ks.length)|0],ship.x+Math.cos(a)*d,ship.y+Math.sin(a)*d)}SFX.hot()}}
 };
 function runEventsTick(dt){if(Math.hypot(ship.x-ST.x,ship.y-ST.y)<300)return;evT-=dt;if(evT>0)return;evT=38+rnd()*20;
   const ks=Object.keys(RUN_EV).filter(k=>!RUN_EV[k].ok||RUN_EV[k].ok());const k=ks[(rnd()*ks.length)|0];run.events=(run.events||0)+1;RUN_EV[k].go();say(RUN_EV[k].t,4);hap('warning')}
+
+/* ---- leaving geostationary orbit: warning zone, point of no return, Lybid's rescue burn ---- */
+const SAFE={x1:W-250,y0:420,y1:H-420},FALL=220;
+const fallDepth=(x=ship.x,y=ship.y)=>Math.max(0,x-SAFE.x1,SAFE.y0-y,y-SAFE.y1);
+let fallSaid=0;
+function fallTick(dt){const d=fallDepth();if(d<=0){if(fallSaid&&d<=0)fallSaid=0;return false}
+  // Saturn's gravity drags you further out
+  const nx=ship.x>SAFE.x1?1:0,ny=ship.y<SAFE.y0?-1:ship.y>SAFE.y1?1:0,g=40+d*.9;ship.vx+=nx*g*dt;ship.vy+=ny*g*dt;
+  if(fallSaid<1){fallSaid=1;SFX.hot();hap('warning');say('Увага: ти виходиш із геостаціонарної орбіти, Сатурн тягне до себе. Розвертайся!',4)}
+  if(d>FALL*.5&&fallSaid<2){fallSaid=2;SFX.alarm();hap('error');say('ТОЧКА НЕПОВЕРНЕННЯ! Ще трохи, і я сама вмикаю маршові двигуни.',4)}
+  if(d>=FALL){rescueBurn();return true}
+  return false}
+let rescue=null;
+const BURN_LINES=['Я перехопила керування. Маршові двигуни спалили весь трюм, зате корабель цілий. Руду ще накопаєш, а пілот у мене один.',
+  'Сатурн сьогодні отримав безкоштовну руду від станції «Обрій». Я доставила тебе додому автопілотом. Не дякуй. Просто більше так не роби.',
+  'Ти пірнув за точку неповернення, тож я спалила вантаж на маршових і забрала нас додому. Бублик теж переживав. Ну, мабуть.'];
+function rescueBurn(){if(mode!=='fly')return;let lost=0;RES.forEach(r=>{lost+=ship.cargo[r];ship.cargo[r]=0});fleet.forEach(b=>RES.forEach(r=>{lost+=b.cargo[r];b.cargo[r]=0}));
+  run.burned=lost;run.burnMsg=pick(BURN_LINES);mode='tow';firing=false;grab=null;$('#grabBtn').hidden=true;$('#fireBtn').hidden=true;$('#dockBtn').hidden=true;
+  rescue={t:0};SFX.launch();shake(.6,3);hap('error');floatText(ship.x,ship.y-20,lost?`Маршові двигуни: −${lost} руди`:'Маршові двигуни!','#ff9a5a',true);say('Беру керування на себе.',2);
+  setTimeout(()=>{$('#fade').style.opacity=1},1500);setTimeout(()=>{rescue=null;dock();$('#fade').style.opacity=0},2200)}
+function updateRescue(dt){if(!rescue)return;rescue.t+=dt;const a=Math.atan2(ST.y-ship.y,ST.x-ship.x);let da=a-ship.ang;da=Math.atan2(Math.sin(da),Math.cos(da));ship.ang+=da*Math.min(1,dt*6);
+  ship.vx+=Math.cos(ship.ang)*420*dt;ship.vy+=Math.sin(ship.ang)*420*dt;ship.x+=ship.vx*dt;ship.y+=ship.vy*dt;ship.thrust=1;
+  for(let k=0;k<3;k++)parts.push({x:ship.x-Math.cos(ship.ang)*12,y:ship.y-Math.sin(ship.ang)*12,vx:-Math.cos(ship.ang)*80+(rnd()-.5)*40,vy:-Math.sin(ship.ang)*80+(rnd()-.5)*40,life:.5,max:.5,c:rnd()<.5?'#ff7a2a':'#ffe08a'});
+  cam.x+=(ship.x-cam.x)*Math.min(1,dt*6);cam.y+=(ship.y-cam.y)*Math.min(1,dt*6)}
 
 let bumpT=0;
 function bumpCargo(){const b=$('#cargoTxt');if(timeT-bumpT>.06){bumpT=timeT;b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}}
@@ -1865,7 +1930,7 @@ function collect(p,byBot){
 function breakRock(a,direct){
   const i=asteroids.indexOf(a);if(i<0)return;asteroids.splice(i,1);if(target===a)target=null;
   taskProg('rocks',1);if(a.si===2)taskProg('big',1);if(direct)taskProg('grab',1);run.rocks++;gainXP([2,4,7][a.si]);
-  const n=[2,4,7][a.si]+(a.rich?a.si+1:0),lucky=a.rich||rnd()<.12+a.si*.04+(catHappy()?.05:0)+.05*sk('vein')+(runTubes.has('med')?.15:0),val=lucky?2:1;
+  const n=[1,2,4][a.si]+(a.rich?1+a.si:0),lucky=a.rich||rnd()<.12+a.si*.04+(catHappy()?.05:0)+.05*sk('vein')+(runTubes.has('med')?.15:0),val=lucky?2:1;
   if(direct){
     let got=0;
     for(let k=0;k<n;k++){if(cargoSum()<cargoCap()){ship.cargo[a.type]+=val;got+=val;taskProg(a.type,val);SFX.pick(Math.min(k*2,14),a.type,.05+k*.045)}
@@ -1909,7 +1974,7 @@ function hud(){
   $('#fuelBar').style.transform=`scaleX(${Math.max(0,Math.min(1,f))})`;$('#fuelTxt').textContent=Math.ceil(ship.fuel);
   $('#fuelTrack').classList.toggle('low',mode==='fly'&&f<.25);
   $('#cargoBar').style.transform=`scaleX(${Math.min(1,cs/cc)})`;$('#cargoTrack').classList.toggle('full',cs>=cc);
-  const fl=mode==='fly'?fleetLoad():0,hl=mode==='fly'?haulSum():0,key=cs+'/'+cc+'|'+fl+'|'+hl+'|'+S.credits+'|'+RES.map(r=>S.store[r]).join()+S.chitin+mode;if(key!==lastHud){lastHud=key;$('#cargoTxt').innerHTML=cs+'/'+cc+(fl?` <i>+${fl}</i>`:'')+(hl?` <i style="color:#7ff5ea">⇢${hl}</i>`:'');$('#moneyHud').textContent='₴'+S.credits;
+  const fl=mode==='fly'?fleetLoad():0,hl=mode==='fly'?haulSum():0,key=cs+'/'+cc+'|'+fl+'|'+hl+'|'+S.credits+'|'+RES.map(r=>S.store[r]).join()+S.chitin+mode;if(key!==lastHud){lastHud=key;$('#cargoTxt').innerHTML=cs+'/'+cc+(fl?` <i>+${fl}</i>`:'')+(mode==='fly'&&cs+fl?` <i style="color:#ffd23f">₴${holdValue()}</i>`:'')+(hl?` <i style="color:#7ff5ea">⇢${hl}</i>`:'');$('#moneyHud').textContent='₴'+S.credits;
     if(mode==='base')$('#resHud').innerHTML=RES.map(r=>resChip(r,S.store[r])).join('')+`<span class="res chit"><i></i>${S.chitin}</span>`}
   podUi();
   const gb=$('#grabBtn'),fb=$('#fireBtn');
@@ -2004,6 +2069,37 @@ function drawBase(){
   ctx.setTransform(1,0,0,1,0,0);ctx.imageSmoothingEnabled=false;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`700 ${Math.round(11*dpr)}px "Exo 2", sans-serif`;
   for(const b of bots){const im=IMG['bot0'],h=im?im.height*K2:70;const sx=(b.x-ox)*scale,sy=(b.y-h-40-oy)*scale;ctx.lineWidth=3*dpr;ctx.strokeStyle='#120d1a';ctx.strokeText(b.name,sx,sy);ctx.fillStyle='#bff7f2';ctx.fillText(b.name,sx,sy)}
 }
+function drawFallWarn(){const d=fallDepth();if(d<=0||!(mode==='fly'||rescue))return;const k=Math.min(1,d/FALL),W2=cv.width,H2=cv.height,pulse=.5+.5*Math.sin(timeT*(8+k*10));
+  const a=.18+.5*k*pulse,g1=ctx.createRadialGradient(W2/2,H2/2,Math.min(W2,H2)*.3,W2/2,H2/2,Math.max(W2,H2)*.7);g1.addColorStop(0,'rgba(255,40,50,0)');g1.addColorStop(1,`rgba(255,40,50,${a})`);ctx.fillStyle=g1;ctx.fillRect(0,0,W2,H2);
+  if(d>FALL*.45){ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`900 ${Math.round(20*dpr)}px "Exo 2",sans-serif`;ctx.globalAlpha=.6+.4*pulse;ctx.lineWidth=4*dpr;ctx.strokeStyle='#1a0508';
+    const y=H2*.52;ctx.strokeText('ТОЧКА НЕПОВЕРНЕННЯ',W2/2,y);ctx.fillStyle='#ff5a5a';ctx.fillText('ТОЧКА НЕПОВЕРНЕННЯ',W2/2,y);ctx.font=`700 ${Math.round(12*dpr)}px "Exo 2",sans-serif`;
+    ctx.strokeText('розвертайся до станції',W2/2,y+22*dpr);ctx.fillStyle='#ffd0d0';ctx.fillText('розвертайся до станції',W2/2,y+22*dpr);ctx.globalAlpha=1}}
+function drawRadar(){if(mode!=='fly'&&!rescue)return;const R=46*dpr,cx=cv.width-R-12*dpr,cy=178*dpr+R,rng=700,k=R/rng,mp=(x,y)=>[cx+(x-ship.x)*k,cy+(y-ship.y)*k];
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,6.3);ctx.fillStyle='rgba(6,14,20,.78)';ctx.fill();ctx.clip();
+  ctx.fillStyle='rgba(255,60,70,.3)';let [ax]=mp(SAFE.x1,0);ctx.fillRect(ax,cy-R,cx+R-ax+2,2*R);let [,ay]=mp(0,SAFE.y0);ctx.fillRect(cx-R,cy-R,2*R,ay-(cy-R));[,ay]=mp(0,SAFE.y1);ctx.fillRect(cx-R,ay,2*R,cy+R-ay+2);
+  ctx.strokeStyle='rgba(127,245,234,.18)';ctx.lineWidth=dpr;[.33,.66].forEach(f=>{ctx.beginPath();ctx.arc(cx,cy,R*f,0,6.3);ctx.stroke()});
+  const sw=timeT*2.2;ctx.fillStyle='rgba(127,245,234,.12)';ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,sw-.5,sw);ctx.fill();
+  ctx.fillStyle='rgba(180,170,200,.45)';for(const a of asteroids){if(Math.abs(a.x-ship.x)>rng||Math.abs(a.y-ship.y)>rng)continue;const[x,y]=mp(a.x,a.y);const s=(a.si+1)*.7*dpr;ctx.fillRect(x-s/2,y-s/2,s,s)}
+  for(const it of items){if(Math.abs(it.x-ship.x)>rng*1.5||Math.abs(it.y-ship.y)>rng*1.5)continue;let[x,y]=mp(it.x,it.y);const dd=Math.hypot(x-cx,y-cy);if(dd>R-3){x=cx+(x-cx)/dd*(R-3);y=cy+(y-cy)/dd*(R-3)}ctx.fillStyle=it.kind==='cache'?'#ffd23f':'#7ff5ea';ctx.fillRect(x-1.5*dpr,y-1.5*dpr,3*dpr,3*dpr)}
+  for(const e of enemies){if(Math.abs(e.x-ship.x)>rng||Math.abs(e.y-ship.y)>rng)continue;const[x,y]=mp(e.x,e.y);ctx.fillStyle=e.type==='soroka'?'#ffd23f':'#ff4d5a';ctx.globalAlpha=.7+.3*Math.sin(timeT*8+e.x);ctx.beginPath();ctx.arc(x,y,(e.type==='drone'?2.6:1.9)*dpr,0,6.3);ctx.fill()}ctx.globalAlpha=1;
+  {let[x,y]=mp(ST.x,ST.y);const dd=Math.hypot(x-cx,y-cy);if(dd>R-5){x=cx+(x-cx)/dd*(R-5);y=cy+(y-cy)/dd*(R-5)}ctx.fillStyle='#f2b64a';ctx.beginPath();ctx.moveTo(x,y-4*dpr);ctx.lineTo(x+4*dpr,y);ctx.lineTo(x+2.5*dpr,y);ctx.lineTo(x+2.5*dpr,y+3*dpr);ctx.lineTo(x-2.5*dpr,y+3*dpr);ctx.lineTo(x-2.5*dpr,y);ctx.lineTo(x-4*dpr,y);ctx.fill()}
+  if(wave.warn){const p=.5+.5*Math.sin(timeT*10);ctx.strokeStyle=`rgba(255,77,90,${.5+.5*p})`;ctx.lineWidth=5*dpr;ctx.beginPath();ctx.arc(cx,cy,R-3*dpr,wave.dir-.45,wave.dir+.45);ctx.stroke()}
+  ctx.restore();
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(ship.ang);ctx.fillStyle='#e8fffc';ctx.beginPath();ctx.moveTo(4*dpr,0);ctx.lineTo(-3*dpr,-3*dpr);ctx.lineTo(-3*dpr,3*dpr);ctx.fill();ctx.restore();
+  ctx.strokeStyle='rgba(127,245,234,.55)';ctx.lineWidth=1.5*dpr;ctx.beginPath();ctx.arc(cx,cy,R,0,6.3);ctx.stroke();
+  const lab=wave.warn?`ХВИЛЯ ${wave.n+1} · ${Math.max(0,Math.ceil(wave.t))} с`:curSec.k==='north'?'РАДАР · тихо':wave.n?`ХВИЛЯ ${wave.n} · наступна ${Math.ceil(wave.t)} с`:'РАДАР';
+  ctx.textAlign='center';ctx.textBaseline='top';ctx.font=`800 ${Math.round(10*dpr)}px "Exo 2",sans-serif`;ctx.lineWidth=3*dpr;ctx.strokeStyle='#0b0810';ctx.strokeText(lab,cx,cy+R+4*dpr);ctx.fillStyle=wave.warn?'#ff6f7a':'#bff7f2';ctx.fillText(lab,cx,cy+R+4*dpr)}
+function drawStationFly(){const k=1.6;ctx.save();ctx.translate(ST.x,ST.y);
+  // docking zone
+  const near=Math.hypot(ship.x-ST.x,ship.y-ST.y)<260;ctx.globalAlpha=near?.55:.2;ctx.strokeStyle='#7ff5ea';ctx.lineWidth=1;ctx.setLineDash([3,4]);ctx.lineDashOffset=-timeT*8;ctx.beginPath();ctx.arc(0,0,70,0,6.3);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
+  ctx.imageSmoothingEnabled=false;ctx.drawImage(T.station,-48*k,-32*k,96*k,64*k);
+  // rotating ring lights + nav lights
+  for(let i=0;i<16;i++){const a=i/16*6.283+timeT*.35,on=(i+Math.floor(timeT*6))%4===0;ctx.fillStyle=on?'#ffe08a':'#7a5a20';ctx.fillRect(Math.round(Math.cos(a)*39)-1,Math.round(Math.sin(a)*39)-1,2,2)}
+  const bl=Math.sin(timeT*3)>.6;ctx.fillStyle=bl?'#ff4d3a':'#5a1a14';ctx.fillRect(-74,-1,3,3);ctx.fillStyle=bl?'#4dff7a':'#1a5a24';ctx.fillRect(71,-1,3,3);
+  ctx.fillStyle=Math.sin(timeT*4)>0?'#ff4d3a':'#3a1410';ctx.fillRect(-1,-52,3,3);
+  // landing guide lights toward the hangar mouth
+  for(let i=0;i<5;i++){const on=Math.floor(timeT*8)%5===i;ctx.fillStyle=on?'#7ff5ea':'#1d3b45';ctx.fillRect(80+i*9,-1,3,2)}
+  ctx.restore()}
 function drawTentacles(){
   if(!grab)return;const n=nosePt(),ca=Math.cos(ship.ang),sa=Math.sin(ship.ang),px=-sa,py=ca;
   const tight=grab.phase==='pull';
@@ -2028,8 +2124,7 @@ function drawFly(){
   ctx.setTransform(scale,0,0,scale,-ox*scale,-oy*scale);
   const inView=(x,y,m)=>x>ox-m&&x<ox+vw+m&&y>oy-m&&y<oy+vh+m;
   for(const d of dust){if(inView(d.x,d.y,2)){ctx.fillStyle=d.c;ctx.fillRect(Math.round(d.x),Math.round(d.y),1,1)}}
-  ctx.drawImage(T.station,ST.x-48,ST.y-32);
-  if(Math.sin(timeT*4)>0){ctx.fillStyle='#ff4d3a';ctx.fillRect(ST.x,ST.y-32,1,1)}
+  drawStationFly();
   ARK.forEach((m,i)=>{if(!S.ark[m.k])return;const a=i*Math.PI/2+timeT*.3,g=.6+.4*Math.sin(timeT*3+i);ctx.globalAlpha=g;ctx.fillStyle=['#ff6fa8','#7ff5ea','#f2b64a','#e2a0ff'][i];ctx.fillRect(Math.round(ST.x+Math.cos(a)*31)-1,Math.round(ST.y+Math.sin(a)*31)-1,3,3);ctx.globalAlpha=1});
   if(Math.hypot(ship.x-ST.x,ship.y-ST.y)<120){ctx.strokeStyle='rgba(242,182,74,.35)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.arc(ST.x,ST.y,70,0,6.3);ctx.stroke();ctx.setLineDash([])}
   if(mode==='fly'&&S.ship==='kalmar'&&!grab&&grabCd<=0){ctx.fillStyle='rgba(255,111,168,.35)';for(let k=0;k<3;k++){const d=22+k*10+((timeT*30)%10);ctx.fillRect(Math.round(ship.x+Math.cos(ship.ang)*d),Math.round(ship.y+Math.sin(ship.ang)*d),1,1)}}
@@ -2092,7 +2187,7 @@ function drawFly(){
   const stx=shipTex(),[sw,sH]=texSize(stx),hw=sw/2,hh=sH/2;
   ctx.save();ctx.translate(Math.round(ship.x),Math.round(ship.y));ctx.rotate(ship.ang+Math.PI/2+(viraj.t>0?(1-viraj.t/.4)*Math.PI*2:0));
   const ps=ship.pulse>0?1+ship.pulse*1.2:1;ctx.scale(ps,ps);
-  if(mode==='fly'&&(ship.thrust>0||(grab&&grab.phase==='pull'))){const s=.6+Math.max(ship.thrust,.8)*.6+rnd()*.3;
+  if((mode==='fly'||rescue)&&(ship.thrust>0||(grab&&grab.phase==='pull'))){const s=.6+Math.max(ship.thrust,.8)*.6+rnd()*.3;
     if(S.ship!=='chaika'){(S.ship==='kozh'?[-5,5]:[-2,2]).forEach(o=>{ctx.save();ctx.translate(o,hh-1);ctx.scale(1,s);ctx.drawImage(T.flameS,-1,0);ctx.restore()})}
     else{ctx.save();ctx.translate(0,hh);ctx.scale(1,s);ctx.drawImage(T.flame,-2,0);ctx.restore()}}
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(stx,-hw,-hh,sw,sH);ctx.imageSmoothingEnabled=false;ctx.restore();
@@ -2101,6 +2196,7 @@ function drawFly(){
   for(const e of enemies){const sx=(e.x-ox)*scale,sy=(e.y-oy)*scale,W2=cv.width,H2=cv.height;if(sx>0&&sx<W2&&sy>0&&sy<H2)continue;if(Math.hypot(e.x-ship.x,e.y-ship.y)>420)continue;
     const cx=W2/2,cy=H2/2,dx=sx-cx,dy=sy-cy,m=28*dpr,t=Math.min((cx-m)/Math.max(.001,Math.abs(dx)),(cy-m-60*dpr)/Math.max(.001,Math.abs(dy))),px=cx+dx*t,py=cy+dy*t,a=Math.atan2(dy,dx),hot=e.st==='aim'||e.st==='charge'||e.st==='swoop';
     ctx.save();ctx.translate(px,py);ctx.rotate(a);ctx.fillStyle=e.type==='soroka'?'#ffd23f':'#ff4d5a';ctx.globalAlpha=hot?.95:.7;const s2=(hot?9:7)*dpr;ctx.beginPath();ctx.moveTo(s2,0);ctx.lineTo(-s2,-s2*.8);ctx.lineTo(-s2*.4,0);ctx.lineTo(-s2,s2*.8);ctx.fill();ctx.restore();ctx.globalAlpha=1}
+  drawFallWarn();drawRadar();
   if(curSec.dark){const sx=(ship.x-ox)*scale,sy=(ship.y-oy)*scale,g=ctx.createRadialGradient(sx,sy,70*scale,sx,sy,150*scale);g.addColorStop(0,'rgba(6,4,12,0)');g.addColorStop(1,'rgba(6,4,12,.9)');ctx.fillStyle=g;ctx.fillRect(0,0,cv.width,cv.height)}
   if(stormOn){ctx.fillStyle=`rgba(80,140,255,${.06+.05*Math.sin(timeT*30)})`;ctx.fillRect(0,0,cv.width,cv.height)}
   if(goldT>0){ctx.strokeStyle=`rgba(255,210,63,${.25+.15*Math.sin(timeT*10)})`;ctx.lineWidth=6*dpr;ctx.strokeRect(0,0,cv.width,cv.height)}
@@ -2142,7 +2238,7 @@ function launch(){
   runTubes=new Set();S.loadout.slice(0,slots()).forEach(k=>{if(k&&S.tubes[k]>0&&!runTubes.has(k)){S.tubes[k]--;runTubes.add(k)}});
   ship.fuel=fuelCap()*(runTubes.has('uzvar')?1.25:1);ship.hp=maxHp();
   run={xp:0,lv:0,rocks:0,kills:0,chit:0,taskSum:0,food:0,wreck:false,sector:sectorIdx()};viraj={cd:0,t:0};manip={cd:0,ph:null};warpCd=0;goldT=0;stormOn=false;stormT=20;alarmT=35;counterCd=0;lastHitT=-9;
-  haul={ice:0,iron:0,irid:0};pods=[];eshots=[];podCd=0;homeArm=0;evT=28;respT=0;$('#homeBtn').classList.remove('armed');
+  haul={ice:0,iron:0,irid:0};pods=[];eshots=[];wave={n:0,t:45,warn:false,dir:0,count:0};fallSaid=0;rescue=null;podCd=0;homeArm=0;evT=28;respT=0;$('#homeBtn').classList.remove('armed');
   ship.x=ST.x+34;ship.y=ST.y+6;ship.vx=60;ship.vy=0;ship.ang=0;cam.x=ship.x;cam.y=ship.y;
   fleet=ownedBots().map((o,i)=>({name:o.name,lv:o.lv,cap:Math.max(1,Math.round(cargoCap()*BOT_CAP[o.lv])),cargo:{ice:0,iron:0,irid:0},x:ship.x-20-i*6,y:ship.y+(i-1)*10,vx:0,vy:0,job:null,cool:i*.1,zap:null}));
   S.trips++;S.flying=true;save();SFX.launch();
@@ -2165,7 +2261,7 @@ function dock(){
 }
 function startTow(){
   mode='tow';$('#dockBtn').hidden=true;$('#homeBtn').classList.remove('armed');$('#grabBtn').hidden=true;$('#fireBtn').hidden=true;firing=false;$('#fade').style.opacity=1;
-  setTimeout(()=>{RES.forEach(r=>{ship.cargo[r]=Math.floor(ship.cargo[r]/2)});fleet.forEach(b=>RES.forEach(r=>{b.cargo[r]=Math.floor(b.cargo[r]/2)}));run.towed=true;dock();$('#fade').style.opacity=0},700);
+  setTimeout(()=>{const keep=run.wreck?0:.5;run.lost=0;RES.forEach(r=>{const k=Math.floor(ship.cargo[r]*keep);run.lost+=ship.cargo[r]-k;ship.cargo[r]=k});fleet.forEach(b=>RES.forEach(r=>{const k=Math.floor(b.cargo[r]*keep);run.lost+=b.cargo[r]-k;b.cargo[r]=k}));run.towed=true;dock();$('#fade').style.opacity=0},700);
 }
 
 /* ================= PANELS ================= */
@@ -2177,9 +2273,10 @@ function dronePending(){
   if(total<1)return{total:0,hrs};const irid=lv>=3?Math.floor(total*.15):0,iron=Math.floor((total-irid)*.45);return{total,hrs,ice:total-irid-iron,iron,irid};
 }
 const haveRes=k=>k==='cr'?S.credits:k==='chit'?S.chitin:S.store[k];
-function afford(c){if(S.testMode)return true;return Object.entries(c).every(([k,v])=>haveRes(k)>=v)}
-function pay(c,label){if(S.testMode){tx(label,0);return}Object.entries(c).forEach(([k,v])=>{if(k==='cr')S.credits-=v;else if(k==='chit')S.chitin-=v;else S.store[k]-=v});tx(label,-(c.cr||0))}
-const costHtml=c=>Object.entries(c).map(([k,v])=>k==='cr'?`<span class="${!S.testMode&&S.credits<v?'no':''}">₴${v}</span>`:`<span class="res ${k} ${!S.testMode&&haveRes(k)<v?'no':''}"><i></i>${v} ${k==='chit'?'хітину':RSHORT[k]}</span>`).join('');
+const OREK=.6,scaleCost=c=>{const o={};for(const k in c)o[k]=(k==='ice'||k==='iron'||k==='irid')?Math.max(1,Math.round(c[k]*OREK)):c[k];return o};
+function afford(c){if(S.testMode)return true;c=scaleCost(c);return Object.entries(c).every(([k,v])=>haveRes(k)>=v)}
+function pay(c,label){if(S.testMode){tx(label,0);return}c=scaleCost(c);Object.entries(c).forEach(([k,v])=>{if(k==='cr')S.credits-=v;else if(k==='chit')S.chitin-=v;else S.store[k]-=v});tx(label,-(c.cr||0))}
+const costHtml=c=>Object.entries(scaleCost(c)).map(([k,v])=>k==='cr'?`<span class="${!S.testMode&&S.credits<v?'no':''}">₴${v}</span>`:`<span class="res ${k} ${!S.testMode&&haveRes(k)<v?'no':''}"><i></i>${v} ${k==='chit'?'хітину':RSHORT[k]}</span>`).join('');
 const locked=rq=>!S.testMode&&S.quota.level<rq;
 const testBar=()=>S.testMode?`<div class="testbar">Режим тестера: усі покращення, кораблі й товари відкриті та безкоштовні. Вимикається у Либіді на містку.</div>`:'';
 const strictBox=()=>S.strict?`<div class="strict">Либідь заморозила майстерні, поки норму не виконано. Відправ потрібне на Землю через термінал вантажу в ангарі.</div>`:'';
@@ -2281,17 +2378,26 @@ function secManeuver(){
   return`<section class="box"><h2>Орбітальний маневр</h2><p class="note">Двигуни коригування орбіти: дозволяють перейти в будь-який сектор, не чекаючи. Разом із маневром відкривається вибір шляху: гілки навичок «Добувач» і «Мисливець».</p>
    ${ok?`<div class="row" style="justify-content:space-between"><span class="cost" style="display:flex;gap:10px;flex-wrap:wrap">${costHtml(c)}</span><button class="btn" data-a="mbuild" ${afford(c)?'':'disabled'}>Збудувати</button></div>`:`<span class="lock" style="color:#c9a4ff">Потрібен 5-й рівень корабля (зараз ${S.shipLv})</span>`}</section>`;
 }
+const TREE={agil:[2,0],tank:[2,1],mag:[2,2],hull:[2,3],slot:[2,4],drill:[1,1],hold:[0,2],vein:[1,2],tecton:[0,3],gold:[1,4],plates:[3,1],hot:[4,2],shield:[3,2],trophy:[4,3],counter:[3,4]};
+const TREQ={tank:'agil',mag:'tank',hull:'mag',slot:'hull',drill:'agil',hold:'drill',vein:'drill',tecton:'hold',gold:'vein',plates:'agil',hot:'plates',shield:'plates',trophy:'hot',counter:'shield'};
+const SKICON={agil:'🌀',tank:'⛽',mag:'🧲',hull:'🛡️',slot:'🍱',drill:'⛏️',hold:'📦',vein:'💎',tecton:'🪨',gold:'✨',plates:'🧱',hot:'🔥',shield:'🔰',trophy:'🏆',counter:'💥'};
+let skSel='agil';
+function skLock(x){if(x.br!=='base'&&!branchOpen())return'гілка відкриється з «Орбітальним маневром»';if(x.lv&&S.shipLv<x.lv)return`з ${x.lv}-го рівня корабля`;
+  const p=TREQ[x.k];if(p&&!sk(p))return`спершу вивчи «${SKILLS.find(q=>q.k===p).name}»`;if(x.ult&&brSpent(x.br)<3)return`вклади 3 очки в гілку (зараз ${brSpent(x.br)})`;return''}
 function secSkills(){
-  const sp=spFree(),need=XP_NEED(S.shipLv);
-  const node=x=>{const r=sk(x.k),dots=Array.from({length:x.max},(_,i)=>`<i class="${i<r?'on':''}"></i>`).join('');
-    let lock='';if(x.br!=='base'&&!branchOpen())lock='після «Орбітального маневру»';else if(x.lv&&S.shipLv<x.lv)lock=`з ${x.lv}-го рівня`;else if(x.ult&&brSpent(x.br)<3)lock=`вклади 3 очки в гілку (зараз ${brSpent(x.br)})`;
-    return`<div class="sk ${x.ult?'ult':''}"><span class="nm">${x.ult?'★ ':''}${x.name} <span class="dots">${dots}</span></span><span class="st">${x.d}${lock?` · <span style="color:#c9a4ff">${lock}</span>`:''}</span><button class="btn" data-a="skill" data-k="${x.k}" ${!lock&&sp>0&&r<x.max?'':'disabled'}>+1</button></div>`};
-  const br=b=>`<section class="box"><h2>${BRANCH[b]} <small>${b==='base'?'для всіх':b==='miner'?'фарм і руда':'бій із Роєм'}</small></h2>${b!=='base'&&!branchOpen()?'<p class="note">Гілка відкриється разом з модулем «Орбітальний маневр» (5-й рівень корабля).</p>':''}${SKILLS.filter(x=>x.br===b).map(node).join('')}</section>`;
+  const sp=spFree(),need=XP_NEED(S.shipLv),pos=k=>TREE[k].map(v=>v*20+10);
+  const lines=SKILLS.filter(x=>TREQ[x.k]).map(x=>{const[a,b]=pos(TREQ[x.k]),[c,d]=pos(x.k),on=sk(TREQ[x.k])>0;return`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" class="${on?'on':''} br-${x.br}"/>`}).join('');
+  const nodes=SKILLS.map(x=>{const r=sk(x.k),lock=skLock(x),[l,t]=pos(x.k),st=r>=x.max?'max':lock?'lock':sp>0?'avail':'open';
+    return`<button class="tn br-${x.br} ${st} ${x.ult?'ult':''} ${skSel===x.k?'sel':''}" style="left:${l}%;top:${t}%" data-a="sksel" data-k="${x.k}"><span>${SKICON[x.k]}</span><small>${r}/${x.max}</small></button>`}).join('');
+  const x=SKILLS.find(q=>q.k===skSel)||SKILLS[0],r=sk(x.k),lock=skLock(x);
   const rc=150*S.shipLv;
-  return`<section class="box"><h2>Рівень корабля</h2><div class="row" style="justify-content:space-between"><span class="lvbig">${S.shipLv}</span><span>Очок: <span class="sp">${sp}</span></span></div>
-   <div class="prog"><i style="width:${S.shipLv>=MAX_LV?100:S.xp/need*100}%;background:var(--lyb)"></i></div><p class="note">${S.shipLv>=MAX_LV?'Максимальний рівень.':`${S.xp}/${need} досвіду до наступного рівня.`} Досвід дають камені, вороги, капсули й завдання. Рівень спільний для всіх кораблів.</p></section>`+
-   br('base')+br('miner')+br('hunter')+
-   `<section class="box"><h2>Скинути навички</h2><p class="note">Усі очки повернуться, можна розподілити заново.</p><div class="row" style="justify-content:space-between"><span>₴${rc}</span><button class="btn alt" data-a="respec" ${spSpent()&&(S.testMode||S.credits>=rc)?'':'disabled'}>Скинути</button></div></section>`;
+  return`<section class="box"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Рівень ${S.shipLv}</h2><span>Вільних очок: <span class="sp">${sp}</span></span></div>
+   <div class="prog"><i style="width:${S.shipLv>=MAX_LV?100:S.xp/need*100}%;background:var(--lyb)"></i></div><p class="note">${S.shipLv>=MAX_LV?'Максимальний рівень.':`${S.xp}/${need} досвіду.`} Рівень спільний для всіх кораблів.</p></section>
+   <section class="box"><div class="treeh"><span style="color:#ffb347">Добувач</span><span style="color:#7ff5ea">Основа</span><span style="color:#ff7a8a">Мисливець</span></div>
+   <div class="tree"><svg viewBox="0 0 100 100" preserveAspectRatio="none">${lines}</svg>${nodes}</div>
+   <div class="skcard br-${x.br}"><div class="row" style="justify-content:space-between;align-items:flex-start"><div><b>${x.ult?'★ ':''}${x.name}</b> <small class="note">${BRANCH[x.br]} · ${r}/${x.max}</small><p class="note" style="margin:4px 0 0">${x.d}</p>${lock&&r<x.max?`<p class="lock" style="color:#c9a4ff;margin:4px 0 0">🔒 ${lock}</p>`:''}</div>
+     <button class="btn" data-a="skill" data-k="${x.k}" ${!lock&&sp>0&&r<x.max?'':'disabled'}>${r>=x.max?'Максимум':'+1 очко'}</button></div></div></section>
+   <section class="box"><h2>Скинути навички</h2><div class="row" style="justify-content:space-between"><span class="note">Усі очки повернуться. Ціна: ₴${rc}</span><button class="btn alt" data-a="respec" ${spSpent()&&(S.testMode||S.credits>=rc)?'':'disabled'}>Скинути</button></div></section>`;
 }
 function orbitArt(c){
   const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.fillStyle='#0b0812';x.fillRect(0,0,220,150);
@@ -2302,7 +2408,7 @@ function orbitArt(c){
     const am=(a0+a1)/2;x.fillStyle=sc.col;x.font='bold 9px "Exo 2",sans-serif';x.textAlign='center';x.fillText(sc.short,110+Math.cos(am)*82,75+Math.sin(am)*48+3)});
   x.globalAlpha=1;const as=-Math.PI/2-Math.PI/4+(cur+prog)*Math.PI/2,sx=110+Math.cos(as)*98,sy=75+Math.sin(as)*62;x.drawImage(T.station,0,0,96,64,sx-12,sy-8,24,16);
 }
-function needLines(cost){return Object.entries(cost).map(([k,v])=>{const h=haveRes(k),nm=k==='cr'?'гривні':k==='chit'?'хітин':RNAME[k].toLowerCase();
+function needLines(cost){return Object.entries(scaleCost(cost)).map(([k,v])=>{const h=haveRes(k),nm=k==='cr'?'гривні':k==='chit'?'хітин':RNAME[k].toLowerCase();
   return`<div class="needl"><span>${nm}</span><b class="${h>=v?'ok':'no'}">${k==='cr'?'₴':''}${Math.min(h,v)} / ${k==='cr'?'₴':''}${v}${h>=v?'':` · бракує ${v-h}`}</b></div>`}).join('')}
 function secStorage(){
   const dp=dronePending(),nf=FLEET[S.fleetLv],ark=ARK.find(m=>!S.ark[m.k]),now=Date.now();
@@ -2363,29 +2469,26 @@ const PANELS={
  tip:{t:()=>TIPS[curTip].t,s:'підказка · що тут є',b(){return`<section class="box"><ul class="tiplist">${TIPS[curTip].i.map(x=>`<li>${x}</li>`).join('')}</ul>
    <div class="row" style="justify-content:space-between"><button class="btn alt" data-a="tipoff">Вимкнути підказки</button><button class="btn" data-a="tipok">Зрозуміло</button></div></section>`}},
  ship:{t:()=>`Космоліт «${SHIPS[S.ship].name}»`,s:'ангар · усе про корабель',b(){
-   const tabs=[['fly','Виліт'],['skills','Навички'],['gear','Спорядження'],['weapons','Зброя'],['hull','Корпус']];
-   const tb=`<div class="stabs">${tabs.map(([k,n])=>`<button data-a="stab" data-k="${k}" class="${S.shipTab===k?'on':''} ${k==='skills'&&spFree()?'dot':''}">${n}</button>`).join('')}</div>`;
-   const t=S.shipTab;
-   if(t==='skills')return tb+secSkills();
-   if(t==='gear')return tb+secShop('garage',`Спорядження «${SHIPS[S.ship].name}»`)+secStoreChips();
-   if(t==='weapons')return tb+(S.ship==='kozh'?'<section class="box"><h2>Варп-бомби</h2><p class="note">Кожум\'яка має власну зброю: «Вогонь» кидає варп-бомбу раз на секунду. Інша зброя стане доступна на інших кораблях.</p></section>':'')+secWeapons();
-   if(t==='hull')return tb+secShips();
+   if(!['ship','skills'].includes(S.shipTab))S.shipTab='ship';
    const cs=cargoSum(),sec=SECTORS[sectorIdx()],en=Object.keys(sec.en);
-   return tb+`<div class="secinfo" style="border-color:${sec.col}"><b style="color:${sec.col}">${sec.name}</b><span>${sec.desc}</span>
-     <span>${en.length?en.map(k=>`<span class="tag">${EN[k].name}</span>`).join(''):'<span class="tag ok">без ворогів</span>'} ще ${Math.ceil(sectorLeft()/60000)} хв</span></div>
-     <section class="box"><h2>Пайок на рейс <small>${slots()} ${slots()>1?'слоти':'слот'}</small></h2>${[...Array(slots())].map((_,si)=>`<span class="slot">Слот ${si+1}</span><div class="loadout"><button data-a="tube" data-k="" data-r="${si}" class="${!S.loadout[si]?'on':''}">Без пайка</button>${Object.entries(TUBES).map(([k,tb])=>`<button data-a="tube" data-k="${k}" data-r="${si}" class="${S.loadout[si]===k?'on':''}" ${(S.tubes[k]||0)>0?'':'disabled'}><canvas class="pix" width="5" height="9" data-tube="${k}"></canvas>${tb.name} ×${S.tubes[k]||0}</button>`).join('')}</div>`).join('')}
-     ${S.loadout.slice(0,slots()).filter(Boolean).map(k=>`<p class="note">${TUBES[k].name}: ${TUBES[k].desc}.</p>`).join('')}</section>
-     <section class="box"><h2>Корабель</h2><div class="stats">
-     <div><span>Броня</span><b>${maxHp()}</b></div><div><span>Пальне</span><b>${fuelCap()}</b></div><div><span>Трюм</span><b>${cargoCap()}</b></div><div><span>Екіпаж</span><b>${crewN()?crewNames():'—'}</b></div></div>
-     ${catHappy()?`<p class="note">${CAT} ситий: удача +5%.</p>`:`<p class="note">${CAT} голодний. Нагодуй перед вильотом, і він принесе удачу.</p>`}
-     ${cs?`<p class="note">У трюмі ще ${cs} од. руди. При вильоті вона піде на склад.</p>`:''}
-     <button class="btn big" data-a="launch">Вилетіти в ${sec.name.toLowerCase()}</button></section>`}},
+   const launch=`<div class="launchbox" style="--sc:${sec.col}"><div class="lb-sec"><b style="color:${sec.col}">${sec.name}</b><span>${en.length?'Рій: '+en.map(k=>EN[k].name).join(', ')+' · хвилі наростають':'без ворогів, спокійний фарм'} · ще ${Math.ceil(sectorLeft()/60000)} хв</span></div>
+     <div class="lb-row">${[...Array(slots())].map((_,si)=>`<label class="lb-tube">Пайок${slots()>1?' '+(si+1):''}<select data-tsel="${si}"><option value="">без пайка</option>${Object.entries(TUBES).map(([k,tb])=>`<option value="${k}" ${S.loadout[si]===k?'selected':''} ${(S.tubes[k]||0)>0?'':'disabled'}>${tb.name} ×${S.tubes[k]||0}</option>`).join('')}</select></label>`).join('')}
+       <span class="lb-stat">Броня ${maxHp()} · Пальне ${fuelCap()} · Трюм ${cargoCap()}</span></div>
+     ${cs?`<p class="note">У трюмі ще ${cs} од. руди: при вильоті вона піде на склад.</p>`:''}
+     <button class="launchbtn" data-a="launch"><span>Вилетіти</span><small>${sec.name.toLowerCase()} · ${S.ship==='chaika'?'Чайка':SHIPS[S.ship].name}</small></button></div>`;
+   const tabs=`<div class="seg"><button data-a="stab" data-k="ship" class="${S.shipTab==='ship'?'on':''}">Корабель</button><button data-a="stab" data-k="skills" class="${S.shipTab==='skills'?'on':''} ${spFree()?'dot':''}">Навички${spFree()?` · ${spFree()}`:''}</button></div>`;
+   if(S.shipTab==='skills')return launch+tabs+secSkills();
+   return launch+tabs+secShips()+
+     `<section class="box"><h2>Екіпаж і стан</h2><div class="stats"><div><span>Броня</span><b>${maxHp()}</b></div><div><span>Пальне</span><b>${fuelCap()}</b></div><div><span>Трюм</span><b>${cargoCap()}</b></div><div><span>Боти</span><b>${crewN()?crewNames():'—'}</b></div></div>
+     <p class="note">${catHappy()?`${CAT} ситий: удача +5%.`:`${CAT} голодний. Нагодуй перед вильотом, і він принесе удачу.`}</p></section>`+
+     secShop('garage',`Спорядження «${SHIPS[S.ship].name}»`)+
+     (S.ship==='kozh'?'<section class="box"><h2>Зброя: варп-бомби</h2><p class="note">Кожум\'яка має власну зброю: «Вогонь» кидає варп-бомбу раз на секунду. Інша зброя доступна на інших кораблях.</p></section>':secWeapons())+secStoreChips()}},
  report:{t:'Рейс завершено',s:'звіт Либіді',b(){const cs=cargoSum();
-   return secLyb(run.towed?(run.wreck?LINES.wreck:LINES.tow):run.msg||pick(LINES.back))+
+   return secLyb(run.burnMsg||(run.towed?(run.wreck?LINES.wreck:LINES.tow):run.msg||pick(LINES.back)))+
    (run.lv?`<div class="levelup">Новий рівень корабля: ${S.shipLv}! Очок навичок: ${spFree()}. Розподіли їх у космольоті.</div>`:'')+
    `<section class="box"><h2>Підсумок <small>${SECTORS[run.sector].name}</small></h2><div class="rep">
      <div><span>Каменів</span><b>${run.rocks}</b></div><div><span>Ворогів</span><b>${run.kills}</b></div><div><span>Досвід</span><b>+${run.xp}</b></div>
-     <div><span>Хітин</span><b>+${run.chit}</b></div><div><span>Капсулами</span><b>${run.hauled||0}${run.pods?` · ${run.pods} шт.`:''}</b></div><div><span>Подій</span><b>${run.events||0}</b></div><div><span>Завдання</span><b>${run.tasksDone||0}${run.taskSum?` · ₴${run.taskSum}`:''}</b></div><div><span>Від ботів</span><b>${run.fromBots||0}</b></div></div>
+     <div><span>Хітин</span><b>+${run.chit}</b></div><div><span>Капсулами</span><b>${run.hauled||0}${run.pods?` · ${run.pods} шт.`:''}</b></div><div><span>Хвиль Рою</span><b>${run.waves||0}</b></div>${run.burned||run.lost?`<div><span>Втрачено руди</span><b style="color:#ff9a7a">${(run.burned||0)+(run.lost||0)}</b></div>`:''}<div><span>Завдання</span><b>${run.tasksDone||0}${run.taskSum?` · ₴${run.taskSum}`:''}</b></div><div><span>Від ботів</span><b>${run.fromBots||0}</b></div></div>
      <div class="prog"><i style="width:${S.shipLv>=MAX_LV?100:S.xp/XP_NEED(S.shipLv)*100}%;background:var(--lyb)"></i></div><p class="note">Рівень ${S.shipLv}: ${S.xp}/${XP_NEED(S.shipLv)} досвіду${run.food?` · ${CAT}у прийшло ${run.food} порц. корму`:''}</p></section>
    <section class="box"><h2>Вантаж <small>${cs} од.</small></h2>`+(cs?`<div class="unload">${RES.filter(r=>ship.cargo[r]).map(r=>`
      <span class="res ${r}"><i></i>${RNAME[r]} ${ship.cargo[r]} <span>· ₴${Math.round(PRICE[r]*payMul())}/од.</span></span>
@@ -2488,12 +2591,13 @@ $('#panel').addEventListener('click',e=>{if(e.target.id==='panel'){closePanel();
   else if(a==='drones'){const dp=dronePending();if(dp&&dp.total){RES.forEach(x=>S.store[x]+=dp[x]||0);S.droneLast=Date.now();say(LINES.drones);SFX.coin()}}
   else if(a==='donate'){S.lv.engine=Math.max(3,S.lv.engine);say(LINES.donate,5);SFX.bonus()}
   else if(a==='stab'){S.shipTab=k;SFX.ui()}
+  else if(a==='sksel'){skSel=k;SFX.ui()}
   else if(a==='tube'){S.loadout[+r]=k||null;SFX.ui()}
-  else if(a==='skill'){const x=SKILLS.find(q=>q.k===k);if(x&&spFree()>0&&sk(k)<x.max){S.skills[k]=sk(k)+1;SFX.bonus();hap('success')}}
+  else if(a==='skill'){const x=SKILLS.find(q=>q.k===k);if(x&&!skLock(x)&&spFree()>0&&sk(k)<x.max){S.skills[k]=sk(k)+1;SFX.bonus();hap('success')}}
   else if(a==='respec'){const rc=150*S.shipLv;if(!S.testMode){if(S.credits<rc)return;S.credits-=rc;tx('Скидання навичок',-rc)}S.skills={};SFX.ui();say('Навички скинуто. Очки повернулись.',3)}
   else if(a==='mbuild'){const c={iron:40,ice:40,cr:300};if(!afford(c))return;pay(c,'Модуль: Орбітальний маневр');S.maneuver=true;SFX.bonus();say(LINES.maneuver,6)}
   else if(a==='jump'){const c={ice:15,cr:60};if(!afford(c))return;pay(c,'Орбітальний маневр');const base=Math.floor(Date.now()/SECTOR_MS);S.orbitShift=((+k-base)%4+4)%4;SFX.launch();say(`«Обрій» переходить у ${SECTORS[+k].name.toLowerCase()}.`,4)}
-  else if(a==='guide'){closePanel();guide={id:k,t:12};if(r)S.shipTab=r;SFX.ui();return}
+  else if(a==='guide'){closePanel();guide={id:k,t:12};if(r)S.shipTab=r==='skills'?'skills':'ship';SFX.ui();return}
   else if(a==='allstore'){RES.forEach(x=>{S.store[x]+=ship.cargo[x];ship.cargo[x]=0});SFX.ui()}
   else if(a==='allearth'){let p=0,pts=0;RES.forEach(x=>{const n=ship.cargo[x];if(!n)return;p+=Math.round(n*PRICE[x]*payMul());S.quota.got[x]+=n;pts+=n*FLEET_PTS[x];ship.cargo[x]=0});if(p){S.credits+=p;tx('Укрзоряниця: увесь вантаж',p);addFleet(pts);SFX.coin();if(quotaMet())completeQuota()}}
   else if(a==='repok'){closePanel();save();return}
@@ -2504,11 +2608,12 @@ $('#panel').addEventListener('click',e=>{if(e.target.id==='panel'){closePanel();
 });
 function completeQuota(){
   const q=S.quota,rew=150+120*(q.level-1);S.credits+=rew;tx(`Премія за норму ${q.level}-го рівня`,rew);
-  q.level++;const Lq=q.level;q.need={ice:20+12*(Lq-1),iron:6+8*(Lq-1),irid:Lq>=3?4*(Lq-2):0};q.got={ice:0,iron:0,irid:0};q.left=4;S.strict=false;
+  q.level++;const Lq=q.level;q.need={ice:12+7*(Lq-1),iron:4+5*(Lq-1),irid:Lq>=3?2*(Lq-2):0};q.got={ice:0,iron:0,irid:0};q.left=4;S.strict=false;
   say(LINES.quota,6);setTimeout(()=>SFX.bonus(),150);
 }
 $('#actBtn').addEventListener('click',()=>{if(nearDev)interact(nearDev)});
 $('#dockBtn').addEventListener('click',()=>{if(mode==='fly')dockAct()});
+document.addEventListener('change',ev=>{const t=ev.target;if(t&&t.dataset&&t.dataset.tsel!=null){const si=+t.dataset.tsel;S.loadout[si]=t.value||null;save();SFX.ui();if(panelKind)renderPanel()}});
 $('#mapBtn').addEventListener('click',()=>{if(mode==='base'){SFX.ui();openPanel('map')}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)save(true)});
 
