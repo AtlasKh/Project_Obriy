@@ -417,7 +417,7 @@ const RES=['ice','iron','irid'];
 const RNAME={ice:'Лід',iron:'Залізо',irid:'Іридій'};
 const RSHORT={ice:'лід',iron:'зал.',irid:'ірид.'};
 const RCOL={ice:'#bfefff',iron:'#ff9a4a',irid:'#e2a0ff'};
-const PRICE={ice:8,iron:18,irid:60};
+const PRICE={ice:10,iron:22,irid:70};
 const BOT_NAMES=['Кий','Щек','Хорив'];
 const BOT_CAP=[0,.15,.25,.35,.5],BOT_DMG=[0,0,2,3.2,5],BOT_SIZE=[0,-1,0,1,1],BOT_RATE=[0,6,12,20,30];
 const BOT_UP=[{iron:15,ice:10,cr:120},{iron:35,irid:5,cr:350},{iron:60,irid:12,cr:800}];
@@ -629,7 +629,7 @@ const LINES={
 
  perun:'«Перун» в ангарі! Затисни кнопку «Гіперлуч» на пів секунди, і блискавка зробить решту.',
  hot:'Гул перегрівся! Дай йому кілька секунд охолонути.',
- huge:'Брила-гігант. Лут з неї не вибити, але можна відрізати шматки. Ріж наскрізь!',
+ huge:'Брила-гігант, серце цієї туманності! Звичайне каміння навколо часто порожнє, а кожен шматок, відрізаний від гіганта, гарантовано дає руду. Ріж наскрізь!',
  weapon:'Зброю змінено. Стріляй кнопкою «Вогонь» праворуч унизу.',
  ark:'Модуль ковчега встановлено. Я відчуваю, як «Обрій» прокидається.',
  act1:'Усі модулі на місці й сигнал розшифровано. Ковчег «Обрій» готовий до першого стрибка. Наступна зупинка: Титан. Далі буде в наступному оновленні!',
@@ -1138,16 +1138,14 @@ function genField(){
   asteroids=[];pickups=[];items=[];debris=[];shards=[];rings=[];floats=[];
   curSec=SECTORS[sectorIdx()];const mix=curSec.mix;
   const pickType=base=>{const w={ice:base[0]*mix.ice,iron:base[1]*mix.iron,irid:base[2]*mix.irid},t=w.ice+w.iron+w.irid;let r=rnd()*t;return r<w.ice?'ice':r<w.ice+w.iron?'iron':'irid'};
-  for(let k=0;k<360;k++){
-    const x=520+rnd()*(W-620),y=Math.max(560,Math.min(H-560,1200+gauss()*320));
-    const type=pickType(x<1600?[.7,.3,0]:x<2800?[.3,.58,.12]:[.15,.4,.45]);
-    const sp=rnd(),si=sp<.45?0:sp<.83?1:2,R=SIZES[si],hard=type==='irid'?2.4:type==='iron'?1.4:1,hp=[10,24,46][si]*hard;
-    asteroids.push({x,y,type,si,R,v:(rnd()*3)|0,hp,max:hp,rot:rnd()*6.3,vr:(rnd()-.5)*.5,vx:(rnd()-.5)*4,vy:(rnd()-.5)*4,hitT:0,tickT:0,stage:0,cracks:makeCracks(R),kx:0,ky:0});
-  }
-  huges=[];bullets=[];waves=[];hyper.bolts=[];
-  const ng=curSec.giants;for(let k=0;k<ng;k++){const x=750+k*(3100/ng)+rnd()*120,y=1200+gauss()*260;
-    const type=pickType(x<1600?[.6,.4,0]:x<2800?[.25,.55,.2]:[0,.4,.6]);
-    const h=makeHuge(x,y,type,32+rnd()*18);huges.push(h);asteroids=asteroids.filter(a=>Math.hypot(a.x-h.cx,a.y-h.cy)>h.n*CS*.6+a.R+6)}
+  huges=[];bullets=[];waves=[];hyper.bolts=[];clusters=[];
+  const NC=6+((rnd()*3)|0),span=(SAFE.x1-900)/NC;
+  for(let c=0;c<NC;c++){const x=850+(c+.2+rnd()*.6)*span,y=SAFE.y0+260+rnd()*(SAFE.y1-SAFE.y0-520);
+    const type=pickType(x<1600?[.7,.3,0]:x<2800?[.3,.58,.12]:[.15,.4,.45]),cl={x,y,type,r:190+rnd()*90,n0:0,seed:rnd()*100};clusters.push(cl);
+    const h=makeHuge(x,y,type,28+rnd()*16);huges.push(h);const hr=h.n*CS/2;
+    const cnt=14+((rnd()*10)|0);for(let k=0;k<cnt;k++){const a=rnd()*6.3,d=hr+24+Math.sqrt(rnd())*cl.r,sp=rnd();addRock(x+Math.cos(a)*d,y+Math.sin(a)*d*.8,sp<.55?0:sp<.9?1:2,{type:rnd()<.75?type:pickType([.5,.4,.1])})}
+    cl.n0=cnt}
+  for(let k=0;k<22;k++){const x=600+rnd()*(SAFE.x1-700),y=SAFE.y0+80+rnd()*(SAFE.y1-SAFE.y0-160);if(clusters.some(c=>Math.hypot(c.x-x,c.y-y)<c.r+120))continue;addRock(x,y,rnd()<.8?0:1)}
   items.push({kind:'bag',x:1300+rnd()*2300,y:1200+gauss()*250,a:0});
   // message capsules: the next two undiscovered fragments, deeper fragments sit farther out
   const left=FRAGS.map((_,i)=>i).filter(i=>!S.frags.includes(i)).slice(0,curSec.capsules||2);
@@ -1530,25 +1528,27 @@ function doManip(){if(manip.cd>0||manip.ph)return;const lv=L('kgrip'),maxSize=lv
   let ts=enemies.filter(e=>EN[e.type].size<=maxSize&&Math.hypot(e.x-ship.x,e.y-ship.y)<150).sort((a,b)=>Math.hypot(a.x-ship.x,a.y-ship.y)-Math.hypot(b.x-ship.x,b.y-ship.y)).slice(0,2);
   if(ts.length<2){const rocks=asteroids.filter(a=>a.si<=Math.min(maxSize,1)+ (lv>=3?1:0)&&Math.hypot(a.x-ship.x,a.y-ship.y)<130).sort((a,b)=>Math.hypot(a.x-ship.x,a.y-ship.y)-Math.hypot(b.x-ship.x,b.y-ship.y));ts=ts.concat(rocks).slice(0,2)}
   if(!ts.length){SFX.whiff();once('manipMiss','Маніпуляторам нема кого хапати. Підлети ближче до ворогів або каміння.');manip.cd=.6;return}
+  {const ca=Math.cos(ship.ang),sa=Math.sin(ship.ang),side=o=>(o.x-ship.x)*-sa+(o.y-ship.y)*ca;ts.sort((a,b)=>side(a)-side(b));
+   if(ts.length===2){ts[0]._sd=-1;ts[1]._sd=1}else ts[0]._sd=side(ts[0])<0?-1:1}
   manip.ph='reach';manip.t=0;manip.tg=ts;manip.hits=lv>=3?3:1;manip.from=ts.map(o=>({x:o.x,y:o.y}));SFX.shoot();
 }
 function updateManip(dt){
   if(manip.cd>0)manip.cd-=dt;if(!manip.ph)return;manip.t+=dt;
   manip.tg=manip.tg.filter(o=>enemies.includes(o)||asteroids.includes(o));if(!manip.tg.length){manip.ph=null;manip.cd=MANIP_CD*cdMul()*.5;return}
   const n=nosePt(),ca=Math.cos(ship.ang),sa=Math.sin(ship.ang),px=-sa,py=ca;
-  const spot=(i,spread)=>({x:n.x+ca*10+px*(i?spread:-spread),y:n.y+sa*10+py*(i?spread:-spread)});
+  const spot=(sd,spread)=>({x:n.x+ca*10+px*sd*spread,y:n.y+sa*10+py*sd*spread});
   if(manip.ph==='reach'){if(manip.t>=.14){manip.ph='pull';manip.t=0;SFX.latch()}}
-  else if(manip.ph==='pull'){const k=Math.min(1,manip.t/.22);manip.tg.forEach((o,i)=>{const sp=spot(i,16),f=manip.from[i]||sp;o.x=f.x+(sp.x-f.x)*k;o.y=f.y+(sp.y-f.y)*k;o.vx=0;o.vy=0});
+  else if(manip.ph==='pull'){const k=Math.min(1,manip.t/.22);manip.tg.forEach((o,i)=>{const sp=spot(o._sd,16),f=manip.from[i]||sp;o.x=f.x+(sp.x-f.x)*k;o.y=f.y+(sp.y-f.y)*k;o.vx=0;o.vy=0});
     if(k>=1){manip.ph='swing';manip.t=0}}
-  else if(manip.ph==='swing'){const k=Math.min(1,manip.t/.12);manip.tg.forEach((o,i)=>{const sp=spot(i,16*(1-k)+2);o.x=sp.x;o.y=sp.y});
+  else if(manip.ph==='swing'){const k=Math.min(1,manip.t/.12);manip.tg.forEach(o=>{const sp=spot(o._sd,16*(1-k)+2);o.x=sp.x;o.y=sp.y});
     if(k>=1){const dmg=60+30*L('kgrip');const c=spot(0,0);
       for(const o of manip.tg){if(enemies.includes(o))hitEnemy(o,dmg,null);else if(asteroids.includes(o))breakRock(o,true)}
       SFX.smash();SFX.crush(2);shake(.3,3.5);freeze=.08;hap('heavy');burst(c.x,c.y,['#fff','#c79bff','#ffb347'],16,90,.35);rings.push({x:c.x,y:c.y,r:3,vr:150,life:.22,max:.22,c:'#fff'});
       manip.hits--;manip.tg=manip.tg.filter(o=>enemies.includes(o)||asteroids.includes(o));
-      if(manip.hits>0&&manip.tg.length){manip.ph='pull';manip.t=0;manip.from=manip.tg.map((o,i)=>spot(i,22))}else{manip.ph=null;manip.cd=MANIP_CD*cdMul()}}}
+      if(manip.hits>0&&manip.tg.length){manip.ph='pull';manip.t=0;manip.from=manip.tg.map(o=>spot(o._sd,22))}else{manip.ph=null;manip.cd=MANIP_CD*cdMul()}}}
 }
 function drawManip(){if(!manip.ph)return;const n=nosePt(),ca=Math.cos(ship.ang),sa=Math.sin(ship.ang),px=-sa,py=ca;
-  manip.tg.forEach((o,i)=>{const side=i?1:-1,bx=n.x+px*5*side,by=n.y+py*5*side;let ex=o.x,ey=o.y;
+  manip.tg.forEach(o=>{const side=o._sd||1,bx=n.x+px*5*side,by=n.y+py*5*side;let ex=o.x,ey=o.y;
     if(manip.ph==='reach'){const k=Math.min(1,manip.t/.14);ex=bx+(o.x-bx)*k;ey=by+(o.y-by)*k}
     const mx=(bx+ex)/2+px*side*6,my=(by+ey)/2+py*side*6;ctx.fillStyle='#8a7a6a';pxLine(ctx,bx,by,mx,my);pxLine(ctx,mx,my,ex,ey);ctx.fillStyle='#5a4a42';pxLine(ctx,bx+1,by,mx+1,my);
     ctx.fillStyle='#c79bff';ctx.fillRect(Math.round(mx)-1,Math.round(my)-1,2,2);ctx.fillStyle='#b4642a';ctx.fillRect(Math.round(ex)-2,Math.round(ey)-2,4,1);ctx.fillRect(Math.round(ex)-2,Math.round(ey)+1,4,1)})}
@@ -1578,7 +1578,7 @@ function hugeDamage(h,wx,wy,rc,dmg){dmg*=1+sk('tecton');
   for(let dj=-r;dj<=r;dj++)for(let di=-r;di<=r;di++){if(di*di+dj*dj>rc*rc+.5)continue;const i=ci+di,j=cj+dj;if(i<0||j<0||i>=h.n||j>=h.n)continue;const k=j*h.n+i;if(!h.cells[k])continue;
     h.cells[k]=Math.max(0,h.cells[k]-dmg);
     if(!h.cells[k]){gone++;const px=h.x+i*CS+1.5,py=h.y+j*CS+1.5;if(rnd()<.5)parts.push({x:px,y:py,vx:(rnd()-.5)*40,vy:(rnd()-.5)*40,life:.5,max:.6,c:P.t[(rnd()*3)|0]});
-      if(rnd()<.035){const a=rnd()*6.3;pickups.push({type:h.type,val:1,x:px,y:py,vx:Math.cos(a)*30,vy:Math.sin(a)*30,age:0,spin:rnd()*6,pull:0})}}}
+      if(rnd()<.05){const a=rnd()*6.3;pickups.push({type:h.type,val:1,x:px,y:py,vx:Math.cos(a)*30,vy:Math.sin(a)*30,age:0,spin:rnd()*6,pull:0})}}}
   if(gone){h.dirty=true;h.split=true;h.count-=gone;if(timeT-carveSnd>.07){carveSnd=timeT;SFX.carve()}}
   return gone;
 }
@@ -1604,7 +1604,7 @@ function splitHuge(h){
     const L_=c.length;
     if(L_>=10){const si=L_>=70?2:L_>=28?1:0,R=SIZES[si],hard=h.type==='irid'?2.4:h.type==='iron'?1.4:1;
       const dx=wx-h.cx,dy=wy-h.cy,d=Math.max(1,Math.hypot(dx,dy));
-      asteroids.push({x:wx,y:wy,type:h.type,si,R,v:(rnd()*3)|0,hp:[10,24,46][si]*hard,max:[10,24,46][si]*hard,rot:rnd()*6.3,vr:(rnd()-.5)*1.2,vx:dx/d*(14+rnd()*16),vy:dy/d*(14+rnd()*16),hitT:.09,tickT:0,stage:1,cracks:makeCracks(R),kx:0,ky:0});
+      asteroids.push({core:true,x:wx,y:wy,type:h.type,si,R,v:(rnd()*3)|0,hp:[10,24,46][si]*hard,max:[10,24,46][si]*hard,rot:rnd()*6.3,vr:(rnd()-.5)*1.2,vx:dx/d*(14+rnd()*16),vy:dy/d*(14+rnd()*16),hitT:.09,tickT:0,stage:1,cracks:makeCracks(R),kx:0,ky:0});
       taskProg('split',1);gainXP(3);burst(wx,wy,ROCK[h.type].t.concat(ROCK[h.type].o),10+si*6,50,.5);SFX.crunch(Math.max(0,si-1),h.type);shake(.1,1);hap('light');
       if(!flags.splitHint){flags.splitHint=1;floatText(wx,wy-12,'Відколото!','#fff3d6',true)}}
     else{for(let q=0;q<Math.max(1,Math.round(L_/4));q++){const a=rnd()*6.3;pickups.push({type:h.type,val:1,x:wx,y:wy,vx:Math.cos(a)*35,vy:Math.sin(a)*35,age:0,spin:rnd()*6,pull:0})}}
@@ -1759,7 +1759,7 @@ function updateFleet(dt){
       let best=null,bd=1e9;
       if(!full)for(const p of pickups){if(p.claim&&p.claim!==b)continue;const d=Math.hypot(p.x-ship.x,p.y-ship.y);if(d<110&&d<bd&&p.age>.3){bd=d;best=p}}
       if(best){best.claim=b;b.job={kind:'pick',p:best}}
-      else if((best=nearestEnemy(ship.x,ship.y,140))){b.job={kind:'enemy',e:best}}
+      else if((best=nearestEnemy(ship.x,ship.y,85))){b.job={kind:'enemy',e:best}}
       else if(BOT_DMG[b.lv]>0){for(const a of asteroids){if(a.si>BOT_SIZE[b.lv]||a===target||(grab&&grab.target===a)||fleet.some(o=>o!==b&&o.job&&o.job.a===a))continue;
           const d=Math.hypot(a.x-ship.x,a.y-ship.y);if(d<90&&d<bd){bd=d;best=a}}
         if(best)b.job={kind:'rock',a:best}}
@@ -1773,7 +1773,7 @@ function updateFleet(dt){
       if(d<a.R+24){b.zap=a;b.tick=(b.tick||0)+dt;if(b.tick>.3){b.tick=0;laserTick(a,BOT_DMG[b.lv],b,'bot')}}else b.zap=null;
       if(Math.hypot(b.x-ship.x,b.y-ship.y)>150)b.job=null}
     else if(b.job&&b.job.kind==='enemy'){const e=b.job.e,dx=b.x-e.x,dy=b.y-e.y,d=Math.max(1,Math.hypot(dx,dy));gx=e.x+dx/d*30;gy=e.y+dy/d*30;
-      if(d<60){b.zap=e;b.tick=(b.tick||0)+dt;if(b.tick>.3){b.tick=0;hitEnemy(e,Math.max(1.5,BOT_DMG[b.lv])*1.5,b)}}else b.zap=null;if(Math.hypot(b.x-ship.x,b.y-ship.y)>170)b.job=null}
+      if(d<60){b.zap=e;b.tick=(b.tick||0)+dt;if(b.tick>.5){b.tick=0;hitEnemy(e,.8+BOT_DMG[b.lv]*.6,b)}}else b.zap=null;if(Math.hypot(b.x-ship.x,b.y-ship.y)>130||Math.hypot(e.x-ship.x,e.y-ship.y)>110)b.job=null}
     if(!b.job||(b.job.kind!=='rock'&&b.job.kind!=='enemy'))b.zap=null;
     const dx=gx-b.x,dy=gy-b.y,d=Math.hypot(dx,dy),sp=Math.min(190,d*7);
     const tvx=d>0?dx/d*sp:0,tvy=d>0?dy/d*sp:0;b.vx+=(tvx-b.vx)*Math.min(1,dt*9);b.vy+=(tvy-b.vy)*Math.min(1,dt*9);
@@ -1874,11 +1874,11 @@ $('#homeBtn').addEventListener('click',homeTap);
 const fieldType=x=>{const mix=curSec.mix,base=x<1600?[.7,.3,0]:x<2800?[.3,.58,.12]:[.15,.4,.45],w={ice:base[0]*mix.ice,iron:base[1]*mix.iron,irid:base[2]*mix.irid},t=w.ice+w.iron+w.irid;let r=rnd()*t;return r<w.ice?'ice':r<w.ice+w.iron?'iron':'irid'};
 function addRock(x,y,si,o={}){const type=o.type||fieldType(x),R=SIZES[si],hard=type==='irid'?2.4:type==='iron'?1.4:1,hp=[10,24,46][si]*hard;
   const a={x,y,type,si,R,v:(rnd()*3)|0,hp,max:hp,rot:rnd()*6.3,vr:(rnd()-.5)*.5,vx:o.vx!=null?o.vx:(rnd()-.5)*4,vy:o.vy!=null?o.vy:(rnd()-.5)*4,hitT:0,tickT:0,stage:0,cracks:makeCracks(R),kx:0,ky:0,rich:!!o.rich};asteroids.push(a);return a}
-function respawnRocks(dt){respT-=dt;if(respT>0)return;respT=1.5;
-  let near=0;for(const a of asteroids)if(Math.abs(a.x-ship.x)<650&&Math.abs(a.y-ship.y)<650)near++;
-  if(Math.hypot(ship.x-ST.x,ship.y-ST.y)<250||near>=24)return;
-  for(let k=0;k<4;k++){const ang=rnd()*6.3,d=380+rnd()*270,x=ship.x+Math.cos(ang)*d,y=ship.y+Math.sin(ang)*d;
-    if(x<520||x>W-100||y<560||y>H-560||hugeAt(x,y))continue;const sp=rnd();addRock(x,y,sp<.45?0:sp<.83?1:2)}}
+let clusters=[];
+// nebulae slowly regrow their small rocks while you are away (the giant does not come back)
+function respawnRocks(dt){respT-=dt;if(respT>0)return;respT=3;
+  for(const c of clusters){if(Math.hypot(c.x-ship.x,c.y-ship.y)<700)continue;let n=0;for(const a of asteroids)if(Math.abs(a.x-c.x)<c.r+80&&Math.abs(a.y-c.y)<c.r+80)n++;
+    if(n<c.n0*.6)for(let k=0;k<2;k++){const a=rnd()*6.3,d=60+Math.sqrt(rnd())*c.r;addRock(c.x+Math.cos(a)*d,c.y+Math.sin(a)*d*.8,rnd()<.7?0:1,{type:c.type})}}}
 const RUN_EV={
   meteor:{t:'Метеорний потік! Каміння летить повз тебе, і в кожному подвійна руда.',go(){const side=rnd()<.5?-1:1,ang=ship.ang+Math.PI/2*side,bx=ship.x+Math.cos(ang)*260,by=ship.y+Math.sin(ang)*260,dir=ang+Math.PI;
     for(let k=0;k<12;k++){const off=(k-6)*26,px=bx+Math.cos(ship.ang)*off+(rnd()-.5)*30,py=by+Math.sin(ship.ang)*off+(rnd()-.5)*30,sp=55+rnd()*35;addRock(px,py,rnd()<.6?0:1,{vx:Math.cos(dir)*sp,vy:Math.sin(dir)*sp,rich:true})}}},
@@ -1927,10 +1927,11 @@ function collect(p,byBot){
   if(!byBot&&cargoSum()>=cargoCap()&&!flags.full){flags.full=1;say(LINES.full);SFX.full()}
 }
 
+const DROP_CH=[.17,.35,.7]; // small / medium / large; pieces of a giant always drop
 function breakRock(a,direct){
   const i=asteroids.indexOf(a);if(i<0)return;asteroids.splice(i,1);if(target===a)target=null;
   taskProg('rocks',1);if(a.si===2)taskProg('big',1);if(direct)taskProg('grab',1);run.rocks++;gainXP([2,4,7][a.si]);
-  const n=[1,2,4][a.si]+(a.rich?1+a.si:0),lucky=a.rich||rnd()<.12+a.si*.04+(catHappy()?.05:0)+.05*sk('vein')+(runTubes.has('med')?.15:0),val=lucky?2:1;
+  const luck=(catHappy()?.03:0)+.03*sk('vein'),n=a.core?[1,2,3][a.si]:a.rich?1+a.si:rnd()<DROP_CH[a.si]+luck?(a.si===2&&rnd()<.4?2:1):0,lucky=a.rich||rnd()<.12+a.si*.04+(catHappy()?.05:0)+.05*sk('vein')+(runTubes.has('med')?.15:0),val=lucky?2:1;
   if(direct){
     let got=0;
     for(let k=0;k<n;k++){if(cargoSum()<cargoCap()){ship.cargo[a.type]+=val;got+=val;taskProg(a.type,val);SFX.pick(Math.min(k*2,14),a.type,.05+k*.045)}
@@ -2077,6 +2078,8 @@ function drawFallWarn(){const d=fallDepth();if(d<=0||!(mode==='fly'||rescue))ret
 function drawRadar(){if(mode!=='fly'&&!rescue)return;const R=46*dpr,cx=cv.width-R-12*dpr,cy=178*dpr+R,rng=700,k=R/rng,mp=(x,y)=>[cx+(x-ship.x)*k,cy+(y-ship.y)*k];
   ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,6.3);ctx.fillStyle='rgba(6,14,20,.78)';ctx.fill();ctx.clip();
   ctx.fillStyle='rgba(255,60,70,.3)';let [ax]=mp(SAFE.x1,0);ctx.fillRect(ax,cy-R,cx+R-ax+2,2*R);let [,ay]=mp(0,SAFE.y0);ctx.fillRect(cx-R,cy-R,2*R,ay-(cy-R));[,ay]=mp(0,SAFE.y1);ctx.fillRect(cx-R,ay,2*R,cy+R-ay+2);
+  for(const c of clusters){let[x,y]=mp(c.x,c.y);const dd=Math.hypot(x-cx,y-cy),far=dd>R-6;if(far){if(dd>R*3.2)continue;x=cx+(x-cx)/dd*(R-6);y=cy+(y-cy)/dd*(R-6)}
+    const rgb=c.type==='ice'?'120,190,255':c.type==='iron'?'255,140,70':'200,120,255',rr=far?4*dpr:Math.max(4*dpr,c.r*k);ctx.fillStyle=`rgba(${rgb},${far?.8:.3})`;ctx.beginPath();ctx.arc(x,y,rr,0,6.3);ctx.fill()}
   ctx.strokeStyle='rgba(127,245,234,.18)';ctx.lineWidth=dpr;[.33,.66].forEach(f=>{ctx.beginPath();ctx.arc(cx,cy,R*f,0,6.3);ctx.stroke()});
   const sw=timeT*2.2;ctx.fillStyle='rgba(127,245,234,.12)';ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,sw-.5,sw);ctx.fill();
   ctx.fillStyle='rgba(180,170,200,.45)';for(const a of asteroids){if(Math.abs(a.x-ship.x)>rng||Math.abs(a.y-ship.y)>rng)continue;const[x,y]=mp(a.x,a.y);const s=(a.si+1)*.7*dpr;ctx.fillRect(x-s/2,y-s/2,s,s)}
@@ -2123,6 +2126,9 @@ function drawFly(){
   const ox=Math.round((cam.x-vw/2+sx0)*scale)/scale,oy=Math.round((cam.y-vh/2+sy0)*scale)/scale;
   ctx.setTransform(scale,0,0,scale,-ox*scale,-oy*scale);
   const inView=(x,y,m)=>x>ox-m&&x<ox+vw+m&&y>oy-m&&y<oy+vh+m;
+  for(const c of clusters){if(!inView(c.x,c.y,c.r*2))continue;const rgb=c.type==='ice'?'120,190,255':c.type==='iron'?'255,140,70':'200,120,255';
+    for(let q=0;q<3;q++){const ox2=Math.cos(c.seed+q*2.1)*c.r*.45,oy2=Math.sin(c.seed+q*1.7)*c.r*.35,rr=c.r*(1.2+q*.25),g=ctx.createRadialGradient(c.x+ox2,c.y+oy2,4,c.x+ox2,c.y+oy2,rr);
+      g.addColorStop(0,`rgba(${rgb},${.22-q*.05})`);g.addColorStop(1,`rgba(${rgb},0)`);ctx.fillStyle=g;ctx.fillRect(c.x+ox2-rr,c.y+oy2-rr,rr*2,rr*2)}}
   for(const d of dust){if(inView(d.x,d.y,2)){ctx.fillStyle=d.c;ctx.fillRect(Math.round(d.x),Math.round(d.y),1,1)}}
   drawStationFly();
   ARK.forEach((m,i)=>{if(!S.ark[m.k])return;const a=i*Math.PI/2+timeT*.3,g=.6+.4*Math.sin(timeT*3+i);ctx.globalAlpha=g;ctx.fillStyle=['#ff6fa8','#7ff5ea','#f2b64a','#e2a0ff'][i];ctx.fillRect(Math.round(ST.x+Math.cos(a)*31)-1,Math.round(ST.y+Math.sin(a)*31)-1,3,3);ctx.globalAlpha=1});
