@@ -464,14 +464,14 @@ const TUBES={
  kava:{name:'Кава «Львівська»',desc:'−30% перезарядки суперсили',col:'#6b4428',cap:'#ffd9a0'}
 };
 const EN={
- scout:{name:'Розвідник Рою',r:9,hp:18,spd:70,dmg:6,xp:6,chit:1,size:0},
- drone:{name:'Трутень Рою',r:15,hp:80,spd:48,dmg:18,xp:18,chit:3,size:2},
- soroka:{name:'Кібер-Сорока',r:11,hp:26,spd:100,dmg:0,xp:10,chit:0,size:1}
+ scout:{name:'Розвідник Рою',r:9,hp:18,spd:44,dmg:6,xp:6,chit:1,size:0},
+ drone:{name:'Трутень Рою',r:15,hp:80,spd:32,dmg:18,xp:18,chit:3,size:2},
+ soroka:{name:'Кібер-Сорока',r:11,hp:26,spd:62,dmg:0,xp:10,chit:0,size:1}
 };
 const GRIP=['дрібні камені','дрібні й середні','навіть великі брили'];
 const STAT={
   cargo:[30,45,65,90], dps:[14,22,34,50], range:[55,65,80,95],
-  speed:[95,120,145,175], resp:[11,14,17,21], fuel:[180,240,320,420],
+  speed:[74,90,106,124], resp:[3.4,3.9,4.4,5], fuel:[180,240,320,420],
   magnet:[24,36,50,66], drones:[0,12,30,60],
   barrels:[1,2,4,6], sdmg:[16,24,34], scool:[.35,.5,.7], aim:[0,.52,1.05,Math.PI], chain:[2,3,5]
 };
@@ -1445,31 +1445,31 @@ function updateEnemies(dt){
   const fear=S.ship==='kozh'&&L('kgrip')>=4;
   for(const e of [...enemies]){
     const d=EN[e.type],dx=ship.x-e.x,dy=ship.y-e.y,dist=Math.hypot(dx,dy)||1,ux=dx/dist,uy=dy/dist;e.cd-=dt;e.stT-=dt;if(e.hitT>0)e.hitT-=dt;
-    let tx=0,ty=0,sp=d.spd,steer=4;
+    let tx=0,ty=0,sp=d.spd,steer=2.2;
     const aware=e.hunt||dist<(e.type==='drone'?300:260);
     if(aware&&!e.seen){e.seen=true;e.alertT=1;if(!flags['meet_'+e.type]){flags['meet_'+e.type]=1;say(ENEMY_TIP[e.type],4)}}
     if(e.alertT>0)e.alertT-=dt;
     if(fear&&d.size<2&&dist<160){tx=-ux;ty=-uy;sp*=1.2;e.st='flee'}
     else if(e.type==='scout'&&aware){
-      const want=95,rad=(dist-want)/40;if(dist>260)sp*=1.3;tx=ux*Math.max(-1,Math.min(1,rad))+(-uy)*e.orb*.9;ty=uy*Math.max(-1,Math.min(1,rad))+ux*e.orb*.9;
+      const want=95,rad=(dist-want)/40;if(dist>260)sp*=1.2;tx=ux*Math.max(-1,Math.min(1,rad))+(-uy)*e.orb*.9;ty=uy*Math.max(-1,Math.min(1,rad))+ux*e.orb*.9;
       if(e.st==='charge'){sp*=.25;if(e.stT<=0){e.st='idle';e.cd=1.8+rnd()*1.2;const lead=.25,ax=ship.x+ship.vx*lead-e.x,ay=ship.y+ship.vy*lead-e.y,al=Math.hypot(ax,ay)||1;
-        eshots.push({x:e.x+ax/al*e.R,y:e.y+ay/al*e.R,vx:ax/al*130,vy:ay/al*130,life:2.6,dmg:e.dmg});SFX.eshot()}}
-      else if(e.cd<=0&&dist<200){e.st='charge';e.stT=.55}
+        eshots.push({x:e.x+ax/al*e.R,y:e.y+ay/al*e.R,vx:ax/al*85,vy:ay/al*85,life:3.4,dmg:e.dmg});SFX.eshot()}}
+      else if(e.cd<=0&&dist<200){e.st='charge';e.stT=.75}
       if(rnd()<dt*.3)e.orb*=-1;
     }
     else if(e.type==='drone'&&aware){
-      if(e.st==='aim'){sp=0;e.dashA=Math.atan2(dy,dx);if(e.stT<=0){e.st='dash';e.stT=.45;SFX.dash();e.vx=Math.cos(e.dashA)*330;e.vy=Math.sin(e.dashA)*330}}
+      if(e.st==='aim'){sp=0;e.dashA=Math.atan2(dy,dx);if(e.stT<=0){e.st='dash';e.stT=.6;SFX.dash();e.vx=Math.cos(e.dashA)*220;e.vy=Math.sin(e.dashA)*220}}
       else if(e.st==='dash'){if(e.stT<=0){e.st='daze';e.stT=1.1}}
       else if(e.st==='daze'){sp*=.15;tx=ux;ty=uy;if(e.stT<=0){e.st='idle';e.cd=1.4+rnd()}}
-      else{tx=ux;ty=uy;if(dist>260)sp*=1.4;if(dist<70){tx=-ux*.3;ty=-uy*.3}if(e.cd<=0&&dist<170&&dist>45){e.st='aim';e.stT=.75;SFX.windup()}}
+      else{tx=ux;ty=uy;if(dist>260)sp*=1.25;if(dist<70){tx=-ux*.3;ty=-uy*.3}if(e.cd<=0&&dist<170&&dist>45){e.st='aim';e.stT=.95;SFX.windup()}}
     }
     else if(e.type==='soroka'){
-      if(e.st==='flee'||e.stolen>=4){tx=-ux;ty=-uy;sp*=1.15;if(dist>420)e.st='idle'}
+      if(e.st==='flee'||e.stolen>=4){tx=-ux;ty=-uy;sp*=1.1;if(dist>420)e.st='idle'}
       else{let best=null,bd=300;for(const p of pickups){const q=Math.hypot(p.x-e.x,p.y-e.y);if(q<bd){bd=q;best=p}}
         if(best){const q=bd||1;tx=(best.x-e.x)/q;ty=(best.y-e.y)/q;if(q<9){pickups.splice(pickups.indexOf(best),1);e.stolen+=best.val;SFX.steal();once('steal',LINES.steal)}}
-        else if(aware){if(e.st==='swoop'){tx=ux;ty=uy;sp*=1.7;if(dist<e.R+10){const r=RES.filter(x=>ship.cargo[x]>0);if(r.length){let n=0;for(let k=0;k<3;k++){const t=r[(rnd()*r.length)|0];if(ship.cargo[t]>0){ship.cargo[t]--;e.stolen++;n++}}
+        else if(aware){if(e.st==='swoop'){tx=ux;ty=uy;sp*=1.45;if(dist<e.R+10){const r=RES.filter(x=>ship.cargo[x]>0);if(r.length){let n=0;for(let k=0;k<3;k++){const t=r[(rnd()*r.length)|0];if(ship.cargo[t]>0){ship.cargo[t]--;e.stolen++;n++}}
               floatText(ship.x,ship.y-14,`−${n} руди! Збий сороку`,'#ff9a7a',true);SFX.steal();hud()}e.st='flee'}}
-          else{const a=Math.atan2(-dy,-dx)+dt*1.4*e.orb,r=110;tx=(ship.x+Math.cos(a)*r-e.x)/60;ty=(ship.y+Math.sin(a)*r-e.y)/60;if(e.cd<=0&&cargoSum()>0){e.st='swoop';e.cd=4}}}}
+          else{const a=Math.atan2(-dy,-dx)+dt*.9*e.orb,r=110;tx=(ship.x+Math.cos(a)*r-e.x)/60;ty=(ship.y+Math.sin(a)*r-e.y)/60;if(e.cd<=0&&cargoSum()>0){e.st='swoop';e.cd=4}}}}
     }
     else{e.st='idle';e.wt-=dt;if(e.wt<=0){e.wt=2+rnd()*3;e.wx=e.x+(rnd()-.5)*160;e.wy=e.y+(rnd()-.5)*160}const q=Math.hypot(e.wx-e.x,e.wy-e.y)||1;tx=(e.wx-e.x)/q*.4;ty=(e.wy-e.y)/q*.4}
     // keep a little personal space from each other
@@ -1750,20 +1750,20 @@ const fleetLoad=()=>fleet.reduce((a,b)=>a+botLoad(b),0);
 function updateFleet(dt){
   fleet.forEach((b,i)=>{
     b.cool-=dt;const full=botLoad(b)>=b.cap;if(full&&!b.fullSaid){b.fullSaid=1;floatText(b.x,b.y-10,b.name+': трюм повний','#bff7f2',false)}
-    const off=[[-16,-12],[-16,12],[-26,0]][i],ca=Math.cos(ship.ang),sa=Math.sin(ship.ang);
+    const off=[[-20,-14],[-20,14],[-32,0]][i],ca=Math.cos(ship.ang),sa=Math.sin(ship.ang);
     const fx=ship.x+off[0]*ca-off[1]*sa,fy=ship.y+off[0]*sa+off[1]*ca;
     if(b.job&&b.job.kind==='rock'&&!asteroids.includes(b.job.a))b.job=null;
     if(b.job&&b.job.kind==='pick'&&!pickups.includes(b.job.p))b.job=null;
     if(b.job&&b.job.kind==='enemy'&&!enemies.includes(b.job.e))b.job=null;
     if(!b.job&&b.cool<=0){
       let best=null,bd=1e9;
-      if(!full)for(const p of pickups){if(p.claim&&p.claim!==b)continue;const d=Math.hypot(p.x-ship.x,p.y-ship.y);if(d<110&&d<bd&&p.age>.3){bd=d;best=p}}
+      if(!full)for(const p of pickups){if(p.claim&&p.claim!==b)continue;const d=Math.hypot(p.x-ship.x,p.y-ship.y);if(d<80&&d<bd&&p.age>.5){bd=d;best=p}}
       if(best){best.claim=b;b.job={kind:'pick',p:best}}
       else if((best=nearestEnemy(ship.x,ship.y,85))){b.job={kind:'enemy',e:best}}
       else if(BOT_DMG[b.lv]>0){for(const a of asteroids){if(a.si>BOT_SIZE[b.lv]||a===target||(grab&&grab.target===a)||fleet.some(o=>o!==b&&o.job&&o.job.a===a))continue;
           const d=Math.hypot(a.x-ship.x,a.y-ship.y);if(d<90&&d<bd){bd=d;best=a}}
         if(best)b.job={kind:'rock',a:best}}
-      b.cool=.25;
+      b.cool=.7;
     }
     if(Math.hypot(b.x-ship.x,b.y-ship.y)>240){b.x=fx;b.y=fy;b.vx=ship.vx;b.vy=ship.vy;b.job=null}
     let gx=fx,gy=fy;
@@ -1775,8 +1775,8 @@ function updateFleet(dt){
     else if(b.job&&b.job.kind==='enemy'){const e=b.job.e,dx=b.x-e.x,dy=b.y-e.y,d=Math.max(1,Math.hypot(dx,dy));gx=e.x+dx/d*30;gy=e.y+dy/d*30;
       if(d<60){b.zap=e;b.tick=(b.tick||0)+dt;if(b.tick>.5){b.tick=0;hitEnemy(e,.8+BOT_DMG[b.lv]*.6,b)}}else b.zap=null;if(Math.hypot(b.x-ship.x,b.y-ship.y)>130||Math.hypot(e.x-ship.x,e.y-ship.y)>110)b.job=null}
     if(!b.job||(b.job.kind!=='rock'&&b.job.kind!=='enemy'))b.zap=null;
-    const dx=gx-b.x,dy=gy-b.y,d=Math.hypot(dx,dy),sp=Math.min(190,d*7);
-    const tvx=d>0?dx/d*sp:0,tvy=d>0?dy/d*sp:0;b.vx+=(tvx-b.vx)*Math.min(1,dt*9);b.vy+=(tvy-b.vy)*Math.min(1,dt*9);
+    const dx=gx-b.x,dy=gy-b.y,d=Math.hypot(dx,dy),sp=Math.min(STAT.speed[L('engine')-1]*1.15,d*3);
+    const tvx=d>0?dx/d*sp:0,tvy=d>0?dy/d*sp:0;b.vx+=(tvx-b.vx)*Math.min(1,dt*3);b.vy+=(tvy-b.vy)*Math.min(1,dt*3);
     b.x+=b.vx*dt;b.y+=b.vy*dt;
   });
 }
@@ -1798,11 +1798,11 @@ function updateFly(dt){
   if(iv.m>0&&!S.seen){S.seen=true;$('#tut').hidden=true;save()}
   const pulling=grab&&grab.phase==='pull';
   if(!pulling){
-    const ag=1+.08*sk('agil'),max=STAT.speed[L('engine')-1]*ag,k=STAT.resp[L('engine')-1]*ag,kk=iv.m>0?k:k*1.4;
+    const ag=1+.08*sk('agil'),max=STAT.speed[L('engine')-1]*ag,k=STAT.resp[L('engine')-1]*ag,kk=iv.m>0?k:k*.55;
     ship.vx+=(iv.x*max-ship.vx)*Math.min(1,dt*kk);ship.vy+=(iv.y*max-ship.vy)*Math.min(1,dt*kk);
     if(iv.m===0&&Math.hypot(ship.vx,ship.vy)<4){ship.vx=0;ship.vy=0}
     const wantA=aim.active?aim.ang:iv.m>0?Math.atan2(iv.y,iv.x):null;
-    if(wantA!=null){let da=wantA-ship.ang;da=Math.atan2(Math.sin(da),Math.cos(da));ship.ang+=da*Math.min(1,dt*(aim.active?16:9))}
+    if(wantA!=null){let da=wantA-ship.ang;da=Math.atan2(Math.sin(da),Math.cos(da));ship.ang+=da*Math.min(1,dt*(aim.active?10:6))}
   }
   ship.x=Math.max(20,Math.min(W-10,ship.x+ship.vx*dt));ship.y=Math.max(10,Math.min(H-10,ship.y+ship.vy*dt));
   if(fallTick(dt))return;
@@ -2166,7 +2166,7 @@ function drawFly(){
     if(e.st==='dash'){ctx.globalAlpha=.35;ctx.strokeStyle='#b89cff';ctx.lineWidth=e.R;ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.x-e.vx*.08,e.y-e.vy*.08);ctx.stroke();ctx.globalAlpha=1}
     const L2=e.type==='soroka'&&Math.cos(e.ang)<0,tx=L2?T.en.sorokaL:T.en[e.type];let w=tx.width,h=tx.height;if(IMG.en_scout){const k=EN_SZ[e.type]/Math.max(w,h);w*=k;h*=k}const bob=Math.sin(timeT*8+e.x)*.6+(e.st==='aim'?(rnd()-.5)*2:0);
     ctx.imageSmoothingEnabled=true;ctx.drawImage(tx,e.x-w/2,e.y-h/2+bob,w,h);if(e.hitT>0){ctx.globalAlpha=.7;ctx.drawImage(T.enW[L2?'sorokaL':e.type],e.x-w/2,e.y-h/2+bob,w,h);ctx.globalAlpha=1}ctx.imageSmoothingEnabled=false;
-    if(e.st==='charge'){const k=1-Math.max(0,e.stT)/.55;ctx.globalAlpha=.4+.6*k;ctx.fillStyle='#e8fffc';ctx.beginPath();ctx.arc(e.x,e.y+bob,2+k*4,0,6.3);ctx.fill();ctx.globalAlpha=1}
+    if(e.st==='charge'){const k=1-Math.max(0,e.stT)/.75;ctx.globalAlpha=.4+.6*k;ctx.fillStyle='#e8fffc';ctx.beginPath();ctx.arc(e.x,e.y+bob,2+k*4,0,6.3);ctx.fill();ctx.globalAlpha=1}
     if(e.st==='daze'){for(let k=0;k<3;k++){const a=timeT*6+k*2.1;ctx.fillStyle='#ffd23f';ctx.fillRect(Math.round(e.x+Math.cos(a)*e.R*.8),Math.round(e.y-e.R-3+Math.sin(a)*2),2,2)}}
     if(e.alertT>0){ctx.fillStyle='#ff4d5a';ctx.fillRect(Math.round(e.x)-1,Math.round(e.y-e.R-12),2,5);ctx.fillRect(Math.round(e.x)-1,Math.round(e.y-e.R-6),2,2)}
     if(e.stolen){ctx.drawImage(T.pick.irid,Math.round(e.x)-2,Math.round(e.y)+e.R-2)}
