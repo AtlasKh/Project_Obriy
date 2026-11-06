@@ -416,7 +416,7 @@ const $=s=>document.querySelector(s);
 const RES=['ice','iron','irid'];
 const RNAME={ice:'Лід',iron:'Залізо',irid:'Іридій'};
 const RSHORT={ice:'лід',iron:'зал.',irid:'ірид.'};
-const RCOL={ice:'#bfefff',iron:'#ff9a4a',irid:'#e2a0ff'};
+const RCOL={ice:'#bfefff',iron:'#ff9a4a',irid:'#e2a0ff'};let PC;
 const PRICE={ice:10,iron:22,irid:70};
 const BOT_NAMES=['Кий','Щек','Хорив'];
 const BOT_CAP=[0,.15,.25,.35,.5],BOT_DMG=[0,0,2,3.2,5],BOT_SIZE=[0,-1,0,1,1],BOT_RATE=[0,6,12,20,30];
@@ -466,6 +466,8 @@ const TUBES={
 const EN={
  scout:{name:'Розвідник Рою',r:9,hp:18,spd:44,dmg:6,xp:6,chit:1,size:0},
  drone:{name:'Трутень Рою',r:15,hp:80,spd:32,dmg:18,xp:18,chit:3,size:2},
+ nest:{name:'Гніздо Рою',r:22,hp:240,spd:0,dmg:0,xp:40,chit:5,size:3},
+ boss:{name:'Матка Рою',r:36,hp:1500,spd:30,dmg:24,xp:260,chit:20,size:3},
  soroka:{name:'Кібер-Сорока',r:11,hp:26,spd:62,dmg:0,xp:10,chit:0,size:1}
 };
 const GRIP=['дрібні камені','дрібні й середні','навіть великі брили'];
@@ -592,11 +594,11 @@ const TASK_POOL=[
  {k:'combo',t:n=>`Збери серію ×${n}`,n:[8,14],r:80},
  {k:'grab',t:n=>`Розбий ${n} каменів щупальцями`,n:[4,8],r:110,need:()=>S.owned.kalmar},
  {k:'capsule',t:()=>'Знайди капсулу з сигналом',n:[1,1],r:120,need:()=>S.frags.length<FRAGS.length},
- {k:'zone3',t:()=>'Залети в зовнішнє кільце',n:[1,1],r:60},
+ {k:'zone3',t:()=>'Зачисти поле уламків біля метеорита',n:[1,1],r:80},
  {k:'split',t:n=>`Відколи ${n} шматки від брил-гігантів`,n:[3,6],r:100},
  {k:'kills',t:n=>`Знищ ${n} ворогів`,n:[6,14],r:110,need:()=>sectorIdx()!==0}
 ];
-const W=4000,H=2400,ST={x:260,y:1200};
+const W=2700,H=2400,ST={x:260,y:1200},MET={x:1600,y:1200,R:150};
 const ZONES=[{x:0,name:'Внутрішнє кільце'},{x:1600,name:'Середнє кільце'},{x:2800,name:'Зовнішнє кільце · уламки',danger:true}];
 
 const LINES={
@@ -661,7 +663,7 @@ const LINES={
 
 /* ================= SAVE ================= */
 const KEY='khutir_saturn_v1';
-const fresh=()=>({credits:120,store:{ice:0,iron:0,irid:0},lv:{engine:1,tank:1,cargo:1,laser:1,magnet:1,antenna:0,drones:0,tcd:1,tgrip:1,mg:1,sonic:1,aim:0,chain:1,armor:0,viraj:1,kgrip:1},shipLv:1,xp:0,skills:{},chitin:0,tubes:{borsch:2,kava:1,med:1},loadout:['borsch',null],maneuver:false,orbitShift:0,shipTab:'fly',botLv:[1,0,0],introSeen:false,tips:{},tipsOff:false,weapon:'laser',weapons:{laser:true,mg:false,sonic:false},testMode:false,playSec:0,savedAt:0,
+const fresh=()=>({met:{cycle:1,z:[false,false,false]},credits:120,store:{ice:0,iron:0,irid:0},lv:{engine:1,tank:1,cargo:1,laser:1,magnet:1,antenna:0,drones:0,tcd:1,tgrip:1,mg:1,sonic:1,aim:0,chain:1,armor:0,viraj:1,kgrip:1},shipLv:1,xp:0,skills:{},chitin:0,tubes:{borsch:2,kava:1,med:1},loadout:['borsch',null],maneuver:false,orbitShift:0,shipTab:'fly',botLv:[1,0,0],introSeen:false,tips:{},tipsOff:false,weapon:'laser',weapons:{laser:true,mg:false,sonic:false},testMode:false,playSec:0,savedAt:0,
   quota:{level:1,need:{ice:12,iron:4,irid:0},got:{ice:0,iron:0,irid:0},left:4},strict:false,
   tx:[{t:'Підйомні від Укрзоряниці',a:120}],found:{bag:0,jar:0},trips:0,droneLast:Date.now(),seen:false,seenBase:false,seenGrab:false,borsch:false,ate:false,
   mute:false,musicOff:false,ship:'chaika',owned:{chaika:true,kalmar:false,perun:false,kozh:false},skin:'classic',skins:{classic:true},have:{},
@@ -846,14 +848,14 @@ function canvasOf(img){const c=document.createElement('canvas');c.width=img.natu
 let artReady=0;const ART_N=Object.keys(ASSETS).length;
 Object.entries(ASSETS).forEach(([k,src])=>{const i=new Image();i.onload=()=>{IMG[k]=canvasOf(i);artReady++;if(artReady===ART_N)onArt()};i.src=src});
 function onArt(){
-  ['scout','drone','soroka'].forEach(k=>{T.en[k]=IMG['en_'+k];T.enW[k]=silhouette(IMG['en_'+k])});
+  ['scout','drone','soroka','nest'].forEach(k=>{T.en[k]=IMG['en_'+k];T.enW[k]=silhouette(IMG['en_'+k])});T.en.boss=IMG.en_drone;T.enW.boss=T.enW.drone;
   T.en.sorokaL=flipX(IMG.en_soroka);T.enW.sorokaL=silhouette(T.en.sorokaL);
   for(const k in shipCache)delete shipCache[k];
   paintInto($('#toastAva'),IMG.lyb_face);
 }
 function flipX(src){const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const x=c.getContext('2d');x.translate(src.width,0);x.scale(-1,1);x.drawImage(src,0,0);return c}
 // world sizes of hi-res sprites
-const SHIP_H={chaika:22,kalmar:24,perun:22,kozh:26},EN_SZ={scout:22,drone:40,soroka:34};
+const SHIP_H={chaika:22,kalmar:24,perun:22,kozh:26},EN_SZ={scout:22,drone:40,soroka:34,nest:62,boss:96};
 const texSize=(tx,h)=>tx.ws?[tx.width*tx.ws,tx.height*tx.ws]:[tx.width,tx.height];
 // ship paint jobs: per-pixel recolour of the hi-res sprite
 function rgb2hsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h=0,s=0;const l=(mx+mn)/2;
@@ -918,7 +920,8 @@ T.capsule=rowsTex(['..e..','..d..','.aaa.','abbba','acbba','abbba','abcba','abbb
 T.crate=rowsTex(['aaaaaaa','abbbbba','arrrrra','abbwbba','abbbbba','aaaaaaa'],{a:'#3a2416',b:'#c8843a',r:'#da291c',w:'#fff'});
 T.debris=rowsTex(['.aa..','abba.','.abba','..aa.'],{a:'#3b2f3f',b:'#c0503e'});
 T.pick={};
-const PC={ice:['#ffffff','#bfefff','#6fb6d6','#2c5a74'],iron:['#ffe2c4','#ff9a4a','#c45a26','#5c2a14'],irid:['#fff0ff','#e2a0ff','#9b55d8','#4a2470']};
+PC={ice:['#ffffff','#bfefff','#6fb6d6','#2c5a74'],iron:['#ffe2c4','#ff9a4a','#c45a26','#5c2a14'],irid:['#fff0ff','#e2a0ff','#9b55d8','#4a2470']};
+PC.fuel=['#e8fffc','#7ff5ea','#2fb6b0','#0e4a4a'];RCOL.fuel='#7ff5ea';T.pick.fuel=rowsTex(['..d..','.dad.','.dbd.','dbcbd','.ddd.'],{a:PC.fuel[0],b:PC.fuel[1],c:PC.fuel[2],d:PC.fuel[3]});
 RES.forEach(r=>{T.pick[r]=rowsTex(['..d..','.dad.','dabcd','.dcd.','..d..'],{a:PC[r][0],b:PC[r][1],c:PC[r][2],d:PC[r][3]})});
 // Lybid: hologram girl in glasses, auburn hair
 const LYB_ROWS=['....hhhhhh....','...hHHHHHHh...','..hHHhhhhHHh..','..hhsssssshh..','.hsggggggggsh.','.hsglegglegsh.','.hsgggssgggsh.','.hhsssssssshh.','.hhsssmmssshh.','..hh.ssss.hh..','.hhh.oddo.hhh.','.hhoddddddohh.','..oddddddddo..'];
@@ -977,7 +980,7 @@ function rockTex(type,R,seed){
 T.rock={};
 RES.forEach(r=>{T.rock[r]=SIZES.map((R,si)=>[0,1,2].map(v=>rockTex(r,R,(si*31+v*7+r.length*101)*977)))});
 function silhouette(src){const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const x=c.getContext('2d');x.drawImage(src,0,0);x.globalCompositeOperation='source-in';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);return c}
-T.enW={};Object.keys(T.en).forEach(k=>{T.enW[k]=silhouette(T.en[k])});T.enW.sorokaL=silhouette(T.en.sorokaL);
+T.en.nest=T.en.scout;T.en.boss=T.en.drone;T.enW={};Object.keys(T.en).forEach(k=>{T.enW[k]=silhouette(T.en[k])});T.enW.sorokaL=silhouette(T.en.sorokaL);
 T.rockW={};RES.forEach(r=>{T.rockW[r]=T.rock[r].map(s=>s.map(silhouette))});
 
 function stationTex(){
@@ -1109,7 +1112,7 @@ const sk=k=>(S.skills&&S.skills[k])||0;
 const cdMul=()=>runTubes.has('kava')?.7:1;
 const maxHp=()=>Math.round((100+15*sk('hull')+25*L('armor'))*(1+.15*sk('plates'))*(runTubes.has('borsch')?1.15:1));
 const enemyMul=()=>(1+.12*sk('hot'))*(runTubes.has('hirch')?1.25:1);
-const enemyScale=()=>1+.1*(S.shipLv-1);
+const enemyScale=()=>1+.1*(S.shipLv-1)+.25*(((S.met||{}).cycle||1)-1);
 const spSpent=()=>Object.values(S.skills).reduce((a,b)=>a+b,0);
 const spFree=()=>Math.max(0,S.shipLv-1-spSpent());
 const branchOpen=()=>S.maneuver||S.testMode;
@@ -1118,7 +1121,7 @@ const slots=()=>1+sk('slot');
 const rnd=Math.random;
 for(let k=0;k<220;k++)stars.push({x:rnd(),y:rnd(),l:rnd()<.3?1:0,c:rnd()<.15?'#ffd9a0':'#d8d4ff'});
 function gauss(){let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
-for(let k=0;k<1600;k++)dust.push({x:480+rnd()*(W-480),y:1200+gauss()*420,c:rnd()<.5?'#3a2f45':'#4a3d4f'});
+for(let k=0;k<1100;k++)dust.push({x:480+rnd()*(W-480),y:1200+gauss()*420,c:rnd()<.5?'#3a2f45':'#4a3d4f'});
 const cargoCap=()=>Math.round(STAT.cargo[L('cargo')-1]*(1+.12*sk('hold')));
 const cargoSum=()=>ship.cargo.ice+ship.cargo.iron+ship.cargo.irid;
 const fuelCap=()=>Math.round(STAT.fuel[L('tank')-1]*(1+.15*sk('tank')));
@@ -1139,21 +1142,22 @@ function genField(){
   curSec=SECTORS[sectorIdx()];const mix=curSec.mix;
   const pickType=base=>{const w={ice:base[0]*mix.ice,iron:base[1]*mix.iron,irid:base[2]*mix.irid},t=w.ice+w.iron+w.irid;let r=rnd()*t;return r<w.ice?'ice':r<w.ice+w.iron?'iron':'irid'};
   huges=[];bullets=[];waves=[];hyper.bolts=[];clusters=[];
-  const NC=6+((rnd()*3)|0),span=(SAFE.x1-900)/NC;
-  for(let c=0;c<NC;c++){const x=850+(c+.2+rnd()*.6)*span,y=SAFE.y0+260+rnd()*(SAFE.y1-SAFE.y0-520);
-    const type=pickType(x<1600?[.7,.3,0]:x<2800?[.3,.58,.12]:[.15,.4,.45]),cl={x,y,type,r:190+rnd()*90,n0:0,seed:rnd()*100};clusters.push(cl);
-    const h=makeHuge(x,y,type,28+rnd()*16);huges.push(h);const hr=h.n*CS/2;
-    const cnt=14+((rnd()*10)|0);for(let k=0;k<cnt;k++){const a=rnd()*6.3,d=hr+24+Math.sqrt(rnd())*cl.r,sp=rnd();addRock(x+Math.cos(a)*d,y+Math.sin(a)*d*.8,sp<.55?0:sp<.9?1:2,{type:rnd()<.75?type:pickType([.5,.4,.1])})}
-    cl.n0=cnt}
-  for(let k=0;k<22;k++){const x=600+rnd()*(SAFE.x1-700),y=SAFE.y0+80+rnd()*(SAFE.y1-SAFE.y0-160);if(clusters.some(c=>Math.hypot(c.x-x,c.y-y)<c.r+120))continue;addRock(x,y,rnd()<.8?0:1)}
-  items.push({kind:'bag',x:1300+rnd()*2300,y:1200+gauss()*250,a:0});
+  if(!S.met)S.met={cycle:1,z:[false,false,false]};
+  metRock=makeHuge(MET.x,MET.y,'iron',MET.R);metRock.ore=metRock.ore.map(()=>rnd()<.04?1:0);renderHuge(metRock);
+  const ZT=[['ice','Крижане поле'],['iron','Залізний пояс'],['irid','Іридієва розсип']],ZA=[Math.PI,-Math.PI/3,Math.PI/3];
+  for(let i=0;i<3;i++){const x=MET.x+Math.cos(ZA[i])*560,y=MET.y+Math.sin(ZA[i])*500,type=ZT[i][0],done=S.met.z[i];
+    const cl={i,x,y,type,name:ZT[i][1],r:200+i*15,n0:0,need:0,broken:0,seed:rnd()*100,done};clusters.push(cl);
+    if(!done){const h=makeHuge(x,y,type,26+i*5+rnd()*6);huges.push(h)}
+    const cnt=done?7:20+i*3;for(let k=0;k<cnt;k++){const a=rnd()*6.3,d=(done?20:40)+Math.sqrt(rnd())*cl.r,sp=rnd();const rk=addRock(x+Math.cos(a)*d,y+Math.sin(a)*d*.85,sp<.55?0:sp<.9?1:2,{type:rnd()<.8?type:pickType([.5,.4,.1])});if(!done)rk.zorig=i}
+    cl.n0=cnt;cl.need=done?0:Math.ceil(cnt*.7)}
+  {const z=clusters[(rnd()*3)|0];items.push({kind:'bag',x:z.x+(rnd()-.5)*z.r,y:z.y+(rnd()-.5)*z.r,a:0})}
   // message capsules: the next two undiscovered fragments, deeper fragments sit farther out
   const left=FRAGS.map((_,i)=>i).filter(i=>!S.frags.includes(i)).slice(0,curSec.capsules||2);
-  left.forEach(i=>{const x=i<3?900+rnd()*700:i<6?1700+rnd()*1000:2900+rnd()*900;items.push({kind:'capsule',frag:i,x,y:1200+gauss()*230,a:rnd()*6})});
-  for(let k=0;k<26;k++){const a=rnd()*6.3,s=40+rnd()*50;debris.push({x:2800+rnd()*1200,y:750+rnd()*900,vx:Math.cos(a)*s,vy:Math.sin(a)*s,rot:rnd()*6,vr:(rnd()-.5)*6,x0:2800,w:1200})}
-  for(let k=0;k<curSec.debris;k++){const a=rnd()*6.3,s=30+rnd()*50;debris.push({x:700+rnd()*3200,y:750+rnd()*900,vx:Math.cos(a)*s,vy:Math.sin(a)*s,rot:rnd()*6,vr:(rnd()-.5)*6,x0:700,w:3200})}
+  left.forEach((i,q)=>{const z=clusters[Math.min(2,(i/3)|0)],a=rnd()*6.3,d=z.r*.9+rnd()*90;items.push({kind:'capsule',frag:i,x:z.x+Math.cos(a)*d,y:z.y+Math.sin(a)*d,a:rnd()*6})});
+  for(let k=0;k<26;k++){const a=rnd()*6.3,s=40+rnd()*50;debris.push({x:1900+rnd()*500,y:600+rnd()*1200,vx:Math.cos(a)*s,vy:Math.sin(a)*s,rot:rnd()*6,vr:(rnd()-.5)*6,x0:1900,w:500})}
+  for(let k=0;k<curSec.debris;k++){const a=rnd()*6.3,s=30+rnd()*50;debris.push({x:700+rnd()*1700,y:600+rnd()*1200,vx:Math.cos(a)*s,vy:Math.sin(a)*s,rot:rnd()*6,vr:(rnd()-.5)*6,x0:700,w:1700})}
   enemies=[];bombs=[];implos=[];
-  Object.entries(curSec.en).forEach(([t,n])=>{for(let k=0;k<n;k++)spawnEnemy(t,750+rnd()*3150,1200+gauss()*300)});
+  Object.entries(curSec.en).forEach(([t,n])=>{for(let k=0;k<Math.ceil(n/3);k++){const a=rnd()*6.3;spawnEnemy(t,MET.x+Math.cos(a)*300,MET.y+Math.sin(a)*300)}});
 }
 
 /* ================= INPUT ================= */
@@ -1422,6 +1426,9 @@ let eshots=[];
 function killEnemy(e){
   const i=enemies.indexOf(e);if(i<0)return;enemies.splice(i,1);const d=EN[e.type];
   run.kills++;taskProg('kills',1);gainXP(d.xp);
+  if(e.type==='boss')queenDown(e);
+  if(e.type==='nest'){items.push({kind:'cache',x:e.x,y:e.y,a:0});for(let q=0;q<2;q++){const a=rnd()*6.3;pickups.push({type:'fuel',val:1,x:e.x,y:e.y,vx:Math.cos(a)*45,vy:Math.sin(a)*45,age:0,spin:rnd()*6,pull:0})}floatText(e.x,e.y-30,'Гніздо знищено!','#ffd23f',true)}
+  else if(cave&&e.type!=='boss'&&rnd()<.3){const a=rnd()*6.3;pickups.push({type:'fuel',val:1,x:e.x,y:e.y,vx:Math.cos(a)*40,vy:Math.sin(a)*40,age:0,spin:rnd()*6,pull:0})}
   let ch=d.chit;if(ch){ch=Math.round(ch*(1+.5*sk('trophy')));S.chitin+=ch;run.chit+=ch;floatText(e.x,e.y-8,'+'+ch+' хітин','#b9a2ff',false)}
   if(e.stolen){for(let k=0;k<e.stolen*2;k++){const a=rnd()*6.3,t=RES[(rnd()*2.2)|0];pickups.push({type:t,val:1,x:e.x,y:e.y,vx:Math.cos(a)*50,vy:Math.sin(a)*50,age:0,spin:rnd()*6,pull:0})}floatText(e.x,e.y-16,'Повернуто ×2!','#ffd23f',true)}
   burst(e.x,e.y,['#7a5cff','#3f9a96','#9ff3ff','#2a2238'],10+d.size*8,60,.45);
@@ -1446,10 +1453,20 @@ function updateEnemies(dt){
   for(const e of [...enemies]){
     const d=EN[e.type],dx=ship.x-e.x,dy=ship.y-e.y,dist=Math.hypot(dx,dy)||1,ux=dx/dist,uy=dy/dist;e.cd-=dt;e.stT-=dt;if(e.hitT>0)e.hitT-=dt;
     let tx=0,ty=0,sp=d.spd,steer=2.2;
-    const aware=e.hunt||dist<(e.type==='drone'?300:260);
-    if(aware&&!e.seen){e.seen=true;e.alertT=1;if(!flags['meet_'+e.type]){flags['meet_'+e.type]=1;say(ENEMY_TIP[e.type],4)}}
+    if(e.type==='nest'){e.vx=e.vy=0;if(dist<300){if(!e.seen){e.seen=true;e.alertT=1}const kids=enemies.filter(o=>o.from===e).length;if(e.cd<=0&&kids<3){e.cd=5.5;spawnEnemy('scout',e.x+(rnd()-.5)*20,e.y+(rnd()-.5)*20);const k=enemies[enemies.length-1];k.from=e;k.hunt=true;k.seen=true;burst(e.x,e.y,['#7a5cff','#b89cff'],8,40,.4)}}continue}
+    if(e.sleep){e.vx*=.9;e.vy*=.9;continue}
+    const aware=e.hunt||dist<(cave?210:e.type==='drone'?300:260);
+    if(aware&&!e.seen){e.seen=true;e.alertT=1;if(!flags['meet_'+e.type]&&ENEMY_TIP[e.type]){flags['meet_'+e.type]=1;say(ENEMY_TIP[e.type],4)}}
     if(e.alertT>0)e.alertT-=dt;
-    if(fear&&d.size<2&&dist<160){tx=-ux;ty=-uy;sp*=1.2;e.st='flee'}
+    if(e.type==='boss'){const hpR=e.hp/e.max,want=150,rad=Math.max(-1,Math.min(1,(dist-want)/60));tx=ux*rad+(-uy)*e.orb*.7;ty=uy*rad+ux*e.orb*.7;if(rnd()<dt*.25)e.orb*=-1;
+      const mins=enemies.filter(o=>o.from===e).length;
+      if(e.st==='fan'){sp*=.2;if(e.stT<=0){const n=hpR<.5?11:7,spr=hpR<.5?1.4:1;for(let q=0;q<n;q++){const a=Math.atan2(dy,dx)+(q/(n-1)-.5)*spr;eshots.push({x:e.x+Math.cos(a)*e.R,y:e.y+Math.sin(a)*e.R,vx:Math.cos(a)*80,vy:Math.sin(a)*80,life:3.5,dmg:e.dmg*.45})}SFX.eshot();e.st='idle';e.cd=2.1}}
+      else if(e.st==='summon'){sp*=.3;if(e.stT<=0){for(let q=0;q<3;q++){spawnEnemy('scout',e.x+(rnd()-.5)*50,e.y+(rnd()-.5)*50);const k=enemies[enemies.length-1];k.from=e;k.hunt=true;k.seen=true}burst(e.x,e.y,['#7a5cff','#e2a0ff'],20,80,.5);e.st='idle';e.cd=2}}
+      else if(e.st==='aim'){sp=0;e.dashA=Math.atan2(dy,dx);if(e.stT<=0){e.st='dash';e.stT=.7;SFX.dash();e.vx=Math.cos(e.dashA)*240;e.vy=Math.sin(e.dashA)*240}}
+      else if(e.st==='dash'){if(e.stT<=0){e.st='daze';e.stT=1.5}}
+      else if(e.st==='daze'){sp*=.1;if(e.stT<=0){e.st='idle';e.cd=1.4}}
+      else if(e.cd<=0){const r=rnd();if(hpR<.5&&r<.4){e.st='aim';e.stT=1.05;SFX.windup()}else if(r<.75||mins>=5){e.st='fan';e.stT=.9;SFX.windup()}else{e.st='summon';e.stT=.9}}}
+    else if(fear&&d.size<2&&dist<160){tx=-ux;ty=-uy;sp*=1.2;e.st='flee'}
     else if(e.type==='scout'&&aware){
       const want=95,rad=(dist-want)/40;if(dist>260)sp*=1.2;tx=ux*Math.max(-1,Math.min(1,rad))+(-uy)*e.orb*.9;ty=uy*Math.max(-1,Math.min(1,rad))+ux*e.orb*.9;
       if(e.st==='charge'){sp*=.25;if(e.stT<=0){e.st='idle';e.cd=1.8+rnd()*1.2;const lead=.25,ax=ship.x+ship.vx*lead-e.x,ay=ship.y+ship.vy*lead-e.y,al=Math.hypot(ax,ay)||1;
@@ -1475,29 +1492,36 @@ function updateEnemies(dt){
     // keep a little personal space from each other
     for(const o of enemies){if(o===e)continue;const ox=e.x-o.x,oy=e.y-o.y,od=Math.hypot(ox,oy);if(od>0&&od<e.R+o.R+4){tx+=ox/od*.8;ty+=oy/od*.8}}
     if(e.st!=='dash'){e.vx+=(tx*sp-e.vx)*Math.min(1,dt*steer);e.vy+=(ty*sp-e.vy)*Math.min(1,dt*steer)}
-    e.x+=e.vx*dt;e.y+=e.vy*dt;if(Math.abs(e.vx)>1)e.ang=e.vx;
+    e.x+=e.vx*dt;e.y+=e.vy*dt;if(cave)caveCollide(e,e.R*.6,false);else if(metRock)meteorCollide(e,e.R);if(Math.abs(e.vx)>1)e.ang=e.vx;
     const hitR=e.R+7;
     if(d.dmg&&dist<hitR&&(e.hurtCd||0)<=timeT){e.hurtCd=timeT+.9;hurt(e.dmg*(e.st==='dash'?1.4:.6),e);ship.vx+=ux*-0+dx/dist*90;ship.vy+=dy/dist*90;e.vx=-ux*140;e.vy=-uy*140;if(e.st==='dash'){e.st='daze';e.stT=1.2}}
   }
   for(let k=eshots.length-1;k>=0;k--){const b=eshots[k];b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
     if(Math.hypot(b.x-ship.x,b.y-ship.y)<9){hurt(b.dmg,b);burst(b.x,b.y,['#9ff3ff','#3f9a96'],6,40,.3);eshots.splice(k,1);continue}
-    let hit=b.life<=0;if(!hit)for(const a of asteroids){if(Math.abs(a.x-b.x)<a.R&&Math.hypot(a.x-b.x,a.y-b.y)<a.R){hit=true;break}}
+    let hit=b.life<=0||(cave?caveWall(b.x,b.y):Math.hypot(b.x-MET.x,b.y-MET.y)<MET.R*.88);if(!hit)for(const a of asteroids){if(Math.abs(a.x-b.x)<a.R&&Math.hypot(a.x-b.x,a.y-b.y)<a.R){hit=true;break}}
     if(hit){burst(b.x,b.y,['#9ff3ff'],3,30,.2);eshots.splice(k,1)}}
   updateWaves(dt);
 }
 /* Swarm waves: shown on the radar in advance, every wave is bigger, sooner or later you have to pull back */
-let wave={n:0,t:45,warn:false,dir:0,count:0};
-const WAVE_POOL={east:['soroka','scout','scout'],south:['scout','scout','soroka'],west:['scout','drone','scout']};
-function updateWaves(dt){if(curSec.k==='north'||mode!=='fly')return;if(wave.n===0&&Math.hypot(ship.x-ST.x,ship.y-ST.y)<300)return;
-  wave.t-=dt;
-  if(!wave.warn&&wave.t<=12){wave.warn=true;wave.dir=rnd()*6.3;wave.count=Math.min(20,3+wave.n*2);SFX.alarm();hap('warning');
-    say(wave.n===0?`Радар бачить Рій: ${wave.count} цілей, будуть тут за 12 секунд. Добирай руду. Кожна наступна хвиля буде більшою.`:`Хвиля ${wave.n+1}: ${wave.count} цілей за 12 секунд. Може, час додому?`,5)}
-  if(wave.t<=0){wave.n++;run.waves=wave.n;const pool=WAVE_POOL[curSec.k]||WAVE_POOL.south;
-    for(let k=0;k<wave.count;k++){const t=wave.n>=3&&k%4===3?'drone':pool[k%pool.length],a=wave.dir+(rnd()-.5)*.7,d=480+rnd()*120;if(enemies.length<48)spawnEnemy(t,ship.x+Math.cos(a)*d,ship.y+Math.sin(a)*d);const e=enemies[enemies.length-1];if(e){e.hunt=true;e.seen=true}}
-    wave.t=Math.max(24,40-wave.n*2);wave.warn=false}}
-
 const ENEMY_TIP={scout:'Розвідник Рою! Кружляє довкола й плюється плазмою. Коли його око спалахне, зміни курс.',drone:'Трутень Рою! Бачиш червону лінію? Він зараз рвоне по ній. Відлети вбік, а потім бий, поки він приголомшений.',
-  soroka:'Кібер-сорока! Краде руду, навіть із трюму. Збий її, і вона поверне вдвічі більше.'};
+  soroka:'Кібер-сорока! Краде руду, навіть із трюму. Збий її, і вона поверне вдвічі більше.',nest:'Гніздо Рою! Поки воно ціле, з нього вилітають нові розвідники. Знищ гніздо, і табір твій.',boss:''};
+let wave={n:0,t:45,warn:false,dir:0,count:0};
+const WAVE_POOL={north:['scout','scout','scout'],east:['soroka','scout','scout'],south:['scout','scout','soroka'],west:['scout','drone','scout']};
+function updateWaves(dt){if(cave||mode!=='fly'||!S.met)return;
+  if(!zwave){for(const z of clusters){if(z.done||z.waveSent||z.broken<z.need)continue;
+      z.waveSent=true;const cyc=S.met.cycle,cnt=Math.round([4,7,10][z.i]*(1+.25*(cyc-1)));zwave={z,t:10,spawned:false,count:cnt,dir:rnd()*6.3};
+      wave.warn=true;wave.t=10;SFX.alarm();hap('warning');
+      say(z.i===0?`Ресурси поля зібрано, і Рій це помітив: ${cnt} цілей за 10 секунд. Відбий хвилю, і зона наша.`:`Хвиля над зоною «${z.name}»: ${cnt} цілей за 10 секунд. Ця сильніша за попередню.`,5);break}}
+  if(!zwave)return;const z=zwave.z;
+  if(!zwave.spawned){zwave.t-=dt;wave.t=zwave.t;const sx=z.x+Math.cos(zwave.dir)*(z.r+280),sy=z.y+Math.sin(zwave.dir)*(z.r+280);wave.dir=Math.atan2(sy-ship.y,sx-ship.x);
+    if(zwave.t<=0){zwave.spawned=true;wave.warn=false;wave.n=z.i+1;run.waves=(run.waves||0)+1;const pool=WAVE_POOL[curSec.k]||WAVE_POOL.south;
+      for(let k=0;k<zwave.count;k++){const t=z.i>=1&&k%3===2?'drone':z.i===2&&k%5===4?'soroka':pool[k%pool.length],a=zwave.dir+(rnd()-.5)*.8,d=z.r+250+rnd()*80;
+        spawnEnemy(t,z.x+Math.cos(a)*d,z.y+Math.sin(a)*d);const e=enemies[enemies.length-1];e.hunt=true;e.seen=true;e.wz=z.i}}
+    return}
+  if(!enemies.some(e=>e.wz===z.i)){z.done=true;S.met.z[z.i]=true;zwave=null;taskProg('zone3',1);const cr=60*(z.i+1);S.credits+=cr;tx(`Зачистка зони «${z.name}»`,cr);gainXP(30*(z.i+1));save();
+    SFX.bonus();hap('success');floatText(ship.x,ship.y-26,`Зону «${z.name}» зачищено! +₴${cr}`,'#7ee0a6',true);
+    say(S.met.z.every(Boolean)?'Усі три поля зачищено! Захисна плівка Рою на метеориті розпадається. Вхід ліворуч відкрито: час для дослідницької місії. Всередині печери, табори Рою і, схоже, Матка.':`Зону «${z.name}» зачищено. Залишилось ${S.met.z.filter(x=>!x).length}. Спершу ресурси, потім дослідницька місія всередині метеорита.`,6)}
+}
 const nearestEnemy=(x,y,r,f)=>{let best=null,bd=r;for(const e of enemies){if(f&&!f(e))continue;const d=Math.hypot(e.x-x,e.y-y);if(d<bd){bd=d;best=e}}return best};
 
 /* ---- Chaika: Віраж ---- */
@@ -1515,7 +1539,7 @@ function updateWarp(dt){
     const near=enemies.some(e=>Math.hypot(e.x-b.x,e.y-b.y)<e.R+8)||asteroids.some(a=>Math.hypot(a.x-b.x,a.y-b.y)<a.R+4)||hugeAt(b.x,b.y);
     if(b.t>.5||near){bombs.splice(i,1);implos.push({x:b.x,y:b.y,t:0,R:62,caught:[]});SFX.implode()}}
   for(let i=implos.length-1;i>=0;i--){const m=implos[i];m.t+=dt;const k=Math.min(1,m.t/.35);
-    const objs=[...enemies.filter(e=>Math.hypot(e.x-m.x,e.y-m.y)<m.R),...asteroids.filter(a=>a.si<=1&&Math.hypot(a.x-m.x,a.y-m.y)<m.R)];
+    const objs=[...enemies.filter(e=>e.type!=='nest'&&e.type!=='boss'&&Math.hypot(e.x-m.x,e.y-m.y)<m.R),...asteroids.filter(a=>a.si<=1&&Math.hypot(a.x-m.x,a.y-m.y)<m.R)];
     for(const o of objs){const dx=m.x-o.x,dy=m.y-o.y,d=Math.hypot(dx,dy)||1,pull=Math.min(d,(160+400*k)*dt);o.x+=dx/d*pull;o.y+=dy/d*pull;if(!m.caught.includes(o))m.caught.push(o)}
     if(m.t>=.35){implos.splice(i,1);const n=m.caught.length;let crushed=0;
       for(const o of m.caught){if(enemies.includes(o)){const d=EN[o.type];if(d.size===0){o.hp=0;killEnemy(o);crushed++}else hitEnemy(o,24+8*Math.max(0,n-1),m)}
@@ -1618,6 +1642,7 @@ function rayHit(x0,y0,ang,range){
   const hs=huges.filter(h=>h.cx+h.n*CS>x0-range&&h.cx-h.n*CS<x0+range&&h.cy+h.n*CS>y0-range&&h.cy-h.n*CS<y0+range);
   const ens=enemies.filter(e=>Math.hypot(e.x-x0,e.y-y0)<range+e.R+2);
   for(let t=4;t<=range;t+=1.5){const px=x0+c*t,py=y0+sn*t;
+    if(cave?caveWall(px,py):(metRock&&Math.hypot(px-MET.x,py-MET.y)<MET.R*.88))return{kind:'wall',x:px,y:py};
     for(const e of ens)if(Math.hypot(px-e.x,py-e.y)<e.R+1)return{kind:'enemy',e,x:px,y:py};
     for(const a of rocks)if(Math.hypot(px-a.x,py-a.y)<a.R)return{kind:'rock',a,x:px,y:py};
     for(const h of hs){const k=cellIdx(h,px,py);if(k>=0&&h.cells[k])return{kind:'huge',h,x:px,y:py}}}
@@ -1674,6 +1699,7 @@ function updateBullets(dt){
       for(const e of enemies){if(Math.hypot(x-e.x,y-e.y)<e.R+1){hitEnemy(e,2.6,{x:b.px,y:b.py});hit=true;break}}
       if(!hit)for(const a of asteroids){if(Math.hypot(x-a.x,y-a.y)<a.R+1){laserTick(a,2.6,{x:b.px,y:b.py},'mg');hit=true;break}}
       if(!hit){const h=hugeAt(x,y);if(h){hugeDamage(h,x,y,.8,2);burst(x,y,['#ffe9b0'],2,30,.2);hit=true}}
+      if(!hit&&(cave?caveWall(x,y):Math.hypot(x-MET.x,y-MET.y)<MET.R*.88)){burst(x,y,['#6e5a62','#ffe9b0'],2,30,.2);hit=true}
       if(hit){b.x=x;b.y=y}}
     if(!hit){b.x+=b.vx*dt;b.y+=b.vy*dt}
     if(hit||b.life<=0)bullets.splice(i,1)}
@@ -1757,7 +1783,7 @@ function updateFleet(dt){
     if(b.job&&b.job.kind==='enemy'&&!enemies.includes(b.job.e))b.job=null;
     if(!b.job&&b.cool<=0){
       let best=null,bd=1e9;
-      if(!full)for(const p of pickups){if(p.claim&&p.claim!==b)continue;const d=Math.hypot(p.x-ship.x,p.y-ship.y);if(d<80&&d<bd&&p.age>.5){bd=d;best=p}}
+      if(!full)for(const p of pickups){if(p.claim&&p.claim!==b||p.type==='fuel')continue;const d=Math.hypot(p.x-ship.x,p.y-ship.y);if(d<80&&d<bd&&p.age>.5){bd=d;best=p}}
       if(best){best.claim=b;b.job={kind:'pick',p:best}}
       else if((best=nearestEnemy(ship.x,ship.y,85))){b.job={kind:'enemy',e:best}}
       else if(BOT_DMG[b.lv]>0){for(const a of asteroids){if(a.si>BOT_SIZE[b.lv]||a===target||(grab&&grab.target===a)||fleet.some(o=>o!==b&&o.job&&o.job.a===a))continue;
@@ -1805,7 +1831,7 @@ function updateFly(dt){
     if(wantA!=null){let da=wantA-ship.ang;da=Math.atan2(Math.sin(da),Math.cos(da));ship.ang+=da*Math.min(1,dt*(aim.active?10:6))}
   }
   ship.x=Math.max(20,Math.min(W-10,ship.x+ship.vx*dt));ship.y=Math.max(10,Math.min(H-10,ship.y+ship.vy*dt));
-  if(fallTick(dt))return;
+  if(cave)caveCollide(ship,6,true);else{meteorCollide(ship,8);if(fallTick(dt))return}
   updateGrab(dt);
   ship.fuel-=(.45+.85*iv.m)*dt;
   if(ship.fuel<fuelCap()*.25)once('low',LINES.lowfuel);
@@ -1825,10 +1851,10 @@ function updateFly(dt){
   if(full&&pickups.length&&!flags.full){flags.full=1;say(LINES.full);SFX.full()}
   for(let k=pickups.length-1;k>=0;k--){const p=pickups[k];p.age+=dt;p.spin+=dt*6;
     const dx=ship.x-p.x,dy=ship.y-p.y,d=Math.hypot(dx,dy)||1;
-    if(!full&&d<mag&&p.age>.3){p.pull=Math.min(1,p.pull+dt*3);const f=(380+600*p.pull)*(1-d/mag*.5);p.vx+=dx/d*f*dt;p.vy+=dy/d*f*dt;p.vx*=Math.max(0,1-dt*5);p.vy*=Math.max(0,1-dt*5)}
+    const fl=full&&p.type!=='fuel';if(!fl&&d<mag&&p.age>.3){p.pull=Math.min(1,p.pull+dt*3);const f=(380+600*p.pull)*(1-d/mag*.5);p.vx+=dx/d*f*dt;p.vy+=dy/d*f*dt;p.vx*=Math.max(0,1-dt*5);p.vy*=Math.max(0,1-dt*5)}
     else{p.vx*=Math.max(0,1-2.2*dt);p.vy*=Math.max(0,1-2.2*dt)}
-    p.x+=p.vx*dt;p.y+=p.vy*dt;
-    if(!full&&d<6&&p.age>.3){collect(p);pickups.splice(k,1)}
+    p.x+=p.vx*dt;p.y+=p.vy*dt;if(cave&&caveWall(p.x,p.y)){p.x-=p.vx*dt;p.y-=p.vy*dt;p.vx*=-.5;p.vy*=-.5}
+    if(!fl&&d<6&&p.age>.3){collect(p);pickups.splice(k,1)}
     else if(p.age>60)pickups.splice(k,1)}
   for(let k=items.length-1;k>=0;k--){const it=items[k];if(Math.hypot(ship.x-it.x,ship.y-it.y)<13){
     items.splice(k,1);burst(it.x,it.y,['#fff','#ffd23f'],18,60);SFX.bonus();
@@ -1837,10 +1863,11 @@ function updateFly(dt){
       floatText(it.x,it.y-8,`+₴${cr} · +${ch} хітин · руда на станцію`,'#ffd23f',true);say('Контейнер наш! Гроші вже на Стереобанку, руду Либідь відправила капсулою.',3.5)}
     else if(it.kind==='capsule'){if(!S.frags.includes(it.frag))S.frags.push(it.frag);taskProg('capsule',1);gainXP(40);say(LINES.capsule,3);floatText(it.x,it.y-8,'Сигнал '+S.frags.length+'/'+FRAGS.length,'#7ff5ea',true);
       setTimeout(()=>{if(mode==='fly')say('«…'+FRAGS[it.frag].slice(0,90)+(FRAGS[it.frag].length>90?'…':'')+'»',6)},1600)}save()}}
-  let zi=0;ZONES.forEach((z,i)=>{if(ship.x>=z.x)zi=i});
-  if(zi!==zoneIdx){zoneIdx=zi;const z=ZONES[zi];$('#zone').textContent=curSec.short+' · '+z.name;$('#zone').classList.toggle('danger',!!z.danger);if(zi===2){once('z3',LINES.zone3);taskProg('zone3',1)}}
+  {let lab,dg=false;if(cave){const r=cave.rooms.reduce((b,r)=>Math.hypot(r.x-ship.x,r.y-ship.y)<Math.hypot(b.x-ship.x,b.y-ship.y)?r:b);lab='Метеорит · '+r.name;dg=r.kind==='boss'}
+    else{const z=clusters.find(z=>Math.hypot(z.x-ship.x,z.y-ship.y)<z.r+60);lab=z?`${z.name} · ${z.done?'зачищено':Math.min(100,Math.round(z.broken/z.need*100))+'%'}`:Math.hypot(MET.x-ship.x,MET.y-ship.y)<MET.R+120?(run.bossDone?'Метеорит · досліджено':metOpen()?'Метеорит · вхід відкрито':'Метеорит · вхід запечатано'):curSec.short+' · орбіта «Обрію»';dg=!!(zwave&&zwave.spawned)}
+    if(lab!==zoneIdx){zoneIdx=lab;$('#zone').textContent=lab;$('#zone').classList.toggle('danger',dg)}}
   if(podCd>0)podCd-=dt;if(homeArm>0){homeArm-=dt;if(homeArm<=0)$('#homeBtn').classList.remove('armed')}
-  updatePods(dt);runEventsTick(dt);respawnRocks(dt);
+  updatePods(dt);if(!cave){runEventsTick(dt);respawnRocks(dt)}updateCave(dt);
   cam.x+=(ship.x-cam.x)*Math.min(1,dt*9);cam.y+=(ship.y-cam.y)*Math.min(1,dt*9);
   hud();
 }
@@ -1851,10 +1878,12 @@ const holdValue=()=>{let v=0;RES.forEach(r=>{v+=ship.cargo[r]*PRICE[r];fleet.for
 const haulSum=()=>haul.ice+haul.iron+haul.irid;
 const nearHome=()=>Math.hypot(ship.x-ST.x,ship.y-ST.y)<=70;
 function podUi(){const b=$('#dockBtn');if(mode!=='fly'){return}
+  if(cave){b.hidden=true;return}
   if(nearHome()){b.hidden=false;b.dataset.m='dock';b.textContent='Стикування';return}
+  {const m=MOUTH();if(metOpen()&&Math.hypot(ship.x-m.x,ship.y-m.y)<70){b.hidden=false;b.disabled=false;b.dataset.m='cave';b.textContent='Увійти в метеорит';return}}
   const load=cargoSum()+fleetLoad();if((run.pods||0)<POD_MAX&&load>=Math.max(4,cargoCap()*.6)){b.hidden=false;b.dataset.m='pod';b.textContent='Капсула на станцію · остання';b.disabled=false;return}
   b.hidden=true}
-function dockAct(){const b=$('#dockBtn');if(b.dataset.m==='pod')sendPod();else dock()}
+function dockAct(){const b=$('#dockBtn');if(b.dataset.m==='pod')sendPod();else if(b.dataset.m==='cave')enterCave();else dock()}
 function sendPod(){if((run.pods||0)>=POD_MAX||mode!=='fly')return;let n=0;
   RES.forEach(r=>{haul[r]+=ship.cargo[r];n+=ship.cargo[r];ship.cargo[r]=0});fleet.forEach(b=>RES.forEach(r=>{haul[r]+=b.cargo[r];n+=b.cargo[r];b.cargo[r]=0}));if(!n)return;
   podCd=POD_CD*cdMul();flags.full=0;run.pods=(run.pods||0)+1;
@@ -1866,6 +1895,7 @@ function updatePods(dt){for(let k=pods.length-1;k>=0;k--){const p=pods[k];p.vx+=
   if(rnd()<.8)parts.push({x:p.x,y:p.y,vx:(rnd()-.5)*20,vy:(rnd()-.5)*20,life:.4,max:.4,c:rnd()<.5?'#ff7a2a':'#ffe08a'});if(p.life<=0)pods.splice(k,1)}}
 function drawPods(){for(const p of pods){ctx.save();ctx.translate(Math.round(p.x),Math.round(p.y));ctx.rotate(p.a+Math.PI/2);ctx.drawImage(T.capsule,-2,-5);ctx.restore()}}
 function homeTap(){if(mode!=='fly')return;SFX.ui();
+  if(cave){say('У печері стрибок не спрацює: метеорит глушить зв\'язок. Виходь через вхідний портал.',3.5);SFX.full();return}
   if(enemies.some(e=>e.hunt&&Math.hypot(e.x-ship.x,e.y-ship.y)<380)){say('Рій надто близько: стрибок зірве захоплення. Відірвись від них або відступай до станції.',3.5);SFX.full();return}
   if(homeArm<=0){homeArm=2.5;$('#homeBtn').classList.add('armed');say('Натисни «Додому» ще раз: Либідь перекине тебе на станцію разом із трюмом.',2.5);return}
   homeArm=0;$('#homeBtn').classList.remove('armed');mode='tow';firing=false;$('#grabBtn').hidden=true;$('#fireBtn').hidden=true;$('#dockBtn').hidden=true;$('#fade').style.opacity=1;SFX.launch();
@@ -1874,10 +1904,12 @@ $('#homeBtn').addEventListener('click',homeTap);
 const fieldType=x=>{const mix=curSec.mix,base=x<1600?[.7,.3,0]:x<2800?[.3,.58,.12]:[.15,.4,.45],w={ice:base[0]*mix.ice,iron:base[1]*mix.iron,irid:base[2]*mix.irid},t=w.ice+w.iron+w.irid;let r=rnd()*t;return r<w.ice?'ice':r<w.ice+w.iron?'iron':'irid'};
 function addRock(x,y,si,o={}){const type=o.type||fieldType(x),R=SIZES[si],hard=type==='irid'?2.4:type==='iron'?1.4:1,hp=[10,24,46][si]*hard;
   const a={x,y,type,si,R,v:(rnd()*3)|0,hp,max:hp,rot:rnd()*6.3,vr:(rnd()-.5)*.5,vx:o.vx!=null?o.vx:(rnd()-.5)*4,vy:o.vy!=null?o.vy:(rnd()-.5)*4,hitT:0,tickT:0,stage:0,cracks:makeCracks(R),kx:0,ky:0,rich:!!o.rich};asteroids.push(a);return a}
-let clusters=[];
+let clusters=[],metRock=null,zwave=null,cave=null,spaceStash=null;
+const metOpen=()=>S.met&&S.met.z.every(Boolean)&&!run.bossDone;
+const MOUTH=()=>({x:MET.x-MET.R*.86,y:MET.y});
 // nebulae slowly regrow their small rocks while you are away (the giant does not come back)
 function respawnRocks(dt){respT-=dt;if(respT>0)return;respT=3;
-  for(const c of clusters){if(Math.hypot(c.x-ship.x,c.y-ship.y)<700)continue;let n=0;for(const a of asteroids)if(Math.abs(a.x-c.x)<c.r+80&&Math.abs(a.y-c.y)<c.r+80)n++;
+  for(const c of clusters){if(!c.done)continue;if(Math.hypot(c.x-ship.x,c.y-ship.y)<700)continue;let n=0;for(const a of asteroids)if(Math.abs(a.x-c.x)<c.r+80&&Math.abs(a.y-c.y)<c.r+80)n++;
     if(n<c.n0*.6)for(let k=0;k<2;k++){const a=rnd()*6.3,d=60+Math.sqrt(rnd())*c.r;addRock(c.x+Math.cos(a)*d,c.y+Math.sin(a)*d*.8,rnd()<.7?0:1,{type:c.type})}}}
 const RUN_EV={
   meteor:{t:'Метеорний потік! Каміння летить повз тебе, і в кожному подвійна руда.',go(){const side=rnd()<.5?-1:1,ang=ship.ang+Math.PI/2*side,bx=ship.x+Math.cos(ang)*260,by=ship.y+Math.sin(ang)*260,dir=ang+Math.PI;
@@ -1887,14 +1919,14 @@ const RUN_EV={
   swarm:{t:'',ok:()=>false,go(){const ks=Object.keys(curSec.en),n=3+Math.min(4,Math.floor(S.shipLv/3));
     for(let k=0;k<n;k++){const a=rnd()*6.3,d=240+rnd()*120;spawnEnemy(ks[(rnd()*ks.length)|0],ship.x+Math.cos(a)*d,ship.y+Math.sin(a)*d)}SFX.hot()}}
 };
-function runEventsTick(dt){if(Math.hypot(ship.x-ST.x,ship.y-ST.y)<300)return;evT-=dt;if(evT>0)return;evT=38+rnd()*20;
+function runEventsTick(dt){if(cave||Math.hypot(ship.x-ST.x,ship.y-ST.y)<300)return;evT-=dt;if(evT>0)return;evT=38+rnd()*20;
   const ks=Object.keys(RUN_EV).filter(k=>!RUN_EV[k].ok||RUN_EV[k].ok());const k=ks[(rnd()*ks.length)|0];run.events=(run.events||0)+1;RUN_EV[k].go();say(RUN_EV[k].t,4);hap('warning')}
 
 /* ---- leaving geostationary orbit: warning zone, point of no return, Lybid's rescue burn ---- */
 const SAFE={x1:W-250,y0:420,y1:H-420},FALL=220;
 const fallDepth=(x=ship.x,y=ship.y)=>Math.max(0,x-SAFE.x1,SAFE.y0-y,y-SAFE.y1);
 let fallSaid=0;
-function fallTick(dt){const d=fallDepth();if(d<=0){if(fallSaid&&d<=0)fallSaid=0;return false}
+function fallTick(dt){if(cave)return false;const d=fallDepth();if(d<=0){if(fallSaid&&d<=0)fallSaid=0;return false}
   // Saturn's gravity drags you further out
   const nx=ship.x>SAFE.x1?1:0,ny=ship.y<SAFE.y0?-1:ship.y>SAFE.y1?1:0,g=40+d*.9;ship.vx+=nx*g*dt;ship.vy+=ny*g*dt;
   if(fallSaid<1){fallSaid=1;SFX.hot();hap('warning');say('Увага: ти виходиш із геостаціонарної орбіти, Сатурн тягне до себе. Розвертайся!',4)}
@@ -1914,9 +1946,80 @@ function updateRescue(dt){if(!rescue)return;rescue.t+=dt;const a=Math.atan2(ST.y
   for(let k=0;k<3;k++)parts.push({x:ship.x-Math.cos(ship.ang)*12,y:ship.y-Math.sin(ship.ang)*12,vx:-Math.cos(ship.ang)*80+(rnd()-.5)*40,vy:-Math.sin(ship.ang)*80+(rnd()-.5)*40,life:.5,max:.5,c:rnd()<.5?'#ff7a2a':'#ffe08a'});
   cam.x+=(ship.x-cam.x)*Math.min(1,dt*6);cam.y+=(ship.y-cam.y)*Math.min(1,dt*6)}
 
+/* ================= METEOR DUNGEON =================
+   A linear cave: entrance -> 3 Swarm camps -> the Queen. Same flight controls, but walls.
+   Fuel comes from blue ice geodes in the walls and energy cells dropped by the Swarm. */
+const CT=16;
+const ROOM_NAMES=['вхідна печера','табір розвідників','рій-ферма','кристальна зала','лігво Матки'];
+function genCave(){const GW=150,GH=72,g=new Uint8Array(GW*GH),seed=S.met.cycle*977+7,r=mulberry(seed);
+  const carve=(cx,cy,rad)=>{for(let j=Math.floor(cy-rad);j<=cy+rad;j++)for(let i=Math.floor(cx-rad);i<=cx+rad;i++){if(i<2||j<2||i>=GW-2||j>=GH-2)continue;if((i-cx)**2+(j-cy)**2<=rad*rad)g[j*GW+i]=1}};
+  const rooms=[];const kinds=['entry','camp','camp','camp','boss'];
+  for(let k=0;k<5;k++){const x=10+k*31+(k===4?3:0),y=14+r()*(GH-28),rad=k===0?6:k===4?13:8+r()*2;rooms.push({x,y,rad,kind:kinds[k],name:ROOM_NAMES[k]});carve(x,y,rad);
+    for(let q=0;q<4;q++)carve(x+(r()-.5)*rad*1.2,y+(r()-.5)*rad*1.2,rad*.6)}
+  for(let k=0;k<4;k++){const a=rooms[k],b=rooms[k+1],mx=(a.x+b.x)/2+(r()-.5)*10,my=(a.y+b.y)/2+(r()-.5)*24;
+    for(let t=0;t<=1;t+=.01){const u=1-t,x=u*u*a.x+2*u*t*mx+t*t*b.x,y=u*u*a.y+2*u*t*my+t*t*b.y;carve(x,y,2.6+Math.sin(t*9+k)*.6)}
+    if(k<3){const px=mx+(r()-.5)*6,py=my+(r()<.5?-1:1)*(8+r()*6);for(let t=0;t<=1;t+=.05)carve(mx+(px-mx)*t,my+(py-my)*t,2.2);carve(px,py,3.5);rooms.push({x:px,y:py,rad:3.5,kind:'pocket',name:'бокова кишеня'})}}
+  // render
+  const cv=document.createElement('canvas');cv.width=GW*CT;cv.height=GH*CT;const x=cv.getContext('2d');
+  const open=(i,j)=>i>=0&&j>=0&&i<GW&&j<GH&&g[j*GW+i];
+  for(let j=0;j<GH;j++)for(let i=0;i<GW;i++){const X=i*CT,Y=j*CT;
+    if(open(i,j)){x.fillStyle=(i+j)%2?'#161016':'#181218';x.fillRect(X,Y,CT,CT);if(r()<.08){x.fillStyle='#2a2028';x.fillRect(X+(r()*14|0),Y+(r()*14|0),2,2)}continue}
+    const edge=open(i-1,j)||open(i+1,j)||open(i,j-1)||open(i,j+1);
+    for(let q=0;q<16;q++){const sx=(q%4)*4,sy=((q/4)|0)*4,v=r();x.fillStyle=edge?(v<.3?'#5a4650':v<.7?'#463840':'#3a2e36'):(v<.5?'#241c22':'#2a2028');x.fillRect(X+sx,Y+sy,4,4)}
+    if(edge){x.fillStyle='#6e5a62';if(open(i,j+1))x.fillRect(X,Y+CT-2,CT,2);if(open(i,j-1))x.fillRect(X,Y,CT,1);if(open(i-1,j))x.fillRect(X,Y,1,CT);if(open(i+1,j))x.fillRect(X+CT-1,Y,1,CT)}}
+  // minimap for the radar (1 tile = 2px)
+  const mm=document.createElement('canvas');mm.width=GW*2;mm.height=GH*2;const mx2=mm.getContext('2d');mx2.fillStyle='rgba(180,150,170,.35)';for(let j=0;j<GH;j++)for(let i=0;i<GW;i++)if(g[j*GW+i])mx2.fillRect(i*2,j*2,2,2);
+  rooms.forEach(rm=>{rm.x*=CT;rm.y*=CT;rm.rad*=CT});
+  return{GW,GH,g,cv,mm,rooms,t:0,exit:{x:rooms[0].x-rooms[0].rad*.55,y:rooms[0].y},portal:null,bossSeen:false}}
+function caveWall(x,y){if(!cave)return false;const i=Math.floor(x/CT),j=Math.floor(y/CT);return i<0||j<0||i>=cave.GW||j>=cave.GH||!cave.g[j*cave.GW+i]}
+function caveCollide(o,rad,isShip){if(!cave)return false;let hit=false;
+  for(const[dx,dy]of[[rad,0],[-rad,0],[0,rad],[0,-rad]]){if(caveWall(o.x+dx,o.y+dy)){hit=true;o.x-=Math.sign(dx)*1.5;o.y-=Math.sign(dy)*1.5;if(dx&&Math.sign(o.vx)===Math.sign(dx))o.vx*=-.45;if(dy&&Math.sign(o.vy)===Math.sign(dy))o.vy*=-.45}}
+  if(hit&&isShip&&timeT-(cave.bumpT||0)>.6&&Math.hypot(o.vx,o.vy)>45){cave.bumpT=timeT;hurt(3,null);SFX.crunch(0,'iron')}return hit}
+function enterCave(){if(cave||mode!=='fly')return;
+  spaceStash={asteroids,huges,enemies,pickups,items,debris,clusters,eshots,x:ship.x,y:ship.y};
+  cave=genCave();asteroids=[];huges=[];enemies=[];pickups=[];items=[];debris=[];clusters=[];eshots=[];bullets=[];
+  const rm=cave.rooms;
+  // geodes: blue ice crystals in the walls = fuel
+  let gN=0;for(let tries=0;tries<4000&&gN<18;tries++){const i=2+((rnd()*(cave.GW-4))|0),j=2+((rnd()*(cave.GH-4))|0);if(!cave.g[j*cave.GW+i])continue;
+    const nb=[[1,0],[-1,0],[0,1],[0,-1]].find(([a,b])=>!cave.g[(j+b)*cave.GW+i+a]);if(!nb)continue;const x=(i+.5)*CT+nb[0]*5,y=(j+.5)*CT+nb[1]*5;
+    if(asteroids.some(a=>a.geode&&Math.hypot(a.x-x,a.y-y)<180))continue;const a=addRock(x,y,1,{type:'ice',vx:0,vy:0});a.geode=true;a.vr=0;a.hp=a.max=20;gN++}
+  rm.forEach(r=>{if(r.kind==='entry'||r.kind==='boss')return;for(let k=0;k<(r.kind==='pocket'?3:4);k++){const a=rnd()*6.3,d=rnd()*r.rad*.6,x=r.x+Math.cos(a)*d,y=r.y+Math.sin(a)*d;if(!caveWall(x,y)){const rk=addRock(x,y,rnd()<.6?0:1,{vx:0,vy:0});rk.vr*=.3}}
+    if(r.kind==='pocket'){const a=addRock(r.x,r.y,1,{type:'ice',vx:0,vy:0});a.geode=true;a.vr=0}});
+  // Swarm camps
+  const camp=(r,list)=>{spawnEnemy('nest',r.x,r.y);const n=enemies[enemies.length-1];n.camp=r;list.forEach((t,q)=>{const a=q/list.length*6.3,d=r.rad*.5;spawnEnemy(t,r.x+Math.cos(a)*d,r.y+Math.sin(a)*d);enemies[enemies.length-1].home=r})};
+  camp(rm[1],['scout','scout']);camp(rm[2],['scout','scout','drone','soroka']);camp(rm[3],['drone','drone','scout','scout','scout']);
+  spawnEnemy('boss',rm[4].x+rm[4].rad*.3,rm[4].y);const B=enemies[enemies.length-1];B.home=rm[4];B.sleep=true;
+  for(let k=0;k<3;k++){const a=rm[k],b=rm[k+1];spawnEnemy('scout',(a.x+b.x)/2,(a.y+b.y)/2)}
+  ship.x=rm[0].x+rm[0].rad*.2;ship.y=rm[0].y;ship.vx=ship.vy=0;ship.ang=0;cam.x=ship.x;cam.y=ship.y;
+  fleet.forEach((b,i)=>{b.x=ship.x-20;b.y=ship.y+(i-1)*10;b.vx=b.vy=0;b.job=null});
+  $('#fade').style.opacity=1;setTimeout(()=>$('#fade').style.opacity=0,350);SFX.launch();zoneIdx='';
+  say('Ми всередині. Попереду три табори Рою і щось велике в кінці. Гнізда плодять розвідників, тож бий спершу їх. Пальне поповнюй із блакитних жеод.',6)}
+function exitCave(win){if(!cave)return;const st=spaceStash;asteroids=st.asteroids;huges=st.huges;enemies=st.enemies.filter(e=>!e.wz);pickups=st.pickups;items=st.items;debris=st.debris;clusters=st.clusters;eshots=[];bullets=[];
+  cave=null;spaceStash=null;const m=MOUTH();ship.x=m.x-40;ship.y=m.y;ship.vx=-40;ship.vy=0;ship.ang=Math.PI;cam.x=ship.x;cam.y=ship.y;fleet.forEach(b=>{b.x=ship.x+10;b.y=ship.y;b.job=null});
+  $('#fade').style.opacity=1;setTimeout(()=>$('#fade').style.opacity=0,350);zoneIdx='';
+  say(win?'Ми зовні! Метеорит досліджено, а Матки більше немає. Наступного вильоту біля станції чекатиме новий метеорит, і Рій там буде злішим.':'Ми зовні. Прогрес у печері скинувся: Рій уже латає діри. Повертайся, коли будеш готовий.',5)}
+function updateCave(dt){if(!cave)return;cave.t+=dt;
+  if(cave.t>3&&Math.hypot(ship.x-cave.exit.x,ship.y-cave.exit.y)<20){exitCave(false);return}
+  if(cave.portal&&Math.hypot(ship.x-cave.portal.x,ship.y-cave.portal.y)<22){exitCave(true);return}
+  const B=enemies.find(e=>e.type==='boss');if(B&&B.sleep&&Math.hypot(B.x-ship.x,B.y-ship.y)<B.home.rad*1.1){B.sleep=false;B.hunt=true;cave.bossSeen=true;SFX.alarm();shake(.4,3);hap('warning');musicStart('flight');
+    say('Це Матка Рою! Вона плює віялом плазми, кличе розвідників, а коли поранена, кидається в ривок. Тримай дистанцію!',6)}}
+function queenDown(e){const rw=400+150*(S.met.cycle-1);S.credits+=rw;tx('Нагорода за Матку Рою',rw);gainXP(0);run.bossDone=true;
+  for(let k=0;k<8;k++){const a=rnd()*6.3;pickups.push({type:k<3?'irid':'iron',val:1,x:e.x,y:e.y,vx:Math.cos(a)*70,vy:Math.sin(a)*70,age:0,spin:rnd()*6,pull:0})}
+  for(let k=0;k<3;k++){const a=rnd()*6.3;pickups.push({type:'fuel',val:1,x:e.x,y:e.y,vx:Math.cos(a)*50,vy:Math.sin(a)*50,age:0,spin:rnd()*6,pull:0})}
+  cave.portal={x:e.home.x,y:e.home.y};S.met={cycle:S.met.cycle+1,z:[false,false,false]};S.metIntro=0;save();
+  floatText(e.x,e.y-40,`МАТКУ ПОВАЛЕНО! +₴${rw}`,'#ffd23f',true);shake(.8,5);freeze=.2;hap('success');SFX.bonus();
+  setTimeout(()=>say('Ти зробив це! У центрі лігва відкрився портал назовні. Забирай трофеї й вилітай.',5),900)}
+function drawCaveFx(){if(!cave)return;
+  for(const p of [cave.exit,cave.portal]){if(!p)continue;const win=p===cave.portal;for(let q=0;q<3;q++){ctx.globalAlpha=.35+.2*q;ctx.strokeStyle=win?'#ffd23f':'#7ff5ea';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(p.x,p.y,8+q*5+Math.sin(timeT*4+q)*1.5,timeT*(2+q)+q,timeT*(2+q)+q+4.6);ctx.stroke()}ctx.globalAlpha=1}
+  for(const a of asteroids)if(a.geode){const g=ctx.createRadialGradient(a.x,a.y,2,a.x,a.y,26);g.addColorStop(0,`rgba(127,245,234,${.35+.15*Math.sin(timeT*3+a.x)})`);g.addColorStop(1,'rgba(127,245,234,0)');ctx.fillStyle=g;ctx.fillRect(a.x-26,a.y-26,52,52)}}
+function drawBossBar(){const B=enemies.find(e=>e.type==='boss'&&!e.sleep);if(!B)return;const w=cv.width*.7,x=(cv.width-w)/2,y=cv.height-235*dpr;
+  ctx.fillStyle='rgba(10,6,14,.8)';ctx.fillRect(x-3*dpr,y-3*dpr,w+6*dpr,14*dpr);ctx.fillStyle='#3a1a2a';ctx.fillRect(x,y,w,8*dpr);ctx.fillStyle=B.hp<B.max*.5?'#ff4d5a':'#c47aff';ctx.fillRect(x,y,w*Math.max(0,B.hp/B.max),8*dpr);
+  ctx.textAlign='center';ctx.textBaseline='bottom';ctx.font=`900 ${Math.round(12*dpr)}px "Exo 2",sans-serif`;ctx.lineWidth=3*dpr;ctx.strokeStyle='#0b0810';ctx.strokeText('МАТКА РОЮ',cv.width/2,y-4*dpr);ctx.fillStyle='#e2a0ff';ctx.fillText('МАТКА РОЮ',cv.width/2,y-4*dpr)}
+
 let bumpT=0;
 function bumpCargo(){const b=$('#cargoTxt');if(timeT-bumpT>.06){bumpT=timeT;b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}}
 function collect(p,byBot){
+  if(p.type==='fuel'){const v=12;ship.fuel=Math.min(fuelCap()*1.25,ship.fuel+v);floatText(ship.x,ship.y-12,`+${v} пального`,'#7ff5ea',true);SFX.pick(2,'ice');ship.pulse=.12;if(!flags.fuelTip){flags.fuelTip=1;say('Двигуни працюють на воді, а блакитні жеоди — це чистий лід. Розбивай їх, і пального вистачить до самої Матки.',5)}return}
   const val=p.val*(goldT>0?2:1);(byBot?byBot.cargo:ship.cargo)[p.type]+=val;taskProg(p.type,val);
   if(comboT>0)combo++;else combo=0;comboT=.9;taskMax('combo',combo+1);
   if(combo===9&&sk('gold')&&goldT<=0){goldT=10;floatText(ship.x,ship.y-24,'Золота лихоманка!','#ffd23f',true);SFX.bonus()}
@@ -1930,7 +2033,9 @@ function collect(p,byBot){
 const DROP_CH=[.17,.35,.7]; // small / medium / large; pieces of a giant always drop
 function breakRock(a,direct){
   const i=asteroids.indexOf(a);if(i<0)return;asteroids.splice(i,1);if(target===a)target=null;
+  if(a.zorig!=null&&clusters[a.zorig])clusters[a.zorig].broken++;
   taskProg('rocks',1);if(a.si===2)taskProg('big',1);if(direct)taskProg('grab',1);run.rocks++;gainXP([2,4,7][a.si]);
+  if(a.geode){for(let q=0;q<2+(rnd()<.5?1:0);q++){const ang=rnd()*6.3;pickups.push({type:'fuel',val:1,x:a.x,y:a.y,vx:Math.cos(ang)*40,vy:Math.sin(ang)*40,age:0,spin:rnd()*6,pull:0})}burst(a.x,a.y,['#e8fffc','#7ff5ea'],14,60,.4);return}
   const luck=(catHappy()?.03:0)+.03*sk('vein'),n=a.core?[1,2,3][a.si]:a.rich?1+a.si:rnd()<DROP_CH[a.si]+luck?(a.si===2&&rnd()<.4?2:1):0,lucky=a.rich||rnd()<.12+a.si*.04+(catHappy()?.05:0)+.05*sk('vein')+(runTubes.has('med')?.15:0),val=lucky?2:1;
   if(direct){
     let got=0;
@@ -2003,13 +2108,13 @@ function hud(){
     if(Math.abs(gx)<cssW/2-30&&Math.abs(gy)<cssH/2-60){ar.hidden=true;return}
     ar.hidden=false;const d=Math.hypot(gx,gy),dx=gx/d,dy=gy/d,t=Math.min((cssW/2-28)/Math.max(.001,Math.abs(dx)),(cssH/2-120)/Math.max(.001,Math.abs(dy)));
     ar.style.transform=`translate(${cssW/2+dx*t-20}px,${cssH/2+dy*t-14}px)`;ar.querySelector('svg').style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI+90}deg)`;$('#arrowDist').textContent=g.label;return}
-  const sx=(ST.x-cam.x)*zoom,sy=(ST.y-cam.y)*zoom;
+  const HT=cave?(cave.portal||cave.exit):ST,sx=(HT.x-cam.x)*zoom,sy=(HT.y-cam.y)*zoom;
   if(Math.abs(sx)<cssW/2-30&&Math.abs(sy)<cssH/2-30){ar.hidden=true}
   else{ar.hidden=false;const d=Math.hypot(sx,sy),dx=sx/d,dy=sy/d;
     const t=Math.min((cssW/2-28)/Math.max(.001,Math.abs(dx)),(cssH/2-90)/Math.max(.001,Math.abs(dy)));
     ar.style.transform=`translate(${cssW/2+dx*t-20}px,${cssH/2+dy*t-14}px)`;
     ar.querySelector('svg').style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI+90}deg)`;
-    $('#arrowDist').textContent='дім '+Math.round(Math.hypot(ST.x-ship.x,ST.y-ship.y)/10)+' км'}
+    $('#arrowDist').textContent=(cave?(cave.portal?'портал ':'вихід '):'дім ')+Math.round(Math.hypot(HT.x-ship.x,HT.y-ship.y)/10)+' км'}
 }
 
 /* ================= RENDER ================= */
@@ -2070,16 +2175,18 @@ function drawBase(){
   ctx.setTransform(1,0,0,1,0,0);ctx.imageSmoothingEnabled=false;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`700 ${Math.round(11*dpr)}px "Exo 2", sans-serif`;
   for(const b of bots){const im=IMG['bot0'],h=im?im.height*K2:70;const sx=(b.x-ox)*scale,sy=(b.y-h-40-oy)*scale;ctx.lineWidth=3*dpr;ctx.strokeStyle='#120d1a';ctx.strokeText(b.name,sx,sy);ctx.fillStyle='#bff7f2';ctx.fillText(b.name,sx,sy)}
 }
-function drawFallWarn(){const d=fallDepth();if(d<=0||!(mode==='fly'||rescue))return;const k=Math.min(1,d/FALL),W2=cv.width,H2=cv.height,pulse=.5+.5*Math.sin(timeT*(8+k*10));
+function drawFallWarn(){if(cave)return;const d=fallDepth();if(d<=0||!(mode==='fly'||rescue))return;const k=Math.min(1,d/FALL),W2=cv.width,H2=cv.height,pulse=.5+.5*Math.sin(timeT*(8+k*10));
   const a=.18+.5*k*pulse,g1=ctx.createRadialGradient(W2/2,H2/2,Math.min(W2,H2)*.3,W2/2,H2/2,Math.max(W2,H2)*.7);g1.addColorStop(0,'rgba(255,40,50,0)');g1.addColorStop(1,`rgba(255,40,50,${a})`);ctx.fillStyle=g1;ctx.fillRect(0,0,W2,H2);
   if(d>FALL*.45){ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`900 ${Math.round(20*dpr)}px "Exo 2",sans-serif`;ctx.globalAlpha=.6+.4*pulse;ctx.lineWidth=4*dpr;ctx.strokeStyle='#1a0508';
     const y=H2*.52;ctx.strokeText('ТОЧКА НЕПОВЕРНЕННЯ',W2/2,y);ctx.fillStyle='#ff5a5a';ctx.fillText('ТОЧКА НЕПОВЕРНЕННЯ',W2/2,y);ctx.font=`700 ${Math.round(12*dpr)}px "Exo 2",sans-serif`;
     ctx.strokeText('розвертайся до станції',W2/2,y+22*dpr);ctx.fillStyle='#ffd0d0';ctx.fillText('розвертайся до станції',W2/2,y+22*dpr);ctx.globalAlpha=1}}
 function drawRadar(){if(mode!=='fly'&&!rescue)return;const R=46*dpr,cx=cv.width-R-12*dpr,cy=178*dpr+R,rng=700,k=R/rng,mp=(x,y)=>[cx+(x-ship.x)*k,cy+(y-ship.y)*k];
   ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,6.3);ctx.fillStyle='rgba(6,14,20,.78)';ctx.fill();ctx.clip();
-  ctx.fillStyle='rgba(255,60,70,.3)';let [ax]=mp(SAFE.x1,0);ctx.fillRect(ax,cy-R,cx+R-ax+2,2*R);let [,ay]=mp(0,SAFE.y0);ctx.fillRect(cx-R,cy-R,2*R,ay-(cy-R));[,ay]=mp(0,SAFE.y1);ctx.fillRect(cx-R,ay,2*R,cy+R-ay+2);
+  if(!cave){ctx.fillStyle='rgba(255,60,70,.3)';let [ax]=mp(SAFE.x1,0);ctx.fillRect(ax,cy-R,cx+R-ax+2,2*R);let [,ay]=mp(0,SAFE.y0);ctx.fillRect(cx-R,cy-R,2*R,ay-(cy-R));[,ay]=mp(0,SAFE.y1);ctx.fillRect(cx-R,ay,2*R,cy+R-ay+2)}
+  if(cave){const kk=k*CT/2;ctx.drawImage(cave.mm,cx-ship.x*k,cy-ship.y*k,cave.mm.width*kk,cave.mm.height*kk);for(const p of [cave.exit,cave.portal]){if(!p)continue;const[x,y]=mp(p.x,p.y);ctx.fillStyle=p===cave.portal?'#ffd23f':'#7ff5ea';ctx.fillRect(x-2*dpr,y-2*dpr,4*dpr,4*dpr)}}
+  else if(metRock){let[x,y]=mp(MET.x,MET.y);const dd=Math.hypot(x-cx,y-cy);if(dd>R-6){x=cx+(x-cx)/dd*(R-6);y=cy+(y-cy)/dd*(R-6)}ctx.fillStyle=metOpen()?'rgba(127,245,234,.6)':'rgba(150,130,140,.6)';ctx.beginPath();ctx.arc(x,y,Math.max(5*dpr,MET.R*k*.9),0,6.3);ctx.fill()}
   for(const c of clusters){let[x,y]=mp(c.x,c.y);const dd=Math.hypot(x-cx,y-cy),far=dd>R-6;if(far){if(dd>R*3.2)continue;x=cx+(x-cx)/dd*(R-6);y=cy+(y-cy)/dd*(R-6)}
-    const rgb=c.type==='ice'?'120,190,255':c.type==='iron'?'255,140,70':'200,120,255',rr=far?4*dpr:Math.max(4*dpr,c.r*k);ctx.fillStyle=`rgba(${rgb},${far?.8:.3})`;ctx.beginPath();ctx.arc(x,y,rr,0,6.3);ctx.fill()}
+    const rgb=c.done?'126,224,166':c.type==='ice'?'120,190,255':c.type==='iron'?'255,140,70':'200,120,255',rr=far?4*dpr:Math.max(4*dpr,c.r*k);ctx.fillStyle=`rgba(${rgb},${far?.8:c.done?.15:.3})`;ctx.beginPath();ctx.arc(x,y,rr,0,6.3);ctx.fill();if(c.done&&!far){ctx.strokeStyle='rgba(126,224,166,.7)';ctx.lineWidth=dpr;ctx.stroke()}}
   ctx.strokeStyle='rgba(127,245,234,.18)';ctx.lineWidth=dpr;[.33,.66].forEach(f=>{ctx.beginPath();ctx.arc(cx,cy,R*f,0,6.3);ctx.stroke()});
   const sw=timeT*2.2;ctx.fillStyle='rgba(127,245,234,.12)';ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,sw-.5,sw);ctx.fill();
   ctx.fillStyle='rgba(180,170,200,.45)';for(const a of asteroids){if(Math.abs(a.x-ship.x)>rng||Math.abs(a.y-ship.y)>rng)continue;const[x,y]=mp(a.x,a.y);const s=(a.si+1)*.7*dpr;ctx.fillRect(x-s/2,y-s/2,s,s)}
@@ -2090,8 +2197,15 @@ function drawRadar(){if(mode!=='fly'&&!rescue)return;const R=46*dpr,cx=cv.width-
   ctx.restore();
   ctx.save();ctx.translate(cx,cy);ctx.rotate(ship.ang);ctx.fillStyle='#e8fffc';ctx.beginPath();ctx.moveTo(4*dpr,0);ctx.lineTo(-3*dpr,-3*dpr);ctx.lineTo(-3*dpr,3*dpr);ctx.fill();ctx.restore();
   ctx.strokeStyle='rgba(127,245,234,.55)';ctx.lineWidth=1.5*dpr;ctx.beginPath();ctx.arc(cx,cy,R,0,6.3);ctx.stroke();
-  const lab=wave.warn?`ХВИЛЯ ${wave.n+1} · ${Math.max(0,Math.ceil(wave.t))} с`:curSec.k==='north'?'РАДАР · тихо':wave.n?`ХВИЛЯ ${wave.n} · наступна ${Math.ceil(wave.t)} с`:'РАДАР';
+  const lab=cave?'ПЕЧЕРА':zwave&&!zwave.spawned?`ХВИЛЯ · ${Math.max(0,Math.ceil(zwave.t))} с`:zwave?`ХВИЛЯ · ${enemies.filter(e=>e.wz===zwave.z.i).length} цілей`:`ЗОН ЗАЧИЩЕНО ${S.met?S.met.z.filter(Boolean).length:0}/3`;
   ctx.textAlign='center';ctx.textBaseline='top';ctx.font=`800 ${Math.round(10*dpr)}px "Exo 2",sans-serif`;ctx.lineWidth=3*dpr;ctx.strokeStyle='#0b0810';ctx.strokeText(lab,cx,cy+R+4*dpr);ctx.fillStyle=wave.warn?'#ff6f7a':'#bff7f2';ctx.fillText(lab,cx,cy+R+4*dpr)}
+function drawMeteor(){if(cave||!metRock)return;ctx.drawImage(metRock.cv,Math.round(metRock.x),Math.round(metRock.y));
+  const m=MOUTH(),open=metOpen();ctx.fillStyle='#0a0608';ctx.beginPath();ctx.ellipse(m.x,m.y,20,28,0,0,6.3);ctx.fill();ctx.fillStyle='#1d1218';ctx.beginPath();ctx.ellipse(m.x+4,m.y,13,21,0,0,6.3);ctx.fill();
+  if(!open&&!run.bossDone){ctx.globalAlpha=.55+.2*Math.sin(timeT*3);ctx.strokeStyle='#b89cff';ctx.lineWidth=1;for(let k=-3;k<=3;k++){ctx.beginPath();ctx.moveTo(m.x-14,m.y+k*8);ctx.lineTo(m.x+14,m.y+k*8+4);ctx.stroke()}ctx.fillStyle='rgba(122,92,255,.35)';ctx.beginPath();ctx.ellipse(m.x,m.y,20,28,0,0,6.3);ctx.fill();ctx.globalAlpha=1;
+    const dn=S.met.z.filter(Boolean).length;for(let k=0;k<3;k++){ctx.fillStyle=k<dn?'#7ee0a6':'#4a2a5a';ctx.fillRect(m.x-24,m.y-16+k*12,4,6)}}
+  else if(open){for(let k=0;k<6;k++){const on=(Math.floor(timeT*6)+k)%6===0;ctx.fillStyle=on?'#7ff5ea':'#1d3b45';ctx.fillRect(m.x-30-k*9,m.y-1,3,2)}
+    ctx.globalAlpha=.3+.2*Math.sin(timeT*4);ctx.strokeStyle='#7ff5ea';ctx.beginPath();ctx.ellipse(m.x,m.y,24,32,0,0,6.3);ctx.stroke();ctx.globalAlpha=1}}
+function meteorCollide(o,r){const dx=o.x-MET.x,dy=o.y-MET.y,d=Math.hypot(dx,dy),lim=MET.R*.9+r;if(d<lim&&d>0){o.x=MET.x+dx/d*lim;o.y=MET.y+dy/d*lim;const vn=(o.vx*dx+o.vy*dy)/d;if(vn<0){o.vx-=1.6*vn*dx/d;o.vy-=1.6*vn*dy/d}return true}return false}
 function drawStationFly(){const k=1.6;ctx.save();ctx.translate(ST.x,ST.y);
   // docking zone
   const near=Math.hypot(ship.x-ST.x,ship.y-ST.y)<260;ctx.globalAlpha=near?.55:.2;ctx.strokeStyle='#7ff5ea';ctx.lineWidth=1;ctx.setLineDash([3,4]);ctx.lineDashOffset=-timeT*8;ctx.beginPath();ctx.arc(0,0,70,0,6.3);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
@@ -2118,9 +2232,9 @@ function drawTentacles(){
 }
 function drawFly(){
   const vw=cv.width/scale,vh=cv.height/scale;
-  drawStars(vw,vh,1);
+  if(cave){ctx.fillStyle='#0c080c';ctx.fillRect(0,0,cv.width,cv.height)}else drawStars(vw,vh,1);
   const sp=curSec.sat,satX=Math.round(vw*sp[0]-(cam.x-ST.x)*.02-100),satY=Math.round(vh*sp[1]-(cam.y-ST.y)*.02-55);
-  ctx.globalAlpha=curSec.dark?.35:.72;ctx.drawImage(T.saturn,satX*scale,satY*scale,T.saturn.width*scale,T.saturn.height*scale);ctx.globalAlpha=1;
+  ctx.globalAlpha=cave?0:curSec.dark?.35:.72;ctx.drawImage(T.saturn,satX*scale,satY*scale,T.saturn.width*scale,T.saturn.height*scale);ctx.globalAlpha=1;
   if(curSec.k==='north'){ctx.strokeStyle='rgba(159,216,255,.55)';ctx.lineWidth=scale;ctx.beginPath();for(let k=0;k<=6;k++){const a=k/6*Math.PI*2,x=(satX+100+Math.cos(a)*7)*scale,y=(satY+32+Math.sin(a)*4)*scale;k?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke()}
   const sh=shakeT>0?shakeA:0,sx0=(rnd()-.5)*2*sh,sy0=(rnd()-.5)*2*sh;
   const ox=Math.round((cam.x-vw/2+sx0)*scale)/scale,oy=Math.round((cam.y-vh/2+sy0)*scale)/scale;
@@ -2129,11 +2243,13 @@ function drawFly(){
   for(const c of clusters){if(!inView(c.x,c.y,c.r*2))continue;const rgb=c.type==='ice'?'120,190,255':c.type==='iron'?'255,140,70':'200,120,255';
     for(let q=0;q<3;q++){const ox2=Math.cos(c.seed+q*2.1)*c.r*.45,oy2=Math.sin(c.seed+q*1.7)*c.r*.35,rr=c.r*(1.2+q*.25),g=ctx.createRadialGradient(c.x+ox2,c.y+oy2,4,c.x+ox2,c.y+oy2,rr);
       g.addColorStop(0,`rgba(${rgb},${.22-q*.05})`);g.addColorStop(1,`rgba(${rgb},0)`);ctx.fillStyle=g;ctx.fillRect(c.x+ox2-rr,c.y+oy2-rr,rr*2,rr*2)}}
-  for(const d of dust){if(inView(d.x,d.y,2)){ctx.fillStyle=d.c;ctx.fillRect(Math.round(d.x),Math.round(d.y),1,1)}}
-  drawStationFly();
-  ARK.forEach((m,i)=>{if(!S.ark[m.k])return;const a=i*Math.PI/2+timeT*.3,g=.6+.4*Math.sin(timeT*3+i);ctx.globalAlpha=g;ctx.fillStyle=['#ff6fa8','#7ff5ea','#f2b64a','#e2a0ff'][i];ctx.fillRect(Math.round(ST.x+Math.cos(a)*31)-1,Math.round(ST.y+Math.sin(a)*31)-1,3,3);ctx.globalAlpha=1});
-  if(Math.hypot(ship.x-ST.x,ship.y-ST.y)<120){ctx.strokeStyle='rgba(242,182,74,.35)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.arc(ST.x,ST.y,70,0,6.3);ctx.stroke();ctx.setLineDash([])}
+  if(!cave)for(const d of dust){if(inView(d.x,d.y,2)){ctx.fillStyle=d.c;ctx.fillRect(Math.round(d.x),Math.round(d.y),1,1)}}
+  if(!cave){drawStationFly();drawMeteor()}
+  if(cave)ctx.drawImage(cave.cv,0,0);
+  if(!cave)ARK.forEach((m,i)=>{if(!S.ark[m.k])return;const a=i*Math.PI/2+timeT*.3,g=.6+.4*Math.sin(timeT*3+i);ctx.globalAlpha=g;ctx.fillStyle=['#ff6fa8','#7ff5ea','#f2b64a','#e2a0ff'][i];ctx.fillRect(Math.round(ST.x+Math.cos(a)*31)-1,Math.round(ST.y+Math.sin(a)*31)-1,3,3);ctx.globalAlpha=1});
+  if(!cave&&Math.hypot(ship.x-ST.x,ship.y-ST.y)<120){ctx.strokeStyle='rgba(242,182,74,.35)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.arc(ST.x,ST.y,70,0,6.3);ctx.stroke();ctx.setLineDash([])}
   if(mode==='fly'&&S.ship==='kalmar'&&!grab&&grabCd<=0){ctx.fillStyle='rgba(255,111,168,.35)';for(let k=0;k<3;k++){const d=22+k*10+((timeT*30)%10);ctx.fillRect(Math.round(ship.x+Math.cos(ship.ang)*d),Math.round(ship.y+Math.sin(ship.ang)*d),1,1)}}
+  drawCaveFx();
   for(const a of asteroids){if(!inView(a.x,a.y,20))continue;const tex=T.rock[a.type][a.si][a.v];
     const wob=a.hitT>0?1+a.hitT/.09*.12:1;
     ctx.save();ctx.translate(Math.round(a.x+a.kx),Math.round(a.y+a.ky));ctx.rotate(Math.round(a.rot*8)/8);ctx.scale(wob,wob);
@@ -2163,6 +2279,9 @@ function drawFly(){
     // threat marker: pulsing red ring under every enemy, brighter when it is about to strike
     {const hot=e.st==='aim'||e.st==='charge'||e.st==='swoop'||e.st==='dash',pr=e.R+3+Math.sin(timeT*6)*1.2;ctx.globalAlpha=hot?.9:.45;ctx.strokeStyle=e.type==='soroka'?'#ffd23f':'#ff4d5a';ctx.lineWidth=hot?1.6:1;ctx.beginPath();ctx.arc(e.x,e.y,pr,0,6.3);ctx.stroke();ctx.globalAlpha=1}
     if(e.st==='aim'){const L=150,ex=e.x+Math.cos(e.dashA)*L,ey=e.y+Math.sin(e.dashA)*L;ctx.globalAlpha=.5+.4*Math.sin(timeT*30);ctx.strokeStyle='#ff4d5a';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(ex,ey);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1}
+    if(e.st==='fan'){const k=1-Math.max(0,e.stT)/.9;ctx.globalAlpha=.25+.5*k;ctx.strokeStyle='#e2a0ff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(e.x,e.y,e.R+4+k*10,0,6.3);ctx.stroke();ctx.globalAlpha=1}
+    if(e.st==='summon'){ctx.globalAlpha=.6;ctx.strokeStyle='#7a5cff';ctx.lineWidth=1.5;for(let q=0;q<3;q++){ctx.beginPath();ctx.arc(e.x,e.y,e.R+6+q*6,timeT*5+q,timeT*5+q+2);ctx.stroke()}ctx.globalAlpha=1}
+    if(e.type==='boss'){const g=ctx.createRadialGradient(e.x,e.y,4,e.x,e.y,e.R*1.8);g.addColorStop(0,'rgba(196,122,255,.35)');g.addColorStop(1,'rgba(196,122,255,0)');ctx.fillStyle=g;ctx.fillRect(e.x-e.R*2,e.y-e.R*2,e.R*4,e.R*4)}
     if(e.st==='dash'){ctx.globalAlpha=.35;ctx.strokeStyle='#b89cff';ctx.lineWidth=e.R;ctx.beginPath();ctx.moveTo(e.x,e.y);ctx.lineTo(e.x-e.vx*.08,e.y-e.vy*.08);ctx.stroke();ctx.globalAlpha=1}
     const L2=e.type==='soroka'&&Math.cos(e.ang)<0,tx=L2?T.en.sorokaL:T.en[e.type];let w=tx.width,h=tx.height;if(IMG.en_scout){const k=EN_SZ[e.type]/Math.max(w,h);w*=k;h*=k}const bob=Math.sin(timeT*8+e.x)*.6+(e.st==='aim'?(rnd()-.5)*2:0);
     ctx.imageSmoothingEnabled=true;ctx.drawImage(tx,e.x-w/2,e.y-h/2+bob,w,h);if(e.hitT>0){ctx.globalAlpha=.7;ctx.drawImage(T.enW[L2?'sorokaL':e.type],e.x-w/2,e.y-h/2+bob,w,h);ctx.globalAlpha=1}ctx.imageSmoothingEnabled=false;
@@ -2170,7 +2289,7 @@ function drawFly(){
     if(e.st==='daze'){for(let k=0;k<3;k++){const a=timeT*6+k*2.1;ctx.fillStyle='#ffd23f';ctx.fillRect(Math.round(e.x+Math.cos(a)*e.R*.8),Math.round(e.y-e.R-3+Math.sin(a)*2),2,2)}}
     if(e.alertT>0){ctx.fillStyle='#ff4d5a';ctx.fillRect(Math.round(e.x)-1,Math.round(e.y-e.R-12),2,5);ctx.fillRect(Math.round(e.x)-1,Math.round(e.y-e.R-6),2,2)}
     if(e.stolen){ctx.drawImage(T.pick.irid,Math.round(e.x)-2,Math.round(e.y)+e.R-2)}
-    {const bw=Math.max(12,e.R*2);ctx.fillStyle='#0b0810';ctx.fillRect(Math.round(e.x-bw/2)-1,Math.round(e.y-e.R-7),bw+2,4);ctx.fillStyle=e.hp<e.max*.35?'#ffd23f':'#ff4d5a';ctx.fillRect(Math.round(e.x-bw/2),Math.round(e.y-e.R-6),Math.max(1,Math.round(bw*e.hp/e.max)),2)}}
+    if(e.type!=='boss'){const bw=Math.max(12,e.R*2);ctx.fillStyle='#0b0810';ctx.fillRect(Math.round(e.x-bw/2)-1,Math.round(e.y-e.R-7),bw+2,4);ctx.fillStyle=e.hp<e.max*.35?'#ffd23f':'#ff4d5a';ctx.fillRect(Math.round(e.x-bw/2),Math.round(e.y-e.R-6),Math.max(1,Math.round(bw*e.hp/e.max)),2)}}
   for(const b of bombs){ctx.fillStyle=Math.sin(timeT*40)>0?'#c79bff':'#fff';ctx.fillRect(Math.round(b.x)-2,Math.round(b.y)-2,4,4);ctx.fillStyle='rgba(199,155,255,.4)';ctx.fillRect(Math.round(b.x-b.vx*.03)-1,Math.round(b.y-b.vy*.03)-1,2,2)}
   for(const m of implos){const k=Math.min(1,m.t/.35);ctx.strokeStyle='#c79bff';ctx.lineWidth=1;for(let q=0;q<3;q++){ctx.globalAlpha=.25+.25*q;ctx.beginPath();ctx.arc(m.x,m.y,Math.max(1,m.R*(1-k)*(1-q*.25)),timeT*8+q,timeT*8+q+4.5);ctx.stroke()}ctx.globalAlpha=1;ctx.fillStyle='#2a1d3a';ctx.fillRect(Math.round(m.x)-2,Math.round(m.y)-2,5,5)}
   if(viraj.t>0){const k=1-viraj.t/.4;ctx.strokeStyle='#ffb347';ctx.lineWidth=1;for(let q=0;q<6;q++){const a=k*Math.PI*4+q/6*Math.PI*2;ctx.beginPath();ctx.arc(ship.x,ship.y,viraj.R*(.3+.7*k),a,a+.5);ctx.stroke()}}
@@ -2203,7 +2322,8 @@ function drawFly(){
     const cx=W2/2,cy=H2/2,dx=sx-cx,dy=sy-cy,m=28*dpr,t=Math.min((cx-m)/Math.max(.001,Math.abs(dx)),(cy-m-60*dpr)/Math.max(.001,Math.abs(dy))),px=cx+dx*t,py=cy+dy*t,a=Math.atan2(dy,dx),hot=e.st==='aim'||e.st==='charge'||e.st==='swoop';
     ctx.save();ctx.translate(px,py);ctx.rotate(a);ctx.fillStyle=e.type==='soroka'?'#ffd23f':'#ff4d5a';ctx.globalAlpha=hot?.95:.7;const s2=(hot?9:7)*dpr;ctx.beginPath();ctx.moveTo(s2,0);ctx.lineTo(-s2,-s2*.8);ctx.lineTo(-s2*.4,0);ctx.lineTo(-s2,s2*.8);ctx.fill();ctx.restore();ctx.globalAlpha=1}
   drawFallWarn();drawRadar();
-  if(curSec.dark){const sx=(ship.x-ox)*scale,sy=(ship.y-oy)*scale,g=ctx.createRadialGradient(sx,sy,70*scale,sx,sy,150*scale);g.addColorStop(0,'rgba(6,4,12,0)');g.addColorStop(1,'rgba(6,4,12,.9)');ctx.fillStyle=g;ctx.fillRect(0,0,cv.width,cv.height)}
+  drawBossBar();
+  if(curSec.dark||cave){const sx=(ship.x-ox)*scale,sy=(ship.y-oy)*scale,g=ctx.createRadialGradient(sx,sy,(cave?90:70)*scale,sx,sy,(cave?190:150)*scale);g.addColorStop(0,'rgba(6,4,12,0)');g.addColorStop(1,'rgba(6,4,12,.9)');ctx.fillStyle=g;ctx.fillRect(0,0,cv.width,cv.height)}
   if(stormOn){ctx.fillStyle=`rgba(80,140,255,${.06+.05*Math.sin(timeT*30)})`;ctx.fillRect(0,0,cv.width,cv.height)}
   if(goldT>0){ctx.strokeStyle=`rgba(255,210,63,${.25+.15*Math.sin(timeT*10)})`;ctx.lineWidth=6*dpr;ctx.strokeRect(0,0,cv.width,cv.height)}
   ctx.textAlign='center';ctx.textBaseline='middle';
@@ -2244,11 +2364,12 @@ function launch(){
   runTubes=new Set();S.loadout.slice(0,slots()).forEach(k=>{if(k&&S.tubes[k]>0&&!runTubes.has(k)){S.tubes[k]--;runTubes.add(k)}});
   ship.fuel=fuelCap()*(runTubes.has('uzvar')?1.25:1);ship.hp=maxHp();
   run={xp:0,lv:0,rocks:0,kills:0,chit:0,taskSum:0,food:0,wreck:false,sector:sectorIdx()};viraj={cd:0,t:0};manip={cd:0,ph:null};warpCd=0;goldT=0;stormOn=false;stormT=20;alarmT=35;counterCd=0;lastHitT=-9;
-  haul={ice:0,iron:0,irid:0};pods=[];eshots=[];wave={n:0,t:45,warn:false,dir:0,count:0};fallSaid=0;rescue=null;podCd=0;homeArm=0;evT=28;respT=0;$('#homeBtn').classList.remove('armed');
+  haul={ice:0,iron:0,irid:0};pods=[];eshots=[];wave={n:0,t:45,warn:false,dir:0,count:0};fallSaid=0;rescue=null;zwave=null;cave=null;spaceStash=null;podCd=0;homeArm=0;evT=28;respT=0;$('#homeBtn').classList.remove('armed');
   ship.x=ST.x+34;ship.y=ST.y+6;ship.vx=60;ship.vy=0;ship.ang=0;cam.x=ship.x;cam.y=ship.y;
   fleet=ownedBots().map((o,i)=>({name:o.name,lv:o.lv,cap:Math.max(1,Math.round(cargoCap()*BOT_CAP[o.lv])),cargo:{ice:0,iron:0,irid:0},x:ship.x-20-i*6,y:ship.y+(i-1)*10,vx:0,vy:0,job:null,cool:i*.1,zap:null}));
   S.trips++;S.flying=true;save();SFX.launch();
-  mode='fly';setHudMode();$('#zone').textContent=curSec.short+' · '+ZONES[0].name;musicStart('flight');
+  mode='fly';setHudMode();zoneIdx='';musicStart('flight');
+  if(!S.metIntro){S.metIntro=1;setTimeout(()=>{if(mode==='fly')say('Біля станції завис метеорит. Спершу ресурси: розчисти три поля уламків навколо нього, кожне охороняє хвиля Рою. Потім дослідницька місія всередину.',7)},1200)}
   if(curSec.dark)setTimeout(()=>{if(mode==='fly')once('dark',LINES.dark)},1500);
   if(runTubes.size)setTimeout(()=>{if(mode==='fly'&&toastT<=0)say('Пайок на рейс: '+[...runTubes].map(k=>TUBES[k].name).join(', ')+'.',3.5)},2500);
   if(!S.seen){$('#tut').innerHTML='Ліворуч тягни пальцем, щоб летіти.<br>Кнопку «Вогонь» праворуч можна тягти як джойстик: так цілишся, не змінюючи курсу.';$('#tut').hidden=false}
@@ -2263,6 +2384,7 @@ function dock(){
   if(S.flying){S.threat=Math.max(30,S.threat-3);const ct=claimTasks(true);run.taskSum=ct.sum;run.food=ct.food;run.tasksDone=ct.n;checkAct1();S.flying=false;S.quota.left--;if(S.quota.left<=0&&!quotaMet()&&!S.testMode){S.strict=true;S.quota.left=0;msg=LINES.strict}if(S.quota.left<=0&&S.testMode)S.quota.left=4}
   run.fromBots=0;fleet.forEach(b=>RES.forEach(r=>{ship.cargo[r]+=b.cargo[r];run.fromBots+=b.cargo[r]}));
   run.hauled=haulSum();RES.forEach(r=>{ship.cargo[r]+=haul[r];haul[r]=0});
+  if(cave){cave=null;spaceStash=null}zwave=null;
   ship.vx=ship.vy=0;enemies=[];eshots=[];bombs=[];implos=[];save(true);SFX.dock();enterBase(null);run.msg=msg;openPanel('report');
 }
 function startTow(){
@@ -2494,7 +2616,7 @@ const PANELS={
    (run.lv?`<div class="levelup">Новий рівень корабля: ${S.shipLv}! Очок навичок: ${spFree()}. Розподіли їх у космольоті.</div>`:'')+
    `<section class="box"><h2>Підсумок <small>${SECTORS[run.sector].name}</small></h2><div class="rep">
      <div><span>Каменів</span><b>${run.rocks}</b></div><div><span>Ворогів</span><b>${run.kills}</b></div><div><span>Досвід</span><b>+${run.xp}</b></div>
-     <div><span>Хітин</span><b>+${run.chit}</b></div><div><span>Капсулами</span><b>${run.hauled||0}${run.pods?` · ${run.pods} шт.`:''}</b></div><div><span>Хвиль Рою</span><b>${run.waves||0}</b></div>${run.burned||run.lost?`<div><span>Втрачено руди</span><b style="color:#ff9a7a">${(run.burned||0)+(run.lost||0)}</b></div>`:''}<div><span>Завдання</span><b>${run.tasksDone||0}${run.taskSum?` · ₴${run.taskSum}`:''}</b></div><div><span>Від ботів</span><b>${run.fromBots||0}</b></div></div>
+     <div><span>Хітин</span><b>+${run.chit}</b></div><div><span>Капсулами</span><b>${run.hauled||0}${run.pods?` · ${run.pods} шт.`:''}</b></div><div><span>Хвиль Рою</span><b>${run.waves||0}</b></div>${run.bossDone?`<div><span>Матка Рою</span><b style="color:#ffd23f">повалена</b></div>`:''}${run.burned||run.lost?`<div><span>Втрачено руди</span><b style="color:#ff9a7a">${(run.burned||0)+(run.lost||0)}</b></div>`:''}<div><span>Завдання</span><b>${run.tasksDone||0}${run.taskSum?` · ₴${run.taskSum}`:''}</b></div><div><span>Від ботів</span><b>${run.fromBots||0}</b></div></div>
      <div class="prog"><i style="width:${S.shipLv>=MAX_LV?100:S.xp/XP_NEED(S.shipLv)*100}%;background:var(--lyb)"></i></div><p class="note">Рівень ${S.shipLv}: ${S.xp}/${XP_NEED(S.shipLv)} досвіду${run.food?` · ${CAT}у прийшло ${run.food} порц. корму`:''}</p></section>
    <section class="box"><h2>Вантаж <small>${cs} од.</small></h2>`+(cs?`<div class="unload">${RES.filter(r=>ship.cargo[r]).map(r=>`
      <span class="res ${r}"><i></i>${RNAME[r]} ${ship.cargo[r]} <span>· ₴${Math.round(PRICE[r]*payMul())}/од.</span></span>
@@ -2658,7 +2780,7 @@ if(S.flying)S.flying=false;
 if(S.testMode)S.strict=false;
 if(!S.introSeen){enterBase(null);showIntro()}else enterBase(pick(LINES.greet));S.lybIntro=true;save();
 requestAnimationFrame(loop);
-window.__game={closePanel,spawnEnemy,runEv:k=>{RUN_EV[k].go()},get enemies(){return enemies},get curSec(){return curSec},doManip,dock,get huges(){return huges},fireHyper,setFiring:v=>firing=v,S,claimTasks,addFleet,man,kat,ship,devices,openPanel,launch,tryGrab,checkDeliveries,get mode(){return mode},get asteroids(){return asteroids},get fleet(){return fleet},MUS,AU};
+window.__game={closePanel,hitEnemy,spawnEnemy,enterCave,get clusters(){return clusters},get cave(){return cave},get pickups(){return pickups},runEv:k=>{RUN_EV[k].go()},get enemies(){return enemies},get curSec(){return curSec},doManip,dock,get huges(){return huges},fireHyper,setFiring:v=>firing=v,S,claimTasks,addFleet,man,kat,ship,devices,openPanel,launch,tryGrab,checkDeliveries,get mode(){return mode},get asteroids(){return asteroids},get fleet(){return fleet},MUS,AU};
 })();
 </script>
 
