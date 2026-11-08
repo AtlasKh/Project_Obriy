@@ -322,14 +322,14 @@ button{transition:transform .08s ease}button:active:not(:disabled){transform:sca
 .tree svg{position:absolute;inset:0;width:100%;height:100%}
 .tree line{stroke:#3a3048;stroke-width:1.2;vector-effect:non-scaling-stroke;stroke-width:3}
 .tree line.on.br-base{stroke:#7ff5ea}.tree line.on.br-miner{stroke:#ffb347}.tree line.on.br-hunter{stroke:#ff7a8a}
-.tn{position:absolute;transform:translate(-50%,-50%);width:15%;aspect-ratio:1;border-radius:50%;border:3px solid #3a3048;background:#151020;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:0;color:var(--cream)}
-.tn span{font-size:clamp(14px,5vw,22px);line-height:1}.tn small{font-size:10px;font-weight:800;font-family:var(--display)}
-.tn.ult{border-radius:22%}
-.tn.br-base{border-color:#2f6f6a}.tn.br-miner{border-color:#8a5a20}.tn.br-hunter{border-color:#8a2f3a}
-.tn.avail{box-shadow:0 0 0 2px rgba(242,182,74,.5),0 0 14px rgba(242,182,74,.45);animation:tnp 1.4s ease-in-out infinite}
-.tn.max.br-base{background:#123a38;border-color:#7ff5ea}.tn.max.br-miner{background:#3a2610;border-color:#ffb347}.tn.max.br-hunter{background:#3a1218;border-color:#ff7a8a}
-.tn.lock{opacity:.4;filter:grayscale(1)}
-.tn.sel{outline:3px solid #fff;outline-offset:2px}
+.skn{position:absolute;transform:translate(-50%,-50%);width:15%;aspect-ratio:1;border-radius:50%;border:3px solid #3a3048;background:#151020;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:0;color:var(--cream)}
+.skn span{font-size:clamp(14px,5vw,22px);line-height:1}.skn small{font-size:10px;font-weight:800;font-family:var(--display)}
+.skn.ult{border-radius:22%}
+.skn.br-base{border-color:#2f6f6a}.skn.br-miner{border-color:#8a5a20}.skn.br-hunter{border-color:#8a2f3a}
+.skn.avail{box-shadow:0 0 0 2px rgba(242,182,74,.5),0 0 14px rgba(242,182,74,.45);animation:tnp 1.4s ease-in-out infinite}
+.skn.max.br-base{background:#123a38;border-color:#7ff5ea}.skn.max.br-miner{background:#3a2610;border-color:#ffb347}.skn.max.br-hunter{background:#3a1218;border-color:#ff7a8a}
+.skn.lock{opacity:.4;filter:grayscale(1)}
+.skn.sel{outline:3px solid #fff;outline-offset:2px}
 @keyframes tnp{50%{box-shadow:0 0 0 4px rgba(242,182,74,.25),0 0 20px rgba(242,182,74,.6)}}
 .skcard{border:2px solid var(--line);border-radius:6px;padding:10px;margin-top:8px;background:#0f0b16}
 .skcard.br-base{border-color:#2f6f6a}.skcard.br-miner{border-color:#8a5a20}.skcard.br-hunter{border-color:#8a2f3a}
@@ -879,8 +879,8 @@ function buildCatRig(){const w=IMG.cat_walk,s2=IMG.cat_sit;if(!w||!s2)return;
   const fur=(img,x,y)=>{const d=img.getContext('2d').getImageData(x,y,1,1).data;return`rgb(${d[0]},${d[1]},${d[2]})`};
   // Bublyk faces right, so we see his LEFT side: left legs are near (bright, in front), right legs far (darker, behind).
   // Each leg = upper segment (shoulder/hip -> elbow/hock) + lower segment (wrist/hock -> paw), measured from the sprite.
-  const LEG=[{k:'HL',hind:1,near:1,x0:0,x1:38,px:26,jx:20,off:0},{k:'FL',hind:0,near:1,x0:113,x1:162,px:122,jx:123,off:.25},
-             {k:'HR',hind:1,near:0,x0:38,x1:84,px:60,jx:52,off:.5},{k:'FR',hind:0,near:0,x0:84,x1:113,px:98,jx:100,off:.75}];
+  const LEG=[{k:'HL',hind:1,near:1,x0:0,x1:38,px:26,jx:20,off:0,at:34},{k:'FL',hind:0,near:1,x0:113,x1:162,px:122,jx:123,off:.25,at:116},
+             {k:'HR',hind:1,near:0,x0:0,x1:38,px:26,jx:20,off:.5,at:34},{k:'FR',hind:0,near:0,x0:113,x1:162,px:122,jx:123,off:.75,at:116}];
   const HEAD=[104,38,58,64];
   const holeBody=cutPart(w,x=>{x.rect(44,0,130,146);x.rect(0,72,44,74)});{const hx=holeBody.getContext('2d');hx.clearRect(HEAD[0]+3,HEAD[1],HEAD[2]-3,HEAD[3]-8)}
   CR={walk:{
@@ -2168,7 +2168,7 @@ function breakRock(a,direct){
 function update(dt){
   timeT+=dt;
   if(toastT>0){toastT-=dt;if(typeN<typeTxt.length){typeN=Math.min(typeTxt.length,typeN+dt*70);$('#toastText').textContent=typeTxt.slice(0,Math.ceil(typeN))}if(toastT<=0)$('#toast').hidden=true}
-  if(moneyShown===null)moneyShown=S.credits;
+  if(moneyShown===null){moneyShown=S.credits;$('#moneyHud').textContent='₴'+moneyShown}
   if(moneyShown!==S.credits){const d=S.credits-moneyShown;moneyShown=Math.abs(d)<2?S.credits:moneyShown+Math.round(d*Math.min(1,dt*7)||Math.sign(d));const mh=$('#moneyHud');mh.textContent='₴'+moneyShown;mh.classList.add('tick')}else $('#moneyHud').classList.remove('tick')
   postTick-=dt;if(postTick<=0){postTick=1;checkDeliveries();if(panelKind==='locker')renderPanel()}
   for(let k=floats.length-1;k>=0;k--){const f=floats[k];f.life-=dt;f.y-=dt*(f.big?14:20);if(f.life<=0)floats.splice(k,1)}
@@ -2265,7 +2265,7 @@ function drawCat(){
         if(l.hind){a=.28-.56*e;b=.18*(1-e)-.85*Math.sin(Math.PI*q);sqL=1+.07*Math.sin(Math.PI*q)}       // hock folds: paw tucks under
         else{a=.3-.6*e;b=.55*(1-e)+.45*Math.sin(Math.PI*q)*(1-q);sqL=1+.08*Math.sin(Math.PI*q*.9)}}   // elbow back, paw curls, reaches forward
       return{a,b,lift,sqL}};
-    const drawLeg=l=>{const g=legPose(l),yo=l.hind?rear:front;ctx.save();ctx.translate(ox+l.px,oy+P.legY+yo-g.lift);ctx.rotate(g.a);
+    const drawLeg=l=>{const g=legPose(l),yo=l.hind?rear:front;ctx.save();ctx.translate(ox+l.at+(l.near?0:-3),oy+P.legY+yo-g.lift-(l.near?0:1));ctx.rotate(g.a);
       ctx.drawImage(l.up,-l.px,-P.legY);ctx.translate(l.jx-l.px,P.jointY-P.legY);ctx.rotate(g.b);ctx.scale(1,g.sqL);ctx.drawImage(l.lo,-l.jx,-P.jointY);ctx.restore()};
     if(kat.dir<0)ctx.scale(-1,1);const ox=-im.width/2,oy=-im.height;
     P.legs.forEach(legPose);const bs=.03*contact;
@@ -2321,7 +2321,11 @@ function drawBase(){
   ctx.setTransform(scale,0,0,scale,-ox*scale,-oy*scale);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
   ROOMS.forEach(r=>{const im=IMG[r.img];if(im)ctx.drawImage(im,r.x0,0,RW,RH);else{ctx.fillStyle='#2a2430';ctx.fillRect(r.x0,0,RW,RH)}});
   // doorways between rooms
-  [RW,RW*2].forEach(X=>{const g=ctx.createLinearGradient(X-60,0,X+60,0);g.addColorStop(0,'rgba(10,8,16,0)');g.addColorStop(.5,'rgba(10,8,16,.85)');g.addColorStop(1,'rgba(10,8,16,0)');ctx.fillStyle=g;ctx.fillRect(X-60,0,120,RH);
+  [RW,RW*2].forEach(X=>{const g=ctx.createLinearGradient(X-70,0,X+70,0);g.addColorStop(0,'rgba(10,8,16,0)');g.addColorStop(.35,'rgba(10,8,16,.6)');g.addColorStop(.65,'rgba(10,8,16,.6)');g.addColorStop(1,'rgba(10,8,16,0)');ctx.fillStyle=g;ctx.fillRect(X-70,0,140,RH);
+    // bulkhead: steel frame with an open hatch at floor level
+    ctx.fillStyle='#3a3540';ctx.fillRect(X-34,0,68,RH);ctx.fillStyle='#4e4856';ctx.fillRect(X-34,0,8,RH);ctx.fillRect(X+26,0,8,RH);ctx.fillStyle='#2a2630';for(let y=30;y<RH;y+=60){ctx.fillRect(X-30,y,4,4);ctx.fillRect(X+26,y,4,4)}
+    ctx.fillStyle='#120e18';ctx.beginPath();ctx.roundRect(X-26,560,52,RH-560,[18,18,0,0]);ctx.fill();ctx.strokeStyle='#e2b64a';ctx.lineWidth=3;ctx.setLineDash([10,8]);ctx.beginPath();ctx.roundRect(X-26,560,52,RH-560,[18,18,0,0]);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=`rgba(127,245,234,${.5+.3*Math.sin(timeT*2+X)})`;ctx.fillRect(X-14,540,28,6);
     ctx.fillStyle='rgba(127,245,234,.55)';ctx.fillRect(X-2,690,4,62);ctx.fillStyle='#7ff5ea';const a=.5+.5*Math.sin(timeT*3);ctx.globalAlpha=a;[[-1],[1]].forEach(([d])=>{ctx.beginPath();ctx.moveTo(X+d*22,665);ctx.lineTo(X+d*34,675);ctx.lineTo(X+d*22,685);ctx.fill()});ctx.globalAlpha=1});
   // dim the holo floor grid a bit
   ctx.fillStyle='rgba(12,10,20,.22)';ROOMS.forEach(r=>ctx.fillRect(r.x0,r.top-10,RW,RH-r.top+10));
@@ -2354,7 +2358,7 @@ let bigMap=false;
 // full map while the radar is held down
 function drawBigMap(){const pad=10*dpr,top=110*dpr,Wd=cv.width-pad*2,Hd=cv.height-top-60*dpr;
   const wx0=cave?0:0,wy0=cave?0:SAFE.y0-260,ww=cave?cave.GW*CT:W,wh=cave?cave.GH*CT:(SAFE.y1+260)-wy0,k=Math.min(Wd/ww,Hd/wh),ox=pad+(Wd-ww*k)/2,oy=top+(Hd-wh*k)/2,mp=(x,y)=>[ox+(x-wx0)*k,oy+(y-wy0)*k];
-  ctx.fillStyle='rgba(5,10,16,.86)';ctx.fillRect(0,0,cv.width,cv.height);ctx.strokeStyle='rgba(127,245,234,.5)';ctx.lineWidth=1.5*dpr;ctx.strokeRect(ox,oy,ww*k,wh*k);
+  ctx.fillStyle='rgba(5,10,16,.96)';ctx.fillRect(0,0,cv.width,cv.height);ctx.strokeStyle='rgba(127,245,234,.5)';ctx.lineWidth=1.5*dpr;ctx.strokeRect(ox,oy,ww*k,wh*k);
   ctx.save();ctx.beginPath();ctx.rect(ox,oy,ww*k,wh*k);ctx.clip();
   const lbl=(t,x,y,c,sz=11)=>{ctx.font=`800 ${Math.round(sz*dpr)}px "Exo 2",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3*dpr;ctx.strokeStyle='#05080c';ctx.strokeText(t,x,y);ctx.fillStyle=c;ctx.fillText(t,x,y)};
   if(cave){ctx.drawImage(cave.mm,ox,oy,cave.GW*CT*k,cave.GH*CT*k);
@@ -2364,8 +2368,8 @@ function drawBigMap(){const pad=10*dpr,top=110*dpr,Wd=cv.width-pad*2,Hd=cv.heigh
   else{let[ax]=mp(SAFE.x1,0);ctx.fillStyle='rgba(255,60,70,.18)';ctx.fillRect(ax,oy,ww*k,wh*k);let[,ay]=mp(0,SAFE.y0);ctx.fillRect(ox,oy,ww*k,ay-oy);[,ay]=mp(0,SAFE.y1);ctx.fillRect(ox,ay,ww*k,oy+wh*k-ay);
     for(const a of asteroids){const[x,y]=mp(a.x,a.y);ctx.fillStyle='rgba(180,170,200,.5)';ctx.fillRect(x-1*dpr,y-1*dpr,(a.si+1)*dpr,(a.si+1)*dpr)}
     for(const c of clusters){const[x,y]=mp(c.x,c.y),rgb=c.done?'126,224,166':c.type==='ice'?'120,190,255':c.type==='iron'?'255,140,70':'200,120,255';ctx.fillStyle=`rgba(${rgb},.18)`;ctx.strokeStyle=`rgba(${rgb},.8)`;ctx.lineWidth=1.5*dpr;ctx.beginPath();ctx.arc(x,y,c.r*k,0,6.3);ctx.fill();ctx.stroke();
-      lbl(c.name.toUpperCase(),x,y-c.r*k-9*dpr,`rgb(${rgb})`,10);lbl(c.done?'зачищено ✓':Math.min(100,Math.round(c.broken/c.need*100))+'%',x,y,'#fff',12)}
-    {const[x,y]=mp(MET.x,MET.y);ctx.fillStyle=metOpen()?'rgba(127,245,234,.55)':'rgba(150,130,140,.6)';ctx.beginPath();ctx.arc(x,y,MET.R*k,0,6.3);ctx.fill();lbl('МЕТЕОРИТ',x-MET.R*k-30*dpr,y-6*dpr,'#fff',10);lbl(run.bossDone?'досліджено':metOpen()?'вхід відкрито':'запечатано',x-MET.R*k-30*dpr,y+6*dpr,metOpen()?'#7ff5ea':'#c9a4ff',9)}
+      {const ly=c.y<MET.y-50?y-c.r*k-9*dpr:y+c.r*k+10*dpr;lbl(c.name.toUpperCase(),x,ly,`rgb(${rgb})`,10)}lbl(c.done?'✓':Math.min(100,Math.round(c.broken/c.need*100))+'%',x,y,'#fff',12)}
+    {const[x,y]=mp(MET.x,MET.y);ctx.fillStyle=metOpen()?'rgba(127,245,234,.55)':'rgba(150,130,140,.6)';ctx.beginPath();ctx.arc(x,y,MET.R*k,0,6.3);ctx.fill();lbl('МЕТЕОРИТ',x,y-4*dpr,'#fff',9);lbl(run.bossDone?'досліджено':metOpen()?'вхід відкрито':'запечатано',x,y+8*dpr,metOpen()?'#7ff5ea':'#c9a4ff',9)}
     {const[x,y]=mp(ST.x,ST.y);ctx.fillStyle='#f2b64a';ctx.fillRect(x-5*dpr,y-5*dpr,10*dpr,10*dpr);lbl('«ОБРІЙ»',x,y-13*dpr,'#f2b64a',10)}
     for(const it of items){const[x,y]=mp(it.x,it.y);ctx.fillStyle=it.kind==='cache'?'#ffd23f':'#7ff5ea';ctx.fillRect(x-2*dpr,y-2*dpr,4*dpr,4*dpr)}
     ctx.strokeStyle='#ffb347';ctx.lineWidth=1.5*dpr;for(const d of debris){const[x,y]=mp(d.x,d.y),sp=Math.hypot(d.vx,d.vy)||1;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-d.vx/sp*6*dpr,y-d.vy/sp*6*dpr);ctx.stroke()}}
@@ -2540,7 +2544,7 @@ function drawFly(){
   for(const e of enemies){const sx=(e.x-ox)*scale,sy=(e.y-oy)*scale,W2=cv.width,H2=cv.height;if(sx>0&&sx<W2&&sy>0&&sy<H2)continue;if(Math.hypot(e.x-ship.x,e.y-ship.y)>420)continue;
     const cx=W2/2,cy=H2/2,dx=sx-cx,dy=sy-cy,m=28*dpr,t=Math.min((cx-m)/Math.max(.001,Math.abs(dx)),(cy-m-60*dpr)/Math.max(.001,Math.abs(dy))),px=cx+dx*t,py=cy+dy*t,a=Math.atan2(dy,dx),hot=e.st==='aim'||e.st==='charge'||e.st==='swoop';
     ctx.save();ctx.translate(px,py);ctx.rotate(a);ctx.fillStyle=e.type==='soroka'?'#ffd23f':'#ff4d5a';ctx.globalAlpha=hot?.95:.7;const s2=(hot?9:7)*dpr;ctx.beginPath();ctx.moveTo(s2,0);ctx.lineTo(-s2,-s2*.8);ctx.lineTo(-s2*.4,0);ctx.lineTo(-s2,s2*.8);ctx.fill();ctx.restore();ctx.globalAlpha=1}
-  drawFallWarn();drawRadar();
+  drawFallWarn();if(!bigMap)drawRadar();
   drawBossBar();
   if(curSec.dark||cave){const sx=(ship.x-ox)*scale,sy=(ship.y-oy)*scale,g=ctx.createRadialGradient(sx,sy,(cave?90:70)*scale,sx,sy,(cave?190:150)*scale);g.addColorStop(0,'rgba(6,4,12,0)');g.addColorStop(1,'rgba(6,4,12,.9)');ctx.fillStyle=g;ctx.fillRect(0,0,cv.width,cv.height)}
   if(stormOn){ctx.fillStyle=`rgba(80,140,255,${.06+.05*Math.sin(timeT*30)})`;ctx.fillRect(0,0,cv.width,cv.height)}
@@ -2554,6 +2558,7 @@ function drawFly(){
   ctx.globalAlpha=1;
   if(combo>=4&&comboT>0){ctx.font=`800 ${Math.round(13*dpr)}px "Exo 2", sans-serif`;ctx.textAlign='left';const t=`серія ×${combo+1}`;const X=16*dpr,Y=(cssH-120)*dpr;
     ctx.globalAlpha=Math.min(1,comboT*2);ctx.lineWidth=3*dpr;ctx.strokeStyle='#120d1a';ctx.strokeText(t,X,Y);ctx.fillStyle='#ffd23f';ctx.fillText(t,X,Y);ctx.globalAlpha=1}
+  if(bigMap){ctx.globalAlpha=1;drawRadar()}
 }
 function draw(){
   scale=(mode==='base'?baseZ():zoom)*dpr;
@@ -2735,7 +2740,7 @@ function secSkills(){
   const sp=spFree(),need=XP_NEED(S.shipLv),pos=k=>TREE[k].map(v=>v*20+10);
   const lines=SKILLS.filter(x=>TREQ[x.k]).map(x=>{const[a,b]=pos(TREQ[x.k]),[c,d]=pos(x.k),on=sk(TREQ[x.k])>0;return`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" class="${on?'on':''} br-${x.br}"/>`}).join('');
   const nodes=SKILLS.map(x=>{const r=sk(x.k),lock=skLock(x),[l,t]=pos(x.k),st=r>=x.max?'max':lock?'lock':sp>0?'avail':'open';
-    return`<button class="tn br-${x.br} ${st} ${x.ult?'ult':''} ${skSel===x.k?'sel':''}" style="left:${l}%;top:${t}%" data-a="sksel" data-k="${x.k}"><span>${SKICON[x.k]}</span><small>${r}/${x.max}</small></button>`}).join('');
+    return`<button class="skn br-${x.br} ${st} ${x.ult?'ult':''} ${skSel===x.k?'sel':''}" style="left:${l}%;top:${t}%" data-a="sksel" data-k="${x.k}"><span>${SKICON[x.k]}</span><small>${r}/${x.max}</small></button>`}).join('');
   const x=SKILLS.find(q=>q.k===skSel)||SKILLS[0],r=sk(x.k),lock=skLock(x);
   const rc=150*S.shipLv;
   return`<section class="box"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Рівень ${S.shipLv}</h2><span>Вільних очок: <span class="sp">${sp}</span></span></div>
