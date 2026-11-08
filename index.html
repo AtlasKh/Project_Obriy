@@ -859,8 +859,21 @@ function onArt(){
   ['scout','drone','soroka','nest'].forEach(k=>{T.en[k]=IMG['en_'+k];T.enW[k]=silhouette(IMG['en_'+k])});T.en.boss=IMG.en_drone;T.enW.boss=T.enW.drone;
   T.en.sorokaL=flipX(IMG.en_soroka);T.enW.sorokaL=silhouette(T.en.sorokaL);
   for(const k in shipCache)delete shipCache[k];
-  paintInto($('#toastAva'),IMG.lyb_face);
+  paintInto($('#toastAva'),IMG.lyb_face);buildCatRig();
 }
+/* Bublyk rig: the painted sprites are cut into parts so the cat can breathe, swing its tail,
+   step with its legs, blink and look around without new drawings. Coordinates are in sprite pixels. */
+let CR=null;
+function cutPart(src,keep){const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const x=c.getContext('2d');x.save();x.beginPath();keep(x);x.clip();x.drawImage(src,0,0);x.restore();return c}
+function buildCatRig(){const w=IMG.cat_walk,s2=IMG.cat_sit;if(!w||!s2)return;
+  const fur=(img,x,y)=>{const d=img.getContext('2d').getImageData(x,y,1,1).data;return`rgb(${d[0]},${d[1]},${d[2]})`};
+  CR={walk:{
+      tail:cutPart(w,x=>x.rect(0,0,44,74)),
+      hind:cutPart(w,x=>x.rect(0,138,92,60)),
+      front:cutPart(w,x=>x.rect(92,138,80,60)),
+      body:cutPart(w,x=>{x.rect(44,0,130,140);x.rect(0,72,44,68)}),
+      tailPiv:[38,72],legY:138,eye:[145,79],eyeR:5,fur:fur(w,138,66)},
+    sit:{head:cutPart(s2,x=>x.rect(0,0,80,66)),body:cutPart(s2,x=>x.rect(0,58,80,100)),neck:[40,64],eyes:[[29,31],[52,31]],eyeR:5,fur:fur(s2,30,22)}}}
 function flipX(src){const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const x=c.getContext('2d');x.translate(src.width,0);x.scale(-1,1);x.drawImage(src,0,0);return c}
 // world sizes of hi-res sprites
 const SHIP_H={chaika:22,kalmar:24,perun:22,kozh:26},EN_SZ={scout:22,drone:40,soroka:34,nest:62,boss:96};
@@ -1261,7 +1274,7 @@ function updateBall(dt){
   ballO.vx*=Math.max(0,1-dt*1.6);ballO.vy*=Math.max(0,1-dt*1.6);
 }
 function petCat(){
-  kat.state='sit';kat.t=3;kat.path=[];kat.dir=man.x>kat.x?1:-1;kat.hearts=1.6;SFX.purr();
+  kat.state='sit';kat.t=3;kat.path=[];kat.dir=man.x>kat.x?1:-1;kat.hearts=1.6;kat.hop=1;kat.lookTo=0;SFX.purr();
   for(let k=0;k<4;k++)setTimeout(()=>parts.push({x:kat.x+(rnd()-.5)*30,y:kat.y-60,vx:(rnd()-.5)*30,vy:-50,life:1,max:1,c:'heart'}),k*180);
   say(catHappy()?pick(LINES.pet):LINES.hungry);
 }
@@ -2148,13 +2161,31 @@ function pxLine(c,x0,y0,x1,y1){x0=Math.round(x0);y0=Math.round(y0);x1=Math.round
   const dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1;let err=dx+dy;
   for(let i=0;i<200;i++){c.fillRect(x0,y0,1,1);if(x0===x1&&y0===y1)break;const e2=2*err;if(e2>=dy){err+=dy;x0+=sx}if(e2<=dx){err+=dx;y0+=sy}}}
 function drawCat(){
-  const X=kat.x,Y=kat.y;ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(X,Y,34,7,0,0,6.3);ctx.fill();
-  const walk=kat.state==='walk'||(kat.state==='play'&&Math.hypot(ballO.x-kat.x,ballO.y-kat.y)>20);
-  const im=walk?IMG.cat_walk:kat.state==='sleep'?IMG.cat_sleep:IMG.cat_sit;if(!im)return;
-  const w=im.width*K2,h=im.height*K2,bob=walk?Math.abs(Math.sin(kat.walk*1.6))*3:0;
-  ctx.save();ctx.translate(X,Y-bob);if(walk&&kat.dir<0)ctx.scale(-1,1);ctx.drawImage(im,-w/2,-h,w,h);ctx.restore();
-  if(kat.state==='sleep'&&Math.sin(timeT*1.5)>0){ctx.fillStyle='#bff7f2';ctx.font='700 18px "Exo 2",sans-serif';const z=Math.floor(timeT*1.5)%3;ctx.fillText('z',X+30+z*6,Y-h-z*10)}
-  if(!catHappy()&&kat.state!=='sleep'&&Math.sin(timeT*3)>0){ctx.fillStyle='#ffd23f';ctx.fillRect(X-3,Y-h-34,6,18);ctx.fillRect(X-3,Y-h-12,6,6)}
+  const X=kat.x,Y=kat.y,t=timeT,dt=Math.min(.05,t-(kat._lt||t));kat._lt=t;
+  const walk=kat.state==='walk'||(kat.state==='play'&&Math.hypot(ballO.x-kat.x,ballO.y-kat.y)>20),pose=walk?'walk':kat.state==='sleep'?'sleep':'sit';
+  if(kat._pose!==pose){kat.sq=kat._pose?1:0;kat._pose=pose}kat.sq=Math.max(0,(kat.sq||0)-dt*4);kat.hop=Math.max(0,(kat.hop||0)-dt*3);
+  // blinking and looking around
+  kat.blinkT=(kat.blinkT??2)-dt;if(kat.blinkT<-.14)kat.blinkT=2+rnd()*4;const blink=kat.blinkT<0;
+  kat.lookT=(kat.lookT??3)-dt;if(kat.lookT<0){kat.lookT=1.5+rnd()*3;kat.lookTo=rnd()<.4?0:(rnd()-.5)*.22}kat.look=(kat.look||0)+((kat.lookTo||0)-(kat.look||0))*Math.min(1,dt*5);
+  const breathe=pose==='sleep'?Math.sin(t*1.4)*.045:Math.sin(t*2.3)*.018,sq=Math.sin(kat.sq*Math.PI)*.16;
+  const sx=1+sq-breathe*.4,sy=1-sq+breathe,hop=Math.sin(kat.hop*Math.PI)*14;
+  ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(X,Y,34*(1-hop/60),7,0,0,6.3);ctx.fill();
+  ctx.save();ctx.translate(X,Y-hop);
+  if(pose==='walk'&&CR){const P=CR.walk,im=IMG.cat_walk,ph=kat.walk*1.6,bob=Math.abs(Math.sin(ph))*3;if(kat.dir<0)ctx.scale(-1,1);ctx.translate(0,-bob);ctx.scale(K2*sx,K2*sy);
+    const ox=-im.width/2,oy=-im.height,sh=Math.sin(ph)*.32;
+    const legs=(part,s2)=>{ctx.save();ctx.translate(ox,oy+P.legY);ctx.transform(1,0,s2,1,0,0);ctx.drawImage(part,0,-P.legY);ctx.restore()};
+    legs(P.hind,-sh);legs(P.front,sh);
+    ctx.save();ctx.translate(0,0);ctx.rotate(Math.sin(ph*2)*.015);ctx.drawImage(P.body,ox,oy);
+    ctx.save();ctx.translate(ox+P.tailPiv[0],oy+P.tailPiv[1]);ctx.rotate(Math.sin(t*5)*.1+Math.sin(ph)*.12-.04);ctx.drawImage(P.tail,-P.tailPiv[0],-P.tailPiv[1]);ctx.restore();
+    if(blink){ctx.fillStyle=P.fur;ctx.fillRect(ox+P.eye[0]-P.eyeR,oy+P.eye[1]-P.eyeR,P.eyeR*2,P.eyeR*2);ctx.fillStyle='#26222c';ctx.fillRect(ox+P.eye[0]-P.eyeR,oy+P.eye[1],P.eyeR*2,1.5)}ctx.restore()}
+  else if(pose==='sit'&&CR){const P=CR.sit,im=IMG.cat_sit;if(kat.dir<0)ctx.scale(-1,1);ctx.scale(K2*sx,K2*sy);const ox=-im.width/2,oy=-im.height;
+    ctx.drawImage(P.body,ox,oy);ctx.save();ctx.translate(ox+P.neck[0],oy+P.neck[1]);ctx.rotate(kat.look+Math.sin(t*1.1)*.02);ctx.drawImage(P.head,-P.neck[0],-P.neck[1]);
+    if(blink){ctx.fillStyle=P.fur;P.eyes.forEach(([ex,ey])=>{ctx.fillRect(ex-P.neck[0]-P.eyeR,ey-P.neck[1]-P.eyeR,P.eyeR*2,P.eyeR*2);ctx.fillStyle='#26222c';ctx.fillRect(ex-P.neck[0]-P.eyeR,ey-P.neck[1],P.eyeR*2,1.5);ctx.fillStyle=P.fur})}ctx.restore()}
+  else{const im=pose==='sleep'?IMG.cat_sleep:pose==='walk'?IMG.cat_walk:IMG.cat_sit;if(im){if(pose!=='sleep'&&kat.dir<0)ctx.scale(-1,1);ctx.scale(K2*sx,K2*sy);ctx.drawImage(im,-im.width/2,-im.height)}}
+  ctx.restore();
+  const h=(pose==='sleep'?IMG.cat_sleep:IMG.cat_sit||{height:150}).height*K2;
+  if(pose==='sleep'){for(let k=0;k<3;k++){const ph2=(t*.5+k/3)%1;ctx.globalAlpha=Math.sin(ph2*Math.PI);ctx.fillStyle='#bff7f2';ctx.font=`700 ${12+ph2*10}px "Exo 2",sans-serif`;ctx.fillText('z',X+24+ph2*22,Y-h-ph2*34)}ctx.globalAlpha=1}
+  if(!catHappy()&&pose!=='sleep'&&Math.sin(t*3)>0){ctx.fillStyle='#ffd23f';ctx.fillRect(X-3,Y-h-34,6,18);ctx.fillRect(X-3,Y-h-12,6,6)}
 }
 function drawMan(){
   const X=man.x,Y=man.y,im=man.dir==='up'?IMG.pilot_u:man.dir==='down'?IMG.pilot_d:IMG.pilot_r;
