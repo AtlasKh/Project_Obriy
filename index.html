@@ -877,13 +877,20 @@ let CR=null;
 function cutPart(src,keep){const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const x=c.getContext('2d');x.save();x.beginPath();keep(x);x.clip();x.drawImage(src,0,0);x.restore();return c}
 function buildCatRig(){const w=IMG.cat_walk,s2=IMG.cat_sit;if(!w||!s2)return;
   const fur=(img,x,y)=>{const d=img.getContext('2d').getImageData(x,y,1,1).data;return`rgb(${d[0]},${d[1]},${d[2]})`};
+  // Bublyk faces right, so we see his LEFT side: left legs are near (bright, in front), right legs far (darker, behind).
+  // Each leg = upper segment (shoulder/hip -> elbow/hock) + lower segment (wrist/hock -> paw), measured from the sprite.
+  const LEG=[{k:'HL',hind:1,near:1,x0:0,x1:38,px:26,jx:20,off:0},{k:'FL',hind:0,near:1,x0:113,x1:162,px:122,jx:123,off:.25},
+             {k:'HR',hind:1,near:0,x0:38,x1:84,px:60,jx:52,off:.5},{k:'FR',hind:0,near:0,x0:84,x1:113,px:98,jx:100,off:.75}];
+  const HEAD=[104,38,58,64];
+  const holeBody=cutPart(w,x=>{x.rect(44,0,130,146);x.rect(0,72,44,74)});{const hx=holeBody.getContext('2d');hx.clearRect(HEAD[0]+3,HEAD[1],HEAD[2]-3,HEAD[3]-8)}
   CR={walk:{
-      tail:cutPart(w,x=>x.rect(0,0,44,74)),
-      // four separate legs; Bublyk faces right, so we see his left side (near legs are brighter)
-      legs:[{k:'FL',x0:113,x1:162,px:128,off:0,near:1},{k:'HR',x0:38,x1:84,px:58,off:.25,near:0},{k:'FR',x0:84,x1:113,px:100,off:.5,near:0},{k:'HL',x0:0,x1:38,px:24,off:.75,near:1}]
-        .map(l=>{const img=cutPart(w,x=>x.rect(l.x0,138,l.x1-l.x0,52));return Object.assign(l,{img:l.near?img:darken(img,.18)})}),
-      body:cutPart(w,x=>{x.rect(44,0,130,146);x.rect(0,72,44,74)}),
-      tailPiv:[38,72],legY:138,eye:[145,79],eyeR:5,fur:fur(w,138,66)},
+      legs:LEG.map(l=>{const up=cutPart(w,x=>x.rect(l.x0,136,l.x1-l.x0,31)),lo=cutPart(w,x=>x.rect(l.x0,165,l.x1-l.x0,25));
+        return Object.assign(l,{up:l.near?up:darken(up,.2),lo:l.near?lo:darken(lo,.2)})}),
+      body:holeBody,
+
+      head:cutPart(w,x=>x.rect(...HEAD)),neck:[118,100],
+      tail:[cutPart(w,x=>x.rect(0,46,44,30)),cutPart(w,x=>x.rect(0,21,44,28)),cutPart(w,x=>x.rect(0,0,44,24))],tailPiv:[[19,72],[20,48],[23,23]],
+      legY:138,jointY:165,eye:[145,79],eyeR:5,fur:fur(w,138,66)},
     sit:{head:cutPart(s2,x=>x.rect(0,0,80,66)),body:cutPart(s2,x=>x.rect(0,58,80,100)),neck:[40,64],eyes:[[29,31],[52,31]],eyeR:5,fur:fur(s2,30,22)}}}
 let PR=null,ER={};
 function darken(src,a){const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const x=c.getContext('2d');x.drawImage(src,0,0);x.globalCompositeOperation='source-atop';x.fillStyle=`rgba(10,8,20,${a})`;x.fillRect(0,0,c.width,c.height);return c}
@@ -1314,7 +1321,7 @@ function updateCat(dt){
   if(kat.state==='walk'){
     const p=kat.path[0];if(!p){kat.state=kat.next;kat.t=kat.next==='sleep'?8+rnd()*6:kat.next==='play'?7:2+rnd()*3;return}
     const dx=p.x-kat.x,dy=p.y-kat.y,d=Math.hypot(dx,dy);if(d<6){kat.path.shift();return}
-    const sp=kat.next==='play'?200:120;const nx=kat.x+dx/d*sp*dt,ny=kat.y+dy/d*sp*dt;if(solidAt(nx,ny)){kat.path=[];return}kat.x=nx;kat.y=ny;if(Math.abs(dx)>2)kat.dir=dx>0?1:-1;kat.walk+=dt*8;return}
+    const sp=kat.next==='play'?170:78;const nx=kat.x+dx/d*sp*dt,ny=kat.y+dy/d*sp*dt;if(solidAt(nx,ny)){kat.path=[];return}kat.x=nx;kat.y=ny;if(Math.abs(dx)>2)kat.dir=dx>0?1:-1;kat.walk+=dt*8;return}
   if(kat.state==='play'){
     const dx=ballO.x-kat.x,dy=ballO.y-kat.y,d=Math.hypot(dx,dy);
     if(d>20){kat.x+=dx/d*190*dt;kat.y+=dy/d*190*dt;kat.dir=dx>0?1:-1;kat.walk+=dt*10}
@@ -2243,15 +2250,38 @@ function drawCat(){
   const sx=1+sq-breathe*.4,sy=1-sq+breathe,hop=Math.sin(kat.hop*Math.PI)*14;
   ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(X,Y,34*(1-hop/60),7,0,0,6.3);ctx.fill();
   ctx.save();ctx.translate(X,Y-hop);
-  if(pose==='walk'&&CR){const P=CR.walk,im=IMG.cat_walk,ph=kat.walk*1.6,bob=Math.abs(Math.sin(ph*2))*1.6;if(kat.dir<0)ctx.scale(-1,1);ctx.translate(0,-bob);ctx.scale(K2*sx,K2*sy);
-    const ox=-im.width/2,oy=-im.height,A=.38;
-    // four-beat walk: front-left, hind-right, front-right, hind-left. Each leg swings forward fast (25% of the cycle) and pushes back slowly.
-    const leg=l=>{const u=((ph/6.2832+l.off)%1+1)%1;let a,lift=0;if(u<.25){const q=u/.25,e=q*q*(3-2*q);a=A-2*A*e;lift=Math.sin(q*Math.PI)*5}else a=-A+2*A*(u-.25)/.75;
-      ctx.save();ctx.translate(ox+l.px,oy+P.legY-lift);ctx.rotate(a);ctx.drawImage(l.img,-l.px,-P.legY);ctx.restore()};
-    P.legs.filter(l=>!l.near).forEach(leg);
-    ctx.save();ctx.rotate(Math.sin(ph*2)*.012);ctx.drawImage(P.body,ox,oy);P.legs.filter(l=>l.near).forEach(leg);
-    ctx.save();ctx.translate(ox+P.tailPiv[0],oy+P.tailPiv[1]);ctx.rotate(Math.sin(t*5)*.1+Math.sin(ph)*.12-.04);ctx.drawImage(P.tail,-P.tailPiv[0],-P.tailPiv[1]);ctx.restore();
-    if(blink){ctx.fillStyle=P.fur;ctx.fillRect(ox+P.eye[0]-P.eyeR,oy+P.eye[1]-P.eyeR,P.eyeR*2,P.eyeR*2);ctx.fillStyle='#26222c';ctx.fillRect(ox+P.eye[0]-P.eyeR,oy+P.eye[1],P.eyeR*2,1.5)}ctx.restore()}
+  if(pose==='walk'&&CR){const P=CR.walk,im=IMG.cat_walk;
+    // gait phase follows the real distance travelled, so paws never slide: one stance sweeps ~15 world px
+    const mv=Math.hypot(X-(kat._px??X),Y-(kat._py??Y));kat._px=X;kat._py=Y;kat.gait=((kat.gait||0)+Math.min(5,mv/Math.max(dt,.001)*.62/15)*dt)%1;
+    const C=kat.gait,TAU=6.2832,D=.62,ease=q=>q*q*(3-2*q);
+    // pelvis and shoulders rock in counter-phase; head stays level (gyro) with a tiny counter-bob
+    const rear=Math.sin((C*2)*TAU)*1.8,front=Math.sin((C*2+.5)*TAU)*1.8,tilt=(rear-front)/95;
+    let contact=0;
+    const legPose=l=>{const u=((C-l.off)%1+1)%1;let a,b,lift=0,sqL=1;
+      if(u<D){const s2=u/D,imp=Math.max(0,1-s2/.14);if(!l.hind)contact=Math.max(contact,imp);
+        if(l.hind){a=-.28+.56*s2;b=-.12*Math.sin(Math.PI*s2)+(s2>.75?.18*((s2-.75)/.25):0);sqL=1-.1*imp}   // knee forward, hock straightens on push-off
+        else{a=-.3+.6*s2;b=-.16*imp+(s2>.72?.55*Math.pow((s2-.72)/.28,2):0);sqL=1-.14*imp}}             // wrist absorbs on contact, heel lifts before swing
+      else{const q=(u-D)/(1-D),e=ease(q);lift=Math.sin(Math.PI*q)*(l.hind?7:6);
+        if(l.hind){a=.28-.56*e;b=.18*(1-e)-.85*Math.sin(Math.PI*q);sqL=1+.07*Math.sin(Math.PI*q)}       // hock folds: paw tucks under
+        else{a=.3-.6*e;b=.55*(1-e)+.45*Math.sin(Math.PI*q)*(1-q);sqL=1+.08*Math.sin(Math.PI*q*.9)}}   // elbow back, paw curls, reaches forward
+      return{a,b,lift,sqL}};
+    const drawLeg=l=>{const g=legPose(l),yo=l.hind?rear:front;ctx.save();ctx.translate(ox+l.px,oy+P.legY+yo-g.lift);ctx.rotate(g.a);
+      ctx.drawImage(l.up,-l.px,-P.legY);ctx.translate(l.jx-l.px,P.jointY-P.legY);ctx.rotate(g.b);ctx.scale(1,g.sqL);ctx.drawImage(l.lo,-l.jx,-P.jointY);ctx.restore()};
+    if(kat.dir<0)ctx.scale(-1,1);const ox=-im.width/2,oy=-im.height;
+    P.legs.forEach(legPose);const bs=.03*contact;
+    ctx.scale(K2*sx*(1+bs*.6),K2*sy*(1-bs));ctx.translate(0,-(rear+front)*.25);
+    ctx.save();ctx.translate(ox+80,oy+110);ctx.rotate(tilt);ctx.translate(-ox-80,-oy-110);
+    P.legs.filter(l=>!l.near).forEach(drawLeg);
+    // tail: three segments, each lagging the previous -> S-wave; base counters the pelvis
+    kat.tailV=(kat.tailV||0)+((-tilt*3)-(kat.tailA||0))*dt*30;kat.tailV*=.85;kat.tailA=(kat.tailA||0)+kat.tailV*dt;
+    ctx.save();ctx.translate(ox+P.tailPiv[0][0],oy+P.tailPiv[0][1]+rear);
+    [0,1,2].forEach(i=>{const amp=[.1,.16,.22][i],ang=amp*Math.sin(C*TAU-i*1.15)+(i===0?kat.tailA-.03:0);if(i>0)ctx.translate(P.tailPiv[i][0]-P.tailPiv[i-1][0],P.tailPiv[i][1]-P.tailPiv[i-1][1]);ctx.rotate(ang);ctx.drawImage(P.tail[i],-P.tailPiv[i][0],-P.tailPiv[i][1])});ctx.restore();
+    ctx.drawImage(P.body,ox,oy);
+    P.legs.filter(l=>l.near).forEach(drawLeg);
+    ctx.restore();
+    // head: stays steady, counter-bobs opposite the front paws
+    ctx.save();const hb=-front*.55+Math.sin((C*2+.25)*TAU)*.6;ctx.translate(ox+P.neck[0],oy+P.neck[1]+hb);ctx.rotate(-tilt*.3+Math.sin(C*TAU)*.012);ctx.drawImage(P.head,-P.neck[0],-P.neck[1]);
+    if(blink){ctx.fillStyle=P.fur;ctx.fillRect(P.eye[0]-P.neck[0]-P.eyeR,P.eye[1]-P.neck[1]-P.eyeR,P.eyeR*2,P.eyeR*2);ctx.fillStyle='#26222c';ctx.fillRect(P.eye[0]-P.neck[0]-P.eyeR,P.eye[1]-P.neck[1],P.eyeR*2,1.5)}ctx.restore()}
   else if(pose==='sit'&&CR){const P=CR.sit,im=IMG.cat_sit;if(kat.dir<0)ctx.scale(-1,1);ctx.scale(K2*sx,K2*sy);const ox=-im.width/2,oy=-im.height;
     ctx.drawImage(P.body,ox,oy);ctx.save();ctx.translate(ox+P.neck[0],oy+P.neck[1]);ctx.rotate(kat.look+Math.sin(t*1.1)*.02);ctx.drawImage(P.head,-P.neck[0],-P.neck[1]);
     if(blink){ctx.fillStyle=P.fur;P.eyes.forEach(([ex,ey])=>{ctx.fillRect(ex-P.neck[0]-P.eyeR,ey-P.neck[1]-P.eyeR,P.eyeR*2,P.eyeR*2);ctx.fillStyle='#26222c';ctx.fillRect(ex-P.neck[0]-P.eyeR,ey-P.neck[1],P.eyeR*2,1.5);ctx.fillStyle=P.fur})}ctx.restore()}
