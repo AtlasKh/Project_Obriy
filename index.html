@@ -219,6 +219,13 @@ button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
 #tasksHud{align-self:flex-start;display:flex;flex-direction:column;gap:3px;font-family:var(--display);font-size:11.5px;font-weight:700;color:var(--cream);text-shadow:0 1px 0 #000}
 #tasksHud div{display:flex;gap:6px;align-items:center;background:rgba(11,8,16,.55);padding:2px 7px;border-radius:3px}
 #tasksHud div.done{color:#7ee0a6}
+#tasksHud{pointer-events:auto;cursor:pointer}
+#tasksHud .tchip{color:#bff7f2;border:1px solid rgba(127,245,234,.35)}
+#tasksHud .tchip.flash{animation:tfl .9s ease-out 2}@keyframes tfl{50%{background:rgba(126,224,166,.55)}}
+#app:not(.inbase) .goalpill{display:none}
+#app.bigmap #tasksHud,#app.bigmap #sigArrow,#app.bigmap #arrow,#app.bigmap #toast,#app.bigmap #fireBtn,#app.bigmap #grabBtn,#app.bigmap #dockBtn{visibility:hidden}
+#radarHit{position:fixed;right:8px;top:174px;width:102px;height:118px;z-index:6;touch-action:none;display:none}
+#app:not(.inbase) #radarHit.on{display:block}
 #tasksHud b{font-variant-numeric:tabular-nums;color:var(--amber)}
 #sigArrow{position:absolute;left:0;top:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--display);font-weight:700;font-size:11px;color:var(--lyb);text-shadow:0 1px 0 #000}
 .tabs{display:flex;gap:6px;flex-wrap:wrap}
@@ -378,6 +385,7 @@ button:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
     <div id="goalPill" class="goalpill"></div>
     <div id="tasksHud" hidden></div>
   </div>
+  <div id="radarHit"></div>
   <div id="sigArrow" hidden><svg width="18" height="18" viewBox="0 0 22 22"><path d="M11 1 L21 21 L11 15 L1 21 Z" fill="#7ff5ea" stroke="#0b1a1f" stroke-width="2"/></svg><span id="sigDist">сигнал</span></div>
   <div id="arrow" hidden><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 1 L21 21 L11 15 L1 21 Z" fill="#f2b64a" stroke="#1b1206" stroke-width="2"/></svg><span id="arrowDist"></span></div>
   <button id="dockBtn" class="bigbtn" hidden>Стикування</button>
@@ -1318,7 +1326,9 @@ function checkAct1(){if(!S.act1&&arkCount()===ARK.length&&S.frags.length===FRAGS
 function updateGoalPill(){const sec=SECTORS[sectorIdx()],t=`Рів. ${S.shipLv}${spFree()?' ★':''} · ${sec.short} ${Math.ceil(sectorLeft()/60000)} хв · Ковчег ${arkCount()}/${ARK.length} · Сигнал ${S.frags.length}/${FRAGS.length}`;if($('#goalPill').textContent!==t)$('#goalPill').textContent=t}
 function renderTasksHud(){
   const el=$('#tasksHud');if(mode!=='fly'||!S.tasks.length){el.hidden=true;return}
-  el.hidden=false;el.innerHTML=S.tasks.map(t=>`<div class="${t.p>=t.n?'done':''}">${t.p>=t.n?'✓':'•'} ${taskText(t)} <b>${t.p}/${t.n}</b></div>`).join('');tasksDirty=false;
+  el.hidden=false;const dn=S.tasks.filter(t=>t.p>=t.n).length,fl=dn>(renderTasksHud.lastDn??dn);renderTasksHud.lastDn=dn;
+  el.innerHTML=S.tasksOpen?S.tasks.map(t=>`<div class="${t.p>=t.n?'done':''}">${t.p>=t.n?'✓':'•'} ${taskText(t)} <b>${t.p}/${t.n}</b></div>`).join('')+'<div class="tchip">згорнути ▴</div>'
+    :`<div class="tchip ${fl?'flash':''}">Завдання ${dn}/${S.tasks.length} ▾</div>`;tasksDirty=false;
 }
 function drawCard(i){
   const c=document.createElement('canvas');c.width=64;c.height=30;const x=c.getContext('2d');const r=mulberry(99+i);
@@ -1380,6 +1390,7 @@ function nextStep(){
   if(!Object.values(S.tubes).some(n=>n>0))return{t:'Пайки скінчилися. Замов тюбики на «Подовжувачі».',dev:'shop'};
   const sec=SECTORS[sectorIdx()];return{t:`Лети в кільце! Зараз ${sec.name.toLowerCase()}: ${sec.k==='north'?'спокійний фарм':'будуть вороги'}.`,dev:'ship',tab:'fly'};
 }
+$('#tasksHud').addEventListener('click',()=>{S.tasksOpen=!S.tasksOpen;SFX.ui();renderTasksHud()});
 $('#goalPill').addEventListener('click',()=>{if(mode!=='base')return;const n=nextStep();say(n.t,6);guide={id:n.dev,t:12};SFX.ui()});
 
 /* ================= DELIVERIES ================= */
@@ -2183,12 +2194,37 @@ function drawBase(){
   ctx.setTransform(1,0,0,1,0,0);ctx.imageSmoothingEnabled=false;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`700 ${Math.round(11*dpr)}px "Exo 2", sans-serif`;
   for(const b of bots){const im=IMG['bot0'],h=im?im.height*K2:70;const sx=(b.x-ox)*scale,sy=(b.y-h-40-oy)*scale;ctx.lineWidth=3*dpr;ctx.strokeStyle='#120d1a';ctx.strokeText(b.name,sx,sy);ctx.fillStyle='#bff7f2';ctx.fillText(b.name,sx,sy)}
 }
+let bigMap=false;
+{const rh=$('#radarHit');const on=e=>{e.preventDefault();e.stopPropagation();bigMap=true;$('#app').classList.add('bigmap');SFX.ui();hap('light');try{rh.setPointerCapture(e.pointerId)}catch(_){}},off=()=>{bigMap=false;$('#app').classList.remove('bigmap')};
+ rh.addEventListener('pointerdown',on);['pointerup','pointercancel','lostpointercapture'].forEach(ev=>rh.addEventListener(ev,off));rh.addEventListener('contextmenu',e=>e.preventDefault())}
+// full map while the radar is held down
+function drawBigMap(){const pad=10*dpr,top=110*dpr,Wd=cv.width-pad*2,Hd=cv.height-top-60*dpr;
+  const wx0=cave?0:0,wy0=cave?0:SAFE.y0-260,ww=cave?cave.GW*CT:W,wh=cave?cave.GH*CT:(SAFE.y1+260)-wy0,k=Math.min(Wd/ww,Hd/wh),ox=pad+(Wd-ww*k)/2,oy=top+(Hd-wh*k)/2,mp=(x,y)=>[ox+(x-wx0)*k,oy+(y-wy0)*k];
+  ctx.fillStyle='rgba(5,10,16,.86)';ctx.fillRect(0,0,cv.width,cv.height);ctx.strokeStyle='rgba(127,245,234,.5)';ctx.lineWidth=1.5*dpr;ctx.strokeRect(ox,oy,ww*k,wh*k);
+  ctx.save();ctx.beginPath();ctx.rect(ox,oy,ww*k,wh*k);ctx.clip();
+  const lbl=(t,x,y,c,sz=11)=>{ctx.font=`800 ${Math.round(sz*dpr)}px "Exo 2",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=3*dpr;ctx.strokeStyle='#05080c';ctx.strokeText(t,x,y);ctx.fillStyle=c;ctx.fillText(t,x,y)};
+  if(cave){ctx.drawImage(cave.mm,ox,oy,cave.GW*CT*k,cave.GH*CT*k);
+    cave.rooms.forEach(r=>{if(r.kind==='pocket')return;const[x,y]=mp(r.x,r.y);lbl(r.kind==='boss'?'МАТКА':r.kind==='entry'?'ВХІД':r.name.toUpperCase(),x,y-r.rad*k-8*dpr,r.kind==='boss'?'#e2a0ff':'#f3e6c8',10)});
+    for(const a of asteroids)if(a.geode){const[x,y]=mp(a.x,a.y);ctx.fillStyle='#7ff5ea';ctx.fillRect(x-2*dpr,y-2*dpr,4*dpr,4*dpr)}
+    for(const p of [cave.exit,cave.portal]){if(!p)continue;const[x,y]=mp(p.x,p.y);ctx.strokeStyle=p===cave.portal?'#ffd23f':'#7ff5ea';ctx.lineWidth=2*dpr;ctx.beginPath();ctx.arc(x,y,6*dpr,0,6.3);ctx.stroke()}}
+  else{let[ax]=mp(SAFE.x1,0);ctx.fillStyle='rgba(255,60,70,.18)';ctx.fillRect(ax,oy,ww*k,wh*k);let[,ay]=mp(0,SAFE.y0);ctx.fillRect(ox,oy,ww*k,ay-oy);[,ay]=mp(0,SAFE.y1);ctx.fillRect(ox,ay,ww*k,oy+wh*k-ay);
+    for(const a of asteroids){const[x,y]=mp(a.x,a.y);ctx.fillStyle='rgba(180,170,200,.5)';ctx.fillRect(x-1*dpr,y-1*dpr,(a.si+1)*dpr,(a.si+1)*dpr)}
+    for(const c of clusters){const[x,y]=mp(c.x,c.y),rgb=c.done?'126,224,166':c.type==='ice'?'120,190,255':c.type==='iron'?'255,140,70':'200,120,255';ctx.fillStyle=`rgba(${rgb},.18)`;ctx.strokeStyle=`rgba(${rgb},.8)`;ctx.lineWidth=1.5*dpr;ctx.beginPath();ctx.arc(x,y,c.r*k,0,6.3);ctx.fill();ctx.stroke();
+      lbl(c.name.toUpperCase(),x,y-c.r*k-9*dpr,`rgb(${rgb})`,10);lbl(c.done?'зачищено ✓':Math.min(100,Math.round(c.broken/c.need*100))+'%',x,y,'#fff',12)}
+    {const[x,y]=mp(MET.x,MET.y);ctx.fillStyle=metOpen()?'rgba(127,245,234,.55)':'rgba(150,130,140,.6)';ctx.beginPath();ctx.arc(x,y,MET.R*k,0,6.3);ctx.fill();lbl('МЕТЕОРИТ',x-MET.R*k-30*dpr,y-6*dpr,'#fff',10);lbl(run.bossDone?'досліджено':metOpen()?'вхід відкрито':'запечатано',x-MET.R*k-30*dpr,y+6*dpr,metOpen()?'#7ff5ea':'#c9a4ff',9)}
+    {const[x,y]=mp(ST.x,ST.y);ctx.fillStyle='#f2b64a';ctx.fillRect(x-5*dpr,y-5*dpr,10*dpr,10*dpr);lbl('«ОБРІЙ»',x,y-13*dpr,'#f2b64a',10)}
+    for(const it of items){const[x,y]=mp(it.x,it.y);ctx.fillStyle=it.kind==='cache'?'#ffd23f':'#7ff5ea';ctx.fillRect(x-2*dpr,y-2*dpr,4*dpr,4*dpr)}
+    ctx.strokeStyle='#ffb347';ctx.lineWidth=1.5*dpr;for(const d of debris){const[x,y]=mp(d.x,d.y),sp=Math.hypot(d.vx,d.vy)||1;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-d.vx/sp*6*dpr,y-d.vy/sp*6*dpr);ctx.stroke()}}
+  for(const e of enemies){const[x,y]=mp(e.x,e.y);ctx.fillStyle=e.type==='boss'?'#e2a0ff':e.type==='soroka'?'#ffd23f':'#ff4d5a';ctx.beginPath();ctx.arc(x,y,(e.type==='boss'?5:e.type==='nest'?4:2.2)*dpr,0,6.3);ctx.fill()}
+  {const[x,y]=mp(ship.x,ship.y);ctx.save();ctx.translate(x,y);ctx.rotate(ship.ang);ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(8*dpr,0);ctx.lineTo(-5*dpr,-5*dpr);ctx.lineTo(-5*dpr,5*dpr);ctx.fill();ctx.restore();
+    const vw=cv.width/scale,vh=cv.height/scale;ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=dpr;ctx.strokeRect(x-vw/2*k,y-vh/2*k,vw*k,vh*k)}
+  ctx.restore();lbl(cave?'КАРТА ПЕЧЕРИ':'КАРТА ОРБІТИ',cv.width/2,oy-14*dpr,'#bff7f2',13);lbl('відпусти, щоб закрити',cv.width/2,oy+wh*k+16*dpr,'rgba(191,247,242,.7)',10)}
 function drawFallWarn(){if(cave)return;const d=fallDepth();if(d<=0||!(mode==='fly'||rescue))return;const k=Math.min(1,d/FALL),W2=cv.width,H2=cv.height,pulse=.5+.5*Math.sin(timeT*(8+k*10));
   const a=.18+.5*k*pulse,g1=ctx.createRadialGradient(W2/2,H2/2,Math.min(W2,H2)*.3,W2/2,H2/2,Math.max(W2,H2)*.7);g1.addColorStop(0,'rgba(255,40,50,0)');g1.addColorStop(1,`rgba(255,40,50,${a})`);ctx.fillStyle=g1;ctx.fillRect(0,0,W2,H2);
   if(d>FALL*.45){ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`900 ${Math.round(20*dpr)}px "Exo 2",sans-serif`;ctx.globalAlpha=.6+.4*pulse;ctx.lineWidth=4*dpr;ctx.strokeStyle='#1a0508';
     const y=H2*.52;ctx.strokeText('ТОЧКА НЕПОВЕРНЕННЯ',W2/2,y);ctx.fillStyle='#ff5a5a';ctx.fillText('ТОЧКА НЕПОВЕРНЕННЯ',W2/2,y);ctx.font=`700 ${Math.round(12*dpr)}px "Exo 2",sans-serif`;
     ctx.strokeText('розвертайся до станції',W2/2,y+22*dpr);ctx.fillStyle='#ffd0d0';ctx.fillText('розвертайся до станції',W2/2,y+22*dpr);ctx.globalAlpha=1}}
-function drawRadar(){if(mode!=='fly'&&!rescue)return;const R=46*dpr,cx=cv.width-R-12*dpr,cy=178*dpr+R,rng=700,k=R/rng,mp=(x,y)=>[cx+(x-ship.x)*k,cy+(y-ship.y)*k];
+function drawRadar(){if(mode!=='fly'&&!rescue)return;if(bigMap){drawBigMap();return}const R=46*dpr,cx=cv.width-R-12*dpr,cy=178*dpr+R,rng=1300,k=R/rng,mp=(x,y)=>[cx+(x-ship.x)*k,cy+(y-ship.y)*k];
   ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,6.3);ctx.fillStyle='rgba(6,14,20,.78)';ctx.fill();ctx.clip();
   if(!cave){ctx.fillStyle='rgba(255,60,70,.3)';let [ax]=mp(SAFE.x1,0);ctx.fillRect(ax,cy-R,cx+R-ax+2,2*R);let [,ay]=mp(0,SAFE.y0);ctx.fillRect(cx-R,cy-R,2*R,ay-(cy-R));[,ay]=mp(0,SAFE.y1);ctx.fillRect(cx-R,ay,2*R,cy+R-ay+2)}
   if(cave){const kk=k*CT/2;ctx.drawImage(cave.mm,cx-ship.x*k,cy-ship.y*k,cave.mm.width*kk,cave.mm.height*kk);for(const p of [cave.exit,cave.portal]){if(!p)continue;const[x,y]=mp(p.x,p.y);ctx.fillStyle=p===cave.portal?'#ffd23f':'#7ff5ea';ctx.fillRect(x-2*dpr,y-2*dpr,4*dpr,4*dpr)}}
@@ -2207,7 +2243,7 @@ function drawRadar(){if(mode!=='fly'&&!rescue)return;const R=46*dpr,cx=cv.width-
   ctx.save();ctx.translate(cx,cy);ctx.rotate(ship.ang);ctx.fillStyle='#e8fffc';ctx.beginPath();ctx.moveTo(4*dpr,0);ctx.lineTo(-3*dpr,-3*dpr);ctx.lineTo(-3*dpr,3*dpr);ctx.fill();ctx.restore();
   ctx.strokeStyle='rgba(127,245,234,.55)';ctx.lineWidth=1.5*dpr;ctx.beginPath();ctx.arc(cx,cy,R,0,6.3);ctx.stroke();
   const lab=cave?'ПЕЧЕРА':zwave&&!zwave.spawned?`ХВИЛЯ · ${Math.max(0,Math.ceil(zwave.t))} с`:zwave?`ХВИЛЯ · ${enemies.filter(e=>e.wz===zwave.z.i).length} цілей`:`ЗОН ЗАЧИЩЕНО ${S.met?S.met.z.filter(Boolean).length:0}/3`;
-  ctx.textAlign='center';ctx.textBaseline='top';ctx.font=`800 ${Math.round(10*dpr)}px "Exo 2",sans-serif`;ctx.lineWidth=3*dpr;ctx.strokeStyle='#0b0810';ctx.strokeText(lab,cx,cy+R+4*dpr);ctx.fillStyle=wave.warn?'#ff6f7a':'#bff7f2';ctx.fillText(lab,cx,cy+R+4*dpr)}
+  ctx.textAlign='center';ctx.textBaseline='top';ctx.font=`800 ${Math.round(10*dpr)}px "Exo 2",sans-serif`;ctx.lineWidth=3*dpr;ctx.strokeStyle='#0b0810';ctx.strokeText(lab,cx,cy+R+4*dpr);if(!flags.mapTip&&mode==='fly'){flags.mapTip=1;setTimeout(()=>say('Затисни радар пальцем, і відкриється вся карта орбіти. Відпусти, щоб закрити.',4.5),4000)}ctx.fillStyle=wave.warn?'#ff6f7a':'#bff7f2';ctx.fillText(lab,cx,cy+R+4*dpr)}
 function drawMeteor(){if(cave||!metRock)return;ctx.drawImage(metRock.cv,Math.round(metRock.x),Math.round(metRock.y));
   const m=MOUTH(),open=metOpen();ctx.fillStyle='#0a0608';ctx.beginPath();ctx.ellipse(m.x,m.y,20,28,0,0,6.3);ctx.fill();ctx.fillStyle='#1d1218';ctx.beginPath();ctx.ellipse(m.x+4,m.y,13,21,0,0,6.3);ctx.fill();
   if(!open&&!run.bossDone){ctx.globalAlpha=.55+.2*Math.sin(timeT*3);ctx.strokeStyle='#b89cff';ctx.lineWidth=1;for(let k=-3;k<=3;k++){ctx.beginPath();ctx.moveTo(m.x-14,m.y+k*8);ctx.lineTo(m.x+14,m.y+k*8+4);ctx.stroke()}ctx.fillStyle='rgba(122,92,255,.35)';ctx.beginPath();ctx.ellipse(m.x,m.y,20,28,0,0,6.3);ctx.fill();ctx.globalAlpha=1;
@@ -2360,7 +2396,7 @@ function draw(){
 let last=performance.now();
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw();requestAnimationFrame(loop)}
 
-function setHudMode(){$('#app').classList.toggle('inbase',mode==='base');$('#hud').classList.toggle('base',mode==='base');const z=$('#zone');z.classList.toggle('room',mode==='base');z.classList.remove('danger')}
+function setHudMode(){$('#radarHit').classList.toggle('on',mode==='fly');$('#app').classList.toggle('inbase',mode==='base');$('#hud').classList.toggle('base',mode==='base');const z=$('#zone');z.classList.toggle('room',mode==='base');z.classList.remove('danger')}
 
 function enterBase(msg){
   mode='base';closePanel();$('#dockBtn').hidden=true;$('#arrow').hidden=true;$('#joy').hidden=true;joy.on=false;grab=null;fleet=[];
