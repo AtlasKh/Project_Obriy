@@ -879,9 +879,10 @@ function buildCatRig(){const w=IMG.cat_walk,s2=IMG.cat_sit;if(!w||!s2)return;
   const fur=(img,x,y)=>{const d=img.getContext('2d').getImageData(x,y,1,1).data;return`rgb(${d[0]},${d[1]},${d[2]})`};
   CR={walk:{
       tail:cutPart(w,x=>x.rect(0,0,44,74)),
-      hind:cutPart(w,x=>x.rect(0,138,92,60)),
-      front:cutPart(w,x=>x.rect(92,138,80,60)),
-      body:cutPart(w,x=>{x.rect(44,0,130,140);x.rect(0,72,44,68)}),
+      // four separate legs; Bublyk faces right, so we see his left side (near legs are brighter)
+      legs:[{k:'FL',x0:113,x1:162,px:128,off:0,near:1},{k:'HR',x0:38,x1:84,px:58,off:.25,near:0},{k:'FR',x0:84,x1:113,px:100,off:.5,near:0},{k:'HL',x0:0,x1:38,px:24,off:.75,near:1}]
+        .map(l=>{const img=cutPart(w,x=>x.rect(l.x0,138,l.x1-l.x0,52));return Object.assign(l,{img:l.near?img:darken(img,.18)})}),
+      body:cutPart(w,x=>{x.rect(44,0,130,146);x.rect(0,72,44,74)}),
       tailPiv:[38,72],legY:138,eye:[145,79],eyeR:5,fur:fur(w,138,66)},
     sit:{head:cutPart(s2,x=>x.rect(0,0,80,66)),body:cutPart(s2,x=>x.rect(0,58,80,100)),neck:[40,64],eyes:[[29,31],[52,31]],eyeR:5,fur:fur(s2,30,22)}}}
 let PR=null,ER={};
@@ -2242,11 +2243,13 @@ function drawCat(){
   const sx=1+sq-breathe*.4,sy=1-sq+breathe,hop=Math.sin(kat.hop*Math.PI)*14;
   ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(X,Y,34*(1-hop/60),7,0,0,6.3);ctx.fill();
   ctx.save();ctx.translate(X,Y-hop);
-  if(pose==='walk'&&CR){const P=CR.walk,im=IMG.cat_walk,ph=kat.walk*1.6,bob=Math.abs(Math.sin(ph))*3;if(kat.dir<0)ctx.scale(-1,1);ctx.translate(0,-bob);ctx.scale(K2*sx,K2*sy);
-    const ox=-im.width/2,oy=-im.height,sh=Math.sin(ph)*.32;
-    const legs=(part,s2)=>{ctx.save();ctx.translate(ox,oy+P.legY);ctx.transform(1,0,s2,1,0,0);ctx.drawImage(part,0,-P.legY);ctx.restore()};
-    legs(P.hind,-sh);legs(P.front,sh);
-    ctx.save();ctx.translate(0,0);ctx.rotate(Math.sin(ph*2)*.015);ctx.drawImage(P.body,ox,oy);
+  if(pose==='walk'&&CR){const P=CR.walk,im=IMG.cat_walk,ph=kat.walk*1.6,bob=Math.abs(Math.sin(ph*2))*1.6;if(kat.dir<0)ctx.scale(-1,1);ctx.translate(0,-bob);ctx.scale(K2*sx,K2*sy);
+    const ox=-im.width/2,oy=-im.height,A=.38;
+    // four-beat walk: front-left, hind-right, front-right, hind-left. Each leg swings forward fast (25% of the cycle) and pushes back slowly.
+    const leg=l=>{const u=((ph/6.2832+l.off)%1+1)%1;let a,lift=0;if(u<.25){const q=u/.25,e=q*q*(3-2*q);a=A-2*A*e;lift=Math.sin(q*Math.PI)*5}else a=-A+2*A*(u-.25)/.75;
+      ctx.save();ctx.translate(ox+l.px,oy+P.legY-lift);ctx.rotate(a);ctx.drawImage(l.img,-l.px,-P.legY);ctx.restore()};
+    P.legs.filter(l=>!l.near).forEach(leg);
+    ctx.save();ctx.rotate(Math.sin(ph*2)*.012);ctx.drawImage(P.body,ox,oy);P.legs.filter(l=>l.near).forEach(leg);
     ctx.save();ctx.translate(ox+P.tailPiv[0],oy+P.tailPiv[1]);ctx.rotate(Math.sin(t*5)*.1+Math.sin(ph)*.12-.04);ctx.drawImage(P.tail,-P.tailPiv[0],-P.tailPiv[1]);ctx.restore();
     if(blink){ctx.fillStyle=P.fur;ctx.fillRect(ox+P.eye[0]-P.eyeR,oy+P.eye[1]-P.eyeR,P.eyeR*2,P.eyeR*2);ctx.fillStyle='#26222c';ctx.fillRect(ox+P.eye[0]-P.eyeR,oy+P.eye[1],P.eyeR*2,1.5)}ctx.restore()}
   else if(pose==='sit'&&CR){const P=CR.sit,im=IMG.cat_sit;if(kat.dir<0)ctx.scale(-1,1);ctx.scale(K2*sx,K2*sy);const ox=-im.width/2,oy=-im.height;
@@ -2969,7 +2972,7 @@ if(S.flying)S.flying=false;
 if(S.testMode)S.strict=false;
 if(!S.introSeen){enterBase(null);showIntro()}else enterBase(pick(LINES.greet));S.lybIntro=true;save();
 requestAnimationFrame(loop);
-window.__game={closePanel,hitEnemy,get debris(){return debris},spawnEnemy,enterCave,get clusters(){return clusters},get cave(){return cave},get pickups(){return pickups},runEv:k=>{RUN_EV[k].go()},get enemies(){return enemies},get curSec(){return curSec},doManip,dock,get huges(){return huges},fireHyper,setFiring:v=>firing=v,S,claimTasks,addFleet,man,kat,ship,devices,openPanel,launch,tryGrab,checkDeliveries,get mode(){return mode},get asteroids(){return asteroids},get fleet(){return fleet},MUS,AU};
+window.__game={closePanel,hitEnemy,get cam(){return cam},get debris(){return debris},spawnEnemy,enterCave,get clusters(){return clusters},get cave(){return cave},get pickups(){return pickups},runEv:k=>{RUN_EV[k].go()},get enemies(){return enemies},get curSec(){return curSec},doManip,dock,get huges(){return huges},fireHyper,setFiring:v=>firing=v,S,claimTasks,addFleet,man,kat,ship,devices,openPanel,launch,tryGrab,checkDeliveries,get mode(){return mode},get asteroids(){return asteroids},get fleet(){return fleet},MUS,AU};
 })();
 </script>
 
